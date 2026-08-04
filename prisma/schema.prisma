@@ -1,0 +1,165 @@
+// Prisma Schema for NutriSnap App
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum MealType {
+  BREAKFAST
+  LUNCH
+  DINNER
+  SNACK
+}
+
+enum ConsultationStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+model User {
+  id                    String         @id @default(uuid())
+  name                  String
+  email                 String         @unique
+  password_hash         String?
+  avatar_url            String?
+  height_cm             Float?
+  weight_kg             Float?
+  age                   Int?
+  gender                String?
+  activity_level        String?        // sedentary, lightly_active, moderately_active, very_active
+  daily_calorie_target  Int            @default(2000)
+  created_at            DateTime       @default(now())
+
+  food_logs             FoodLog[]
+  streaks               Streak?
+  badges                UserBadge[]
+  consultations         Consultation[]
+  orders                Order[]
+}
+
+model FoodLog {
+  id               String   @id @default(uuid())
+  user_id          String
+  image_url        String?
+  food_name        String
+  calories         Int
+  protein_g        Float    @default(0)
+  carbs_g          Float    @default(0)
+  fat_g            Float    @default(0)
+  fiber_g          Float    @default(0)
+  portion_estimate String?
+  health_verdict   String?  // Healthy, Moderate, Caution
+  ai_notes         String?
+  meal_type        MealType @default(LUNCH)
+  logged_at        DateTime @default(now())
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model Streak {
+  id             String    @id @default(uuid())
+  user_id        String    @unique
+  current_streak Int       @default(0)
+  longest_streak Int       @default(0)
+  last_log_date  DateTime?
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}
+
+model Badge {
+  id            String      @id @default(uuid())
+  name          String
+  description   String
+  icon_url      String?
+  criteria_json String?     // JSON rule criteria string
+
+  users UserBadge[]
+}
+
+model UserBadge {
+  id        String   @id @default(uuid())
+  user_id   String
+  badge_id  String
+  earned_at DateTime @default(now())
+
+  user  User  @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  badge Badge @relation(fields: [badge_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, badge_id])
+}
+
+model Expert {
+  id                String   @id @default(uuid())
+  name              String
+  specialization    String
+  credentials       String
+  photo_url         String?
+  price_per_session Float
+  rating            Float    @default(5.0)
+  bio               String?
+
+  consultations Consultation[]
+}
+
+model Consultation {
+  id           String             @id @default(uuid())
+  user_id      String
+  expert_id    String
+  scheduled_at DateTime
+  status       ConsultationStatus @default(SCHEDULED)
+  notes        String?
+  price        Float
+
+  user   User   @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  expert Expert @relation(fields: [expert_id], references: [id], onDelete: Cascade)
+}
+
+model Article {
+  id              String   @id @default(uuid())
+  title           String
+  slug            String   @unique
+  content         String
+  cover_image_url String?
+  category        String
+  author          String
+  published_at    DateTime @default(now())
+}
+
+model Product {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  price       Float
+  image_url   String?
+  category    String
+  stock       Int      @default(0)
+  seller      String
+
+  orders Order[]
+}
+
+model Order {
+  id          String      @id @default(uuid())
+  user_id     String
+  product_id  String
+  quantity    Int         @default(1)
+  total_price Float
+  status      OrderStatus @default(PENDING)
+  created_at  DateTime    @default(now())
+
+  user    User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [product_id], references: [id], onDelete: Cascade)
+}
