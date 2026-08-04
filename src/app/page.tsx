@@ -26,6 +26,9 @@ export default function LandingPage() {
     }
   }, [router]);
 
+  // Selected Service state to trigger offset background card visibility (Customized to Emerald green)
+  const [selectedService, setSelectedService] = useState<number>(0);
+
   // Demo user data accounts
   const demoUsers = [
     {
@@ -131,79 +134,127 @@ export default function LandingPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
           {/* Service 1: AI Scanner */}
-          <div className="bg-white border border-slate-100 p-8 rounded-2xl rounded-tl-[2.2rem] hover:shadow-lg hover:border-emerald-250 transition-all duration-350 ease-out hover:-translate-y-1 group flex flex-col justify-between space-y-6">
-            <div className="space-y-4">
-              <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 transition-transform duration-300 group-hover:scale-105">
-                <Camera className="w-5 h-5" />
+          <div className="relative">
+            {/* Emerald offset background card active state microinteraction */}
+            <div className={`absolute inset-0 bg-emerald-500 rounded-2xl rounded-tl-[2.2rem] transform transition-all duration-300 ${
+              selectedService === 0 ? 'translate-x-2 translate-y-2 opacity-100' : 'translate-x-0 translate-y-0 opacity-0'
+            }`}></div>
+            
+            <div 
+              onClick={() => setSelectedService(0)}
+              className={`relative bg-white border p-8 rounded-2xl rounded-tl-[2.2rem] hover:shadow-lg cursor-pointer transition-all duration-300 ease-out group flex flex-col justify-between space-y-6 ${
+                selectedService === 0 ? 'border-emerald-500 -translate-y-0.5' : 'border-slate-100 hover:border-emerald-200'
+              }`}
+            >
+              <div className="space-y-4">
+                <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 transition-transform duration-300 group-hover:scale-105">
+                  <Camera className="w-5 h-5" />
+                </div>
+                <h3 className="text-sm font-extrabold text-slate-850 tracking-wide">
+                  AI Food Scanner
+                </h3>
+                <p className="text-xs text-slate-550 leading-relaxed font-semibold">
+                  Deteksi otomatis kalori, protein, lemak, dan karbohidrat secara instan hanya dengan mengunggah foto makanan Anda sehari-hari.
+                </p>
               </div>
-              <h3 className="text-sm font-extrabold text-slate-850 tracking-wide">
-                AI Food Scanner
-              </h3>
-              <p className="text-xs text-slate-550 leading-relaxed font-semibold">
-                Deteksi otomatis kalori, protein, lemak, dan karbohidrat secara instan hanya dengan mengunggah foto makanan Anda sehari-hari.
-              </p>
+              <a href="#login-section" className="text-[10px] font-black text-emerald-600 flex items-center gap-1 hover:text-emerald-700 transition">
+                <span>Coba Demo</span>
+                <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+              </a>
             </div>
-            <a href="#login-section" className="text-[10px] font-black text-emerald-600 flex items-center gap-1 hover:text-emerald-700 transition">
-              <span>Coba Demo</span>
-              <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
-            </a>
           </div>
 
           {/* Service 2: Gamifikasi */}
-          <div className="bg-white border border-slate-100 p-8 rounded-2xl rounded-tl-[2.2rem] hover:shadow-lg hover:border-emerald-250 transition-all duration-350 ease-out hover:-translate-y-1 group flex flex-col justify-between space-y-6">
-            <div className="space-y-4">
-              <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 transition-transform duration-300 group-hover:scale-105">
-                <TrendingUp className="w-5 h-5" />
+          <div className="relative">
+            {/* Emerald offset background card active state microinteraction */}
+            <div className={`absolute inset-0 bg-emerald-500 rounded-2xl rounded-tl-[2.2rem] transform transition-all duration-300 ${
+              selectedService === 1 ? 'translate-x-2 translate-y-2 opacity-100' : 'translate-x-0 translate-y-0 opacity-0'
+            }`}></div>
+
+            <div 
+              onClick={() => setSelectedService(1)}
+              className={`relative bg-white border p-8 rounded-2xl rounded-tl-[2.2rem] hover:shadow-lg cursor-pointer transition-all duration-300 ease-out group flex flex-col justify-between space-y-6 ${
+                selectedService === 1 ? 'border-emerald-500 -translate-y-0.5' : 'border-slate-100 hover:border-emerald-200'
+              }`}
+            >
+              <div className="space-y-4">
+                <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 transition-transform duration-300 group-hover:scale-105">
+                  <TrendingUp className="w-5 h-5" />
+                </div>
+                <h3 className="text-sm font-extrabold text-slate-850 tracking-wide">
+                  Tantangan & Gamifikasi Gizi
+                </h3>
+                <p className="text-xs text-slate-550 leading-relaxed font-semibold">
+                  Ikuti misi mingguan dan pertahankan rekor beruntun (streak) makan sehat Anda untuk mengklaim lencana dan poin kesehatan.
+                </p>
               </div>
-              <h3 className="text-sm font-extrabold text-slate-850 tracking-wide">
-                Tantangan & Gamifikasi Gizi
-              </h3>
-              <p className="text-xs text-slate-550 leading-relaxed font-semibold">
-                Ikuti misi mingguan dan pertahankan rekor beruntun (streak) makan sehat Anda untuk mengklaim lencana dan poin kesehatan.
-              </p>
+              <a href="#login-section" className="text-[10px] font-black text-emerald-600 flex items-center gap-1 hover:text-emerald-700 transition">
+                <span>Coba Demo</span>
+                <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+              </a>
             </div>
-            <a href="#login-section" className="text-[10px] font-black text-emerald-600 flex items-center gap-1 hover:text-emerald-700 transition">
-              <span>Coba Demo</span>
-              <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
-            </a>
           </div>
 
           {/* Service 3: Dokter Sesi */}
-          <div className="bg-white border border-slate-100 p-8 rounded-2xl rounded-tl-[2.2rem] hover:shadow-lg hover:border-emerald-250 transition-all duration-350 ease-out hover:-translate-y-1 group flex flex-col justify-between space-y-6">
-            <div className="space-y-4">
-              <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 transition-transform duration-300 group-hover:scale-105">
-                <Stethoscope className="w-5 h-5" />
+          <div className="relative">
+            {/* Emerald offset background card active state microinteraction */}
+            <div className={`absolute inset-0 bg-emerald-500 rounded-2xl rounded-tl-[2.2rem] transform transition-all duration-300 ${
+              selectedService === 2 ? 'translate-x-2 translate-y-2 opacity-100' : 'translate-x-0 translate-y-0 opacity-0'
+            }`}></div>
+
+            <div 
+              onClick={() => setSelectedService(2)}
+              className={`relative bg-white border p-8 rounded-2xl rounded-tl-[2.2rem] hover:shadow-lg cursor-pointer transition-all duration-300 ease-out group flex flex-col justify-between space-y-6 ${
+                selectedService === 2 ? 'border-emerald-500 -translate-y-0.5' : 'border-slate-100 hover:border-emerald-200'
+              }`}
+            >
+              <div className="space-y-4">
+                <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 transition-transform duration-300 group-hover:scale-105">
+                  <Stethoscope className="w-5 h-5" />
+                </div>
+                <h3 className="text-sm font-extrabold text-slate-850 tracking-wide">
+                  Konsultasi Dokter & Ahli Gizi
+                </h3>
+                <p className="text-xs text-slate-550 leading-relaxed font-semibold">
+                  Konsultasikan pola diet dan hasil tracking nutrisi harian Anda secara privat bersama dokter spesialis gizi klinik tersertifikasi.
+                </p>
               </div>
-              <h3 className="text-sm font-extrabold text-slate-850 tracking-wide">
-                Konsultasi Dokter & Ahli Gizi
-              </h3>
-              <p className="text-xs text-slate-550 leading-relaxed font-semibold">
-                Konsultasikan pola diet dan hasil tracking nutrisi harian Anda secara privat bersama dokter spesialis gizi klinik tersertifikasi.
-              </p>
+              <a href="#login-section" className="text-[10px] font-black text-emerald-600 flex items-center gap-1 hover:text-emerald-700 transition">
+                <span>Coba Demo</span>
+                <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+              </a>
             </div>
-            <a href="#login-section" className="text-[10px] font-black text-emerald-600 flex items-center gap-1 hover:text-emerald-700 transition">
-              <span>Coba Demo</span>
-              <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
-            </a>
           </div>
 
           {/* Service 4: Wrapped */}
-          <div className="bg-white border border-slate-100 p-8 rounded-2xl rounded-tl-[2.2rem] hover:shadow-lg hover:border-emerald-250 transition-all duration-350 ease-out hover:-translate-y-1 group flex flex-col justify-between space-y-6">
-            <div className="space-y-4">
-              <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 transition-transform duration-300 group-hover:scale-105">
-                <Activity className="w-5 h-5" />
+          <div className="relative">
+            {/* Emerald offset background card active state microinteraction */}
+            <div className={`absolute inset-0 bg-emerald-500 rounded-2xl rounded-tl-[2.2rem] transform transition-all duration-300 ${
+              selectedService === 3 ? 'translate-x-2 translate-y-2 opacity-100' : 'translate-x-0 translate-y-0 opacity-0'
+            }`}></div>
+
+            <div 
+              onClick={() => setSelectedService(3)}
+              className={`relative bg-white border p-8 rounded-2xl rounded-tl-[2.2rem] hover:shadow-lg cursor-pointer transition-all duration-300 ease-out group flex flex-col justify-between space-y-6 ${
+                selectedService === 3 ? 'border-emerald-500 -translate-y-0.5' : 'border-slate-100 hover:border-emerald-200'
+              }`}
+            >
+              <div className="space-y-4">
+                <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 transition-transform duration-300 group-hover:scale-105">
+                  <Activity className="w-5 h-5" />
+                </div>
+                <h3 className="text-sm font-extrabold text-slate-850 tracking-wide">
+                  NutriSnap Wrapped
+                </h3>
+                <p className="text-xs text-slate-550 leading-relaxed font-semibold">
+                  Lihat ulasan kilas balik (wrapped) nutrisi dan pola makan harian Anda sepanjang tahun yang divisualisasikan dengan infografik menarik.
+                </p>
               </div>
-              <h3 className="text-sm font-extrabold text-slate-850 tracking-wide">
-                NutriSnap Wrapped
-              </h3>
-              <p className="text-xs text-slate-550 leading-relaxed font-semibold">
-                Lihat ulasan kilas balik (wrapped) nutrisi dan pola makan harian Anda sepanjang tahun yang divisualisasikan dengan infografik menarik.
-              </p>
+              <a href="#login-section" className="text-[10px] font-black text-emerald-600 flex items-center gap-1 hover:text-emerald-700 transition">
+                <span>Coba Demo</span>
+                <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+              </a>
             </div>
-            <a href="#login-section" className="text-[10px] font-black text-emerald-600 flex items-center gap-1 hover:text-emerald-700 transition">
-              <span>Coba Demo</span>
-              <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
-            </a>
           </div>
         </div>
       </section>
@@ -260,7 +311,7 @@ export default function LandingPage() {
                 <h3 className="text-sm font-extrabold text-slate-800 transition-colors duration-250 group-hover:text-[#2d8d81] tracking-wide">
                   Analisis Gizi Otomatis
                 </h3>
-                <p className="text-xs text-slate-500 leading-relaxed font-semibold">
+                <p className="text-xs text-slate-505 leading-relaxed font-semibold">
                   Kecerdasan Buatan (AI Gemini) menganalisis kalori, kadar protein, karbohidrat, dan lemak dalam hitungan detik.
                 </p>
               </div>
@@ -285,7 +336,7 @@ export default function LandingPage() {
                 <h3 className="text-sm font-extrabold text-slate-800 transition-colors duration-250 group-hover:text-[#2d8d81] tracking-wide">
                   Konsultasikan & Lacak
                 </h3>
-                <p className="text-xs text-slate-500 leading-relaxed font-semibold">
+                <p className="text-xs text-slate-505 leading-relaxed font-semibold">
                   Simpan log ke dashboard harian Anda atau bagikan ke dokter gizi pilihan Anda untuk bimbingan langsung.
                 </p>
               </div>
@@ -373,7 +424,7 @@ export default function LandingPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-4">
-            <p className="text-xs text-slate-500 leading-relaxed italic font-semibold">
+            <p className="text-xs text-slate-505 leading-relaxed italic font-semibold">
               &ldquo;Dulu saya malas mencatat makanan karena ribet memasukkan data kalori satu per satu. Dengan NutriSnap, saya tinggal jepret foto piring makan siang saya, dan Gemini langsung menghitung kadar protein & karbohidratnya secara instan!&rdquo;
             </p>
             <div className="flex items-center space-x-3">
@@ -382,13 +433,13 @@ export default function LandingPage() {
               </div>
               <div>
                 <h4 className="text-xs font-bold text-slate-800">Ahmad Hermawan</h4>
-                <span className="text-[9px] text-slate-400 block font-semibold">Pengguna 3 Bulan</span>
+                <span className="text-[9px] text-slate-405 block font-semibold">Pengguna 3 Bulan</span>
               </div>
             </div>
           </div>
 
           <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-4">
-            <p className="text-xs text-slate-500 leading-relaxed italic font-semibold">
+            <p className="text-xs text-slate-550 leading-relaxed italic font-semibold">
               &ldquo;Fitur konsultasi dokter gizi sangat menolong. Saya bisa langsung membagikan riwayat asupan log kalori mingguan saya kepada dokter tanpa perlu mencatat ulang secara manual. Sangat efisien!&rdquo;
             </p>
             <div className="flex items-center space-x-3">
@@ -397,7 +448,7 @@ export default function LandingPage() {
               </div>
               <div>
                 <h4 className="text-xs font-bold text-slate-850">Yulia Ningsih</h4>
-                <span className="text-[9px] text-slate-400 block font-semibold">Ibu Rumah Tangga</span>
+                <span className="text-[9px] text-slate-405 block font-semibold">Ibu Rumah Tangga</span>
               </div>
             </div>
           </div>
