@@ -602,7 +602,7 @@ export default function CekatApp() {
                     
                     {/* View: Beranda / Kebutuhanmu (Hi Sofia!) */}
                     {dashboardSubView === 'home' && (
-                      <div className="flex-1 flex flex-col space-y-5 overflow-y-auto pb-24 text-left relative">
+                      <div className="flex-1 flex flex-col space-y-5 overflow-y-auto pb-6 text-left relative">
                         {/* Header yellow-to-green gradient with logo, notification, and centered name badge */}
                         <div className="bg-gradient-to-r from-[#f1c40f] to-[#10b981] text-white rounded-b-[40px] px-5 pt-8 pb-7 shadow-md text-left relative shrink-0">
                           <div className="flex items-center justify-between mb-4">
@@ -1354,7 +1354,7 @@ export default function CekatApp() {
 
                     {/* View: Edukasi Kesehatan */}
                     {dashboardSubView === 'edukasi' && (
-                      <div className="space-y-0 animate-fadeIn pb-24">
+                      <div className="space-y-0 animate-fadeIn pb-6">
 
                         {/* ── Header ── */}
                         <div className="bg-white border-b border-slate-100 px-4 pt-8 pb-3 flex items-center justify-between">
