@@ -18,22 +18,27 @@ export default function RootLayout({
   const pathname = usePathname();
   const isLandingPage = pathname === '/';
 
+  const isCekatRoute = pathname === '/app' || pathname === '/station';
+
   return (
     <html lang="id" className="scroll-smooth">
       <body className={`${inter.className} bg-emerald-50/40 text-slate-800 min-h-screen flex flex-col`}>
-        <Navbar />
+        {!isCekatRoute && <Navbar />}
         {/* Dynamic Layout Wrapper: Landing page takes true 100% full-width, dashboard pages take centered max-w container */}
         <main className={`flex-1 w-full ${
           isLandingPage 
             ? 'px-0 py-0' 
+            : isCekatRoute
+            ? 'p-0 max-w-full'
             : 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'
         }`}>
           {children}
         </main>
         
         {/* Professional Premium Multi-column Footer */}
-        <footer className="bg-slate-900 text-slate-400 border-t border-slate-800 py-16">
-          <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 grid grid-cols-1 md:grid-cols-4 gap-10">
+        {!isCekatRoute && (
+          <footer className="bg-slate-900 text-slate-400 border-t border-slate-800 py-16">
+            <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 grid grid-cols-1 md:grid-cols-4 gap-10">
             {/* Column 1: Logo & Tagline */}
             <div className="space-y-4">
               <div className="flex items-center space-x-2">
@@ -113,6 +118,7 @@ export default function RootLayout({
             </div>
           </div>
         </footer>
+        )}
       </body>
     </html>
   );

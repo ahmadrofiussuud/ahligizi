@@ -1,32 +1,11 @@
 // Prisma Schema for NutriSnap App
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
 generator client {
   provider = "prisma-client-js"
-}
-
-enum MealType {
-  BREAKFAST
-  LUNCH
-  DINNER
-  SNACK
-}
-
-enum ConsultationStatus {
-  SCHEDULED
-  COMPLETED
-  CANCELLED
-}
-
-enum OrderStatus {
-  PENDING
-  PAID
-  SHIPPED
-  DELIVERED
-  CANCELLED
 }
 
 model User {
@@ -63,7 +42,7 @@ model FoodLog {
   portion_estimate String?
   health_verdict   String?  // Healthy, Moderate, Caution
   ai_notes         String?
-  meal_type        MealType @default(LUNCH)
+  meal_type        String   @default("LUNCH")
   logged_at        DateTime @default(now())
 
   user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
@@ -119,7 +98,7 @@ model Consultation {
   user_id      String
   expert_id    String
   scheduled_at DateTime
-  status       ConsultationStatus @default(SCHEDULED)
+  status       String             @default("SCHEDULED")
   notes        String?
   price        Float
 
@@ -157,7 +136,7 @@ model Order {
   product_id  String
   quantity    Int         @default(1)
   total_price Float
-  status      OrderStatus @default(PENDING)
+  status      String      @default("PENDING")
   created_at  DateTime    @default(now())
 
   user    User    @relation(fields: [user_id], references: [id], onDelete: Cascade)

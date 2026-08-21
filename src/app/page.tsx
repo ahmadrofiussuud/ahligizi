@@ -34,7 +34,7 @@ export default function LandingPage() {
     {
       id: 'user-1',
       name: 'Rizky Fitrianto',
-      role: 'Pengguna Umum (Cut / Maintenance)',
+      role: 'Pengguna Umum (Pencegahan PTM & Gula Darah)',
       avatar: 'RF',
       profile: {
         name: 'Rizky Fitrianto',
@@ -134,24 +134,29 @@ export default function LandingPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
           {/* Service 1: AI Scanner */}
-          <div className="relative">
-            {/* Emerald offset background card active state microinteraction */}
-            <div className={`absolute inset-0 bg-emerald-500 rounded-2xl rounded-tl-[2.2rem] transform transition-all duration-300 ${
-              selectedService === 0 ? 'translate-x-2 translate-y-2 opacity-100' : 'translate-x-0 translate-y-0 opacity-0'
+          <div className="relative group">
+            {/* Cyberpunk tactical offset backplate - rotates and offsets when selected */}
+            <div className={`absolute -inset-1.5 rounded-2xl rounded-tl-[2.2rem] bg-emerald-500/80 transition-all duration-300 ${
+              selectedService === 0 
+                ? 'translate-x-2 translate-y-3 rotate-1 opacity-100 blur-[2px]' 
+                : 'translate-x-0 translate-y-0 rotate-0 opacity-0 scale-95'
             }`}></div>
             
             <div 
               onClick={() => setSelectedService(0)}
-              className={`relative bg-white border p-8 rounded-2xl rounded-tl-[2.2rem] hover:shadow-lg cursor-pointer transition-all duration-300 ease-out group flex flex-col justify-between space-y-6 ${
-                selectedService === 0 ? 'border-emerald-500 -translate-y-0.5' : 'border-slate-100 hover:border-emerald-200'
+              className={`relative bg-white border p-8 rounded-2xl rounded-tl-[2.2rem] hover:shadow-xl cursor-pointer transition-all duration-300 ease-out flex flex-col justify-between space-y-6 ${
+                selectedService === 0 
+                  ? 'border-emerald-500 shadow-[0_4px_20px_rgba(16,185,129,0.15)]' 
+                  : 'border-slate-100 hover:border-emerald-200'
               }`}
             >
               <div className="space-y-4">
                 <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 transition-transform duration-300 group-hover:scale-105">
                   <Camera className="w-5 h-5" />
                 </div>
-                <h3 className="text-sm font-extrabold text-slate-850 tracking-wide">
-                  AI Food Scanner
+                <h3 className="text-sm font-extrabold text-slate-850 tracking-wide flex items-center justify-between">
+                  <span>AI Food Scanner</span>
+                  {selectedService === 0 && <span className="text-[9px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded font-black uppercase tracking-wider scale-90">ACTIVE</span>}
                 </h3>
                 <p className="text-xs text-slate-550 leading-relaxed font-semibold">
                   Deteksi otomatis kalori, protein, lemak, dan karbohidrat secara instan hanya dengan mengunggah foto makanan Anda sehari-hari.
@@ -165,24 +170,29 @@ export default function LandingPage() {
           </div>
 
           {/* Service 2: Gamifikasi */}
-          <div className="relative">
-            {/* Emerald offset background card active state microinteraction */}
-            <div className={`absolute inset-0 bg-emerald-500 rounded-2xl rounded-tl-[2.2rem] transform transition-all duration-300 ${
-              selectedService === 1 ? 'translate-x-2 translate-y-2 opacity-100' : 'translate-x-0 translate-y-0 opacity-0'
+          <div className="relative group">
+            {/* Cyberpunk tactical offset backplate - rotates and offsets when selected */}
+            <div className={`absolute -inset-1.5 rounded-2xl rounded-tl-[2.2rem] bg-emerald-500/80 transition-all duration-300 ${
+              selectedService === 1 
+                ? 'translate-x-2 translate-y-3 rotate-1 opacity-100 blur-[2px]' 
+                : 'translate-x-0 translate-y-0 rotate-0 opacity-0 scale-95'
             }`}></div>
 
             <div 
               onClick={() => setSelectedService(1)}
-              className={`relative bg-white border p-8 rounded-2xl rounded-tl-[2.2rem] hover:shadow-lg cursor-pointer transition-all duration-300 ease-out group flex flex-col justify-between space-y-6 ${
-                selectedService === 1 ? 'border-emerald-500 -translate-y-0.5' : 'border-slate-100 hover:border-emerald-200'
+              className={`relative bg-white border p-8 rounded-2xl rounded-tl-[2.2rem] hover:shadow-xl cursor-pointer transition-all duration-300 ease-out flex flex-col justify-between space-y-6 ${
+                selectedService === 1 
+                  ? 'border-emerald-500 shadow-[0_4px_20px_rgba(16,185,129,0.15)]' 
+                  : 'border-slate-100 hover:border-emerald-200'
               }`}
             >
               <div className="space-y-4">
                 <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 transition-transform duration-300 group-hover:scale-105">
                   <TrendingUp className="w-5 h-5" />
                 </div>
-                <h3 className="text-sm font-extrabold text-slate-850 tracking-wide">
-                  Tantangan & Gamifikasi Gizi
+                <h3 className="text-sm font-extrabold text-slate-850 tracking-wide flex items-center justify-between">
+                  <span>Tantangan & Gamifikasi Gizi</span>
+                  {selectedService === 1 && <span className="text-[9px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded font-black uppercase tracking-wider scale-90">ACTIVE</span>}
                 </h3>
                 <p className="text-xs text-slate-550 leading-relaxed font-semibold">
                   Ikuti misi mingguan dan pertahankan rekor beruntun (streak) makan sehat Anda untuk mengklaim lencana dan poin kesehatan.
@@ -196,24 +206,29 @@ export default function LandingPage() {
           </div>
 
           {/* Service 3: Dokter Sesi */}
-          <div className="relative">
-            {/* Emerald offset background card active state microinteraction */}
-            <div className={`absolute inset-0 bg-emerald-500 rounded-2xl rounded-tl-[2.2rem] transform transition-all duration-300 ${
-              selectedService === 2 ? 'translate-x-2 translate-y-2 opacity-100' : 'translate-x-0 translate-y-0 opacity-0'
+          <div className="relative group">
+            {/* Cyberpunk tactical offset backplate - rotates and offsets when selected */}
+            <div className={`absolute -inset-1.5 rounded-2xl rounded-tl-[2.2rem] bg-emerald-500/80 transition-all duration-300 ${
+              selectedService === 2 
+                ? 'translate-x-2 translate-y-3 rotate-1 opacity-100 blur-[2px]' 
+                : 'translate-x-0 translate-y-0 rotate-0 opacity-0 scale-95'
             }`}></div>
 
             <div 
               onClick={() => setSelectedService(2)}
-              className={`relative bg-white border p-8 rounded-2xl rounded-tl-[2.2rem] hover:shadow-lg cursor-pointer transition-all duration-300 ease-out group flex flex-col justify-between space-y-6 ${
-                selectedService === 2 ? 'border-emerald-500 -translate-y-0.5' : 'border-slate-100 hover:border-emerald-200'
+              className={`relative bg-white border p-8 rounded-2xl rounded-tl-[2.2rem] hover:shadow-xl cursor-pointer transition-all duration-300 ease-out flex flex-col justify-between space-y-6 ${
+                selectedService === 2 
+                  ? 'border-emerald-500 shadow-[0_4px_20px_rgba(16,185,129,0.15)]' 
+                  : 'border-slate-100 hover:border-emerald-200'
               }`}
             >
               <div className="space-y-4">
                 <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 transition-transform duration-300 group-hover:scale-105">
                   <Stethoscope className="w-5 h-5" />
                 </div>
-                <h3 className="text-sm font-extrabold text-slate-850 tracking-wide">
-                  Konsultasi Dokter & Ahli Gizi
+                <h3 className="text-sm font-extrabold text-slate-850 tracking-wide flex items-center justify-between">
+                  <span>Konsultasi Dokter & Ahli Gizi</span>
+                  {selectedService === 2 && <span className="text-[9px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded font-black uppercase tracking-wider scale-90">ACTIVE</span>}
                 </h3>
                 <p className="text-xs text-slate-550 leading-relaxed font-semibold">
                   Konsultasikan pola diet dan hasil tracking nutrisi harian Anda secara privat bersama dokter spesialis gizi klinik tersertifikasi.
@@ -227,24 +242,29 @@ export default function LandingPage() {
           </div>
 
           {/* Service 4: Wrapped */}
-          <div className="relative">
-            {/* Emerald offset background card active state microinteraction */}
-            <div className={`absolute inset-0 bg-emerald-500 rounded-2xl rounded-tl-[2.2rem] transform transition-all duration-300 ${
-              selectedService === 3 ? 'translate-x-2 translate-y-2 opacity-100' : 'translate-x-0 translate-y-0 opacity-0'
+          <div className="relative group">
+            {/* Cyberpunk tactical offset backplate - rotates and offsets when selected */}
+            <div className={`absolute -inset-1.5 rounded-2xl rounded-tl-[2.2rem] bg-emerald-500/80 transition-all duration-300 ${
+              selectedService === 3 
+                ? 'translate-x-2 translate-y-3 rotate-1 opacity-100 blur-[2px]' 
+                : 'translate-x-0 translate-y-0 rotate-0 opacity-0 scale-95'
             }`}></div>
 
             <div 
               onClick={() => setSelectedService(3)}
-              className={`relative bg-white border p-8 rounded-2xl rounded-tl-[2.2rem] hover:shadow-lg cursor-pointer transition-all duration-300 ease-out group flex flex-col justify-between space-y-6 ${
-                selectedService === 3 ? 'border-emerald-500 -translate-y-0.5' : 'border-slate-100 hover:border-emerald-200'
+              className={`relative bg-white border p-8 rounded-2xl rounded-tl-[2.2rem] hover:shadow-lg cursor-pointer transition-all duration-300 ease-out flex flex-col justify-between space-y-6 ${
+                selectedService === 3 
+                  ? 'border-emerald-500 shadow-[0_4px_20px_rgba(16,185,129,0.15)]' 
+                  : 'border-slate-100 hover:border-emerald-200'
               }`}
             >
               <div className="space-y-4">
                 <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 transition-transform duration-300 group-hover:scale-105">
                   <Activity className="w-5 h-5" />
                 </div>
-                <h3 className="text-sm font-extrabold text-slate-850 tracking-wide">
-                  NutriSnap Wrapped
+                <h3 className="text-sm font-extrabold text-slate-850 tracking-wide flex items-center justify-between">
+                  <span>NutriSnap Wrapped</span>
+                  {selectedService === 3 && <span className="text-[9px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded font-black uppercase tracking-wider scale-90">ACTIVE</span>}
                 </h3>
                 <p className="text-xs text-slate-550 leading-relaxed font-semibold">
                   Lihat ulasan kilas balik (wrapped) nutrisi dan pola makan harian Anda sepanjang tahun yang divisualisasikan dengan infografik menarik.

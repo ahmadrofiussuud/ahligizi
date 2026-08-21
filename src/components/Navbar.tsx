@@ -42,21 +42,24 @@ export default function Navbar() {
 
   // Navigation links shown when logged in
   const loggedInLinks = [
-    { name: 'Scan Gizi', href: '/scan' },
-    { name: 'Dashboard', href: '/dashboard' },
-    { name: 'Gamifikasi', href: '/gamification' },
-    { name: 'Wrapped', href: '/wrapped' },
-    { name: 'Konsultasi', href: '/consultation' },
-    { name: 'Artikel', href: '/articles' },
-    { name: 'Marketplace', href: '/marketplace' },
+    { name: 'Pantry AI 🍳', href: '/pantry-ai' },
+    { name: 'CEKAT Station 🏥', href: '/station' },
+    { name: 'Scan Gizi 📸', href: '/scan' },
+    { name: 'Dashboard 📊', href: '/dashboard' },
+    { name: 'CEKAT App 📱', href: '/app' },
+    { name: 'Gamifikasi 🏆', href: '/gamification' },
+    { name: 'Konsultasi 🩺', href: '/consultation' },
+    { name: 'Artikel 📚', href: '/articles' },
   ];
 
   // Professional marketing navigation links shown on landing page (logged out)
   const landingLinks = [
+    { name: 'Pantry AI 🍳', href: '/pantry-ai' },
+    { name: 'CEKAT Station 🏥', href: '/station' },
+    { name: 'CEKAT App 📱', href: '/app' },
     { name: 'Fitur Utama', href: '#features-section' },
     { name: 'Cara Kerja', href: '#how-it-works-section' },
     { name: 'Tim Medis', href: '#doctors-section' },
-    { name: 'Ulasan Pengguna', href: '#testimonials-section' },
   ];
 
   return (
