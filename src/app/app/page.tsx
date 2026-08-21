@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState, useEffect } from 'react';
 import { 
@@ -54,8 +54,22 @@ import {
   Sparkles as SparklesIcon
 } from 'lucide-react';
 import Link from 'next/link';
+import DashboardPage from '../dashboard/page';
 
 export default function CekatApp() {
+  const [isMobile, setIsMobile] = useState<boolean>(true);
+  const [isClient, setIsClient] = useState<boolean>(false);
+
+  useEffect(() => {
+    setIsClient(true);
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   // Simulator navigation states
   const [appState, setAppState] = useState<'splash' | 'welcome' | 'login' | 'main'>('main');
   const [activeTab, setActiveTab] = useState<'dashboard' | 'nutrisi' | 'challenge' | 'riwayat' | 'profil'>('dashboard');
@@ -219,6 +233,21 @@ export default function CekatApp() {
     const matchesSearch = recipe.name.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
+
+  if (!isClient) {
+    return (
+      <div className="min-h-screen bg-[#f7f9f6] flex items-center justify-center text-emerald-600 font-sans text-xs">
+        <div className="flex flex-col items-center gap-3">
+          <Activity className="w-6 h-6 animate-spin text-emerald-600" />
+          <span className="font-bold">Memuat Cekat...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isMobile) {
+    return <DashboardPage />;
+  }
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col md:flex-row relative overflow-hidden font-sans">

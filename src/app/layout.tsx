@@ -8,6 +8,8 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Leaf, Mail, Phone, MapPin, Share2, Globe } from "lucide-react";
 
+import React, { useState, useEffect } from 'react';
+
 const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({
@@ -18,12 +20,25 @@ export default function RootLayout({
   const pathname = usePathname();
   const isLandingPage = pathname === '/';
 
-  const isCekatRoute = pathname === '/app' || pathname === '/station';
+  const [isMobile, setIsMobile] = useState<boolean>(true);
+  const [isClient, setIsClient] = useState<boolean>(false);
+
+  useEffect(() => {
+    setIsClient(true);
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const isCekatRoute = (pathname === '/app' && isMobile) || pathname === '/station';
 
   return (
     <html lang="id" className="scroll-smooth">
       <body className={`${inter.className} bg-emerald-50/40 text-slate-800 min-h-screen flex flex-col`}>
-        {!isCekatRoute && <Navbar />}
+        {(!isCekatRoute || !isClient) && <Navbar />}
         {/* Dynamic Layout Wrapper: Landing page takes true 100% full-width, dashboard pages take centered max-w container */}
         <main className={`flex-1 w-full ${
           isLandingPage 
