@@ -30,7 +30,8 @@ import {
   Award,
   ShieldCheck,
   Stethoscope,
-  Plus
+  Plus,
+  ArrowRight
 } from 'lucide-react';
 
 export default function CekatApp2Page() {
@@ -164,34 +165,109 @@ export default function CekatApp2Page() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#f0f8f7] text-slate-800 font-sans antialiased selection:bg-teal-100 selection:text-teal-900">
+    <div className="min-h-screen bg-[#f0f8f7] text-slate-800 font-sans antialiased selection:bg-teal-100 selection:text-teal-900 pb-16">
       
       {/* 
         ========================================================================
         DESKTOP SUITE (Visible on Desktop md & up)
         ========================================================================
       */}
-      <div className="hidden md:block max-w-7xl mx-auto px-6 py-8">
+      <div className="hidden md:block max-w-7xl mx-auto space-y-8">
         
-        {/* Desktop Header Navigation Bar - Styled with Landing Page Teal (#2d8d81 / #3fa89b) */}
-        <header className="bg-white rounded-3xl p-4 px-8 border border-teal-100/80 shadow-[0_4px_25px_rgba(45,141,129,0.06)] flex items-center justify-between mb-8">
-          <div className="flex items-center space-x-3">
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#2d8d81] to-[#3fa89b] text-white flex items-center justify-center shadow-md shadow-teal-700/20">
-              <Leaf className="w-6 h-6" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-xl font-black text-slate-900 tracking-tight">CEKAT App 2</h1>
-                <span className="bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 font-black text-[9.5px] px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
-                  Modern & Fun
+        {/* 
+          ----------------------------------------------------------------------
+          1. WAVY & FUN HERO SECTION BANNER (Landing Page Aesthetic)
+          Organic SVG wave contours, teal/turquoise gradient, and fun badges
+          ----------------------------------------------------------------------
+        */}
+        <div className="relative bg-gradient-to-r from-[#2d8d81] via-[#3fa89b] to-[#267a70] text-white rounded-[36px] shadow-xl overflow-hidden pt-10 pb-16 px-10">
+          
+          {/* Decorative background glow circles */}
+          <div className="absolute -top-16 -right-16 w-80 h-80 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
+          <div className="absolute -bottom-20 left-1/3 w-96 h-96 bg-amber-400/10 rounded-full blur-3xl pointer-events-none"></div>
+
+          {/* Hero Header Content */}
+          <div className="relative z-10 flex items-center justify-between gap-8">
+            <div className="space-y-4 max-w-2xl text-left">
+              
+              {/* Fun floating pill badges */}
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="px-3.5 py-1 rounded-full bg-white/20 backdrop-blur border border-white/25 text-yellow-300 font-black text-xs tracking-wide shadow-sm flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 fill-current" />
+                  <span>CEKAT App 2 • Modern & Fun</span>
+                </span>
+                <span className="px-3 py-1 rounded-full bg-emerald-950/30 text-teal-100 font-bold text-[11px] border border-white/15">
+                  Terintegrasi Sistem PTM Kemkes
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">Sistem Integrasi Cegah PTM Kemkes</p>
+
+              <h1 className="text-4xl font-black tracking-tight leading-tight text-white drop-shadow-sm">
+                Pantau Gizi & Kesehatan <br />
+                <span className="text-yellow-300 underline decoration-amber-300 decoration-wavy decoration-2">Lebih Seru & Interaktif</span>
+              </h1>
+
+              <p className="text-sm text-teal-50 font-semibold leading-relaxed opacity-95 max-w-xl">
+                Lacak indeks massa tubuh, kalori makro piring makan, dan selesaikan tantangan sehat 7-hari dengan tampilan modern yang menyenangkan.
+              </p>
+
+              {/* Action buttons */}
+              <div className="pt-2 flex items-center gap-3">
+                <button 
+                  onClick={() => { setActiveTab('challenge'); setChallengeSubView('misi'); }}
+                  className="px-6 py-3 rounded-2xl bg-[#f1c40f] hover:bg-yellow-400 text-slate-950 font-black text-xs shadow-lg shadow-yellow-500/20 active:scale-95 transition flex items-center gap-2"
+                >
+                  <span>Mulai Challenge 7-Hari</span>
+                  <Zap className="w-4 h-4 text-slate-950 fill-current" />
+                </button>
+                <button 
+                  onClick={() => { setActiveTab('nutrisi'); setNutrisiSubView('charts'); }}
+                  className="px-6 py-3 rounded-2xl bg-white/15 hover:bg-white/25 text-white font-bold text-xs border border-white/25 backdrop-blur transition flex items-center gap-2"
+                >
+                  <span>Kalkulator IMT</span>
+                  <Activity className="w-4 h-4 text-teal-200" />
+                </button>
+              </div>
+
+            </div>
+
+            {/* Right side floating status cards */}
+            <div className="space-y-3 z-10 shrink-0 w-80">
+              <div className="bg-white/15 backdrop-blur-md border border-white/20 p-4 rounded-2xl text-left space-y-2 shadow-lg">
+                <div className="flex justify-between items-center text-xs font-black">
+                  <span className="text-yellow-300 uppercase tracking-wider">Status Pasien BPJS</span>
+                  <span className="text-emerald-200 text-[10px]">Aktif</span>
+                </div>
+                <p className="text-sm font-black text-white leading-tight">Sofia Kusuma (28 Thn)</p>
+                <p className="text-[11px] text-teal-100 font-semibold">Puskesmas Pembantu Ngabab</p>
+              </div>
+
+              <div className="bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 p-4 rounded-2xl text-left flex items-center justify-between shadow-md">
+                <div>
+                  <span className="text-[10px] font-black uppercase tracking-wider block">Streak Kesehatan</span>
+                  <span className="text-base font-black">🔥 5 Hari Berturut</span>
+                </div>
+                <div className="w-10 h-10 rounded-xl bg-slate-950 text-yellow-300 flex items-center justify-center text-lg font-black shadow">
+                  🎁
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Tab Selection Bar */}
-          <div className="flex items-center gap-1.5 bg-teal-50/60 p-1.5 rounded-2xl border border-teal-100/60">
+          {/* Organic SVG Wavy Contour at bottom of Hero section */}
+          <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-20">
+            <svg viewBox="0 0 1200 120" preserveAspectRatio="none" className="relative block w-full h-[36px] text-[#f0f8f7]">
+              <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V120H0V0C26.9,8.75,77.77,27.7,136,39.6,204,53.5,258.89,68,321.39,56.44Z" fill="currentColor"></path>
+            </svg>
+          </div>
+        </div>
+
+        {/* 
+          ----------------------------------------------------------------------
+          2. SINGLE CLEAN DESKTOP TAB NAVIGATION BAR
+          ----------------------------------------------------------------------
+        */}
+        <div className="bg-white p-2 rounded-2xl border border-teal-100/80 shadow-[0_4px_20px_rgba(45,141,129,0.05)] flex items-center justify-between">
+          <div className="flex items-center gap-2 flex-1">
             {[
               { id: 'dashboard', name: 'Beranda', icon: Home },
               { id: 'nutrisi', name: 'Nutrisi Harian', icon: Utensils },
@@ -211,10 +287,10 @@ export default function CekatApp2Page() {
                     if (tab.id === 'challenge') setChallengeSubView('home');
                     if (tab.id === 'riwayat') setRiwayatSubView('home');
                   }}
-                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition duration-200 ${
+                  className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-xs font-black transition duration-200 ${
                     isActive
                       ? 'bg-[#2d8d81] text-white shadow-md shadow-teal-700/20'
-                      : 'text-slate-650 hover:text-[#2d8d81] hover:bg-white'
+                      : 'text-slate-650 hover:text-[#2d8d81] hover:bg-teal-50/50'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
@@ -223,51 +299,22 @@ export default function CekatApp2Page() {
               );
             })}
           </div>
+        </div>
 
-          {/* User Account Widget */}
-          <div className="flex items-center space-x-3">
-            <div className="text-right">
-              <span className="text-xs font-black text-slate-900 block leading-tight">Sofia Kusuma</span>
-              <span className="text-[10px] text-[#2d8d81] font-bold block">Terhubung BPJS Kes</span>
-            </div>
-            <div className="w-10 h-10 rounded-2xl bg-teal-50 border-2 border-[#2d8d81] overflow-hidden shadow-sm">
-              <img src="/landing/doctor_elina_photo.jpg" alt="User Profile" className="w-full h-full object-cover" />
-            </div>
-          </div>
-        </header>
-
-        {/* Grid Layout: Main Left (8 Cols) + Widget Right (4 Cols) */}
-        <div className="grid grid-cols-12 gap-8">
+        {/* 
+          ----------------------------------------------------------------------
+          3. MAIN DESKTOP CONTENT GRID (8 Cols Left + 4 Cols Right Sidebar)
+          ----------------------------------------------------------------------
+        */}
+        <div className="grid grid-cols-12 gap-8 items-start">
           
-          {/* Main Desktop Dashboard Area */}
+          {/* Left Main Content */}
           <main className="col-span-8 space-y-6">
             
             {/* TAB 1: BERANDA */}
             {activeTab === 'dashboard' && (
               <div className="space-y-6 animate-fadeIn">
-                {/* Hero Greeting Banner - Clean Teal Hero gradient from Landing Page (#2d8d81 to #3fa89b), NO robot emotes */}
-                <div className="bg-gradient-to-r from-[#2d8d81] via-[#3fa89b] to-[#267a70] text-white rounded-3xl p-8 shadow-lg relative overflow-hidden flex items-center justify-between">
-                  <div className="space-y-3 z-10 max-w-xl">
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur border border-white/20 text-yellow-300 text-xs font-black">
-                      <Sparkles className="w-3.5 h-3.5 fill-current" />
-                      <span>Selamat Datang Kembali!</span>
-                    </div>
-                    <h2 className="text-3xl font-black tracking-tight leading-snug">Halo, Sofia Kusuma 👋</h2>
-                    <p className="text-sm text-teal-50 font-semibold leading-relaxed opacity-95">
-                      Pantau indeks kesehatan harian, porsi nutrisi seimbang, dan ikuti challenge mingguan untuk cegah Penyakit Tidak Menular.
-                    </p>
-                    <div className="pt-3 flex gap-3">
-                      <button onClick={() => { setActiveTab('challenge'); setChallengeSubView('misi'); }} className="px-6 py-3 bg-[#f1c40f] hover:bg-yellow-400 text-slate-950 font-black text-xs rounded-xl shadow-md transition active:scale-95">
-                        Mulai Challenge
-                      </button>
-                      <button onClick={() => { setActiveTab('nutrisi'); setNutrisiSubView('charts'); }} className="px-6 py-3 bg-white/15 hover:bg-white/25 text-white font-bold text-xs rounded-xl border border-white/20 transition">
-                        Cek IMT Harian
-                      </button>
-                    </div>
-                  </div>
-                  <div className="absolute -right-10 -bottom-10 w-56 h-56 bg-white/10 rounded-full blur-2xl"></div>
-                </div>
-
+                
                 {/* Cek Risiko Kesehatan Card */}
                 <div className="bg-white border border-teal-100/80 rounded-3xl p-6 shadow-sm space-y-4">
                   <div className="flex items-center justify-between">
@@ -279,7 +326,7 @@ export default function CekatApp2Page() {
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-red-50 border border-red-100 rounded-2xl p-4 flex items-center gap-4">
+                    <div className="bg-red-50 border border-red-100 rounded-2xl p-4 flex items-center gap-4 hover:shadow-md transition">
                       <div className="w-12 h-12 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center shrink-0">
                         <Heart className="w-6 h-6 fill-current" />
                       </div>
@@ -290,7 +337,7 @@ export default function CekatApp2Page() {
                       </div>
                     </div>
 
-                    <div className="bg-amber-50 border border-amber-100 rounded-2xl p-4 flex items-center gap-4">
+                    <div className="bg-amber-50 border border-amber-100 rounded-2xl p-4 flex items-center gap-4 hover:shadow-md transition">
                       <div className="w-12 h-12 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
                         <Activity className="w-6 h-6" />
                       </div>
@@ -325,13 +372,13 @@ export default function CekatApp2Page() {
                       </thead>
                       <tbody>
                         <tr className="bg-white text-slate-800">
-                          <td className="py-3 px-2 border-r border-slate-100">140/85 mmHg</td>
-                          <td className="py-3 px-2 border-r border-slate-100">85 mg/dL</td>
-                          <td className="py-3 px-2 border-r border-slate-100">60 bpm</td>
-                          <td className="py-3 px-2 border-r border-slate-100">83 cm</td>
-                          <td className="py-3 px-2 border-r border-slate-100">158 cm</td>
-                          <td className="py-3 px-2 border-r border-slate-100">60 kg</td>
-                          <td className="py-3 px-2 text-amber-700 font-extrabold">24,03 kg/m²</td>
+                          <td className="py-3.5 px-2 border-r border-slate-100">140/85 mmHg</td>
+                          <td className="py-3.5 px-2 border-r border-slate-100">85 mg/dL</td>
+                          <td className="py-3.5 px-2 border-r border-slate-100">60 bpm</td>
+                          <td className="py-3.5 px-2 border-r border-slate-100">83 cm</td>
+                          <td className="py-3.5 px-2 border-r border-slate-100">158 cm</td>
+                          <td className="py-3.5 px-2 border-r border-slate-100">60 kg</td>
+                          <td className="py-3.5 px-2 text-amber-700 font-extrabold">24,03 kg/m²</td>
                         </tr>
                       </tbody>
                     </table>
@@ -384,7 +431,7 @@ export default function CekatApp2Page() {
             {/* TAB 2: NUTRISI */}
             {activeTab === 'nutrisi' && (
               <div className="space-y-6 animate-fadeIn">
-                {/* Header subtabs */}
+                {/* Subtabs Header */}
                 <div className="flex bg-white p-2 rounded-2xl border border-teal-100/80 shadow-sm gap-2">
                   {[
                     { id: 'main', name: 'Nutrisi Harian' },
@@ -759,17 +806,6 @@ export default function CekatApp2Page() {
               <div className="grid grid-cols-2 gap-2 text-left bg-slate-50 p-3 rounded-2xl text-xs font-bold text-slate-700">
                 <div>Usia: <span className="font-black text-slate-900">28 Thn</span></div>
                 <div>BB/TB: <span className="font-black text-slate-900">60kg/158cm</span></div>
-              </div>
-            </div>
-
-            {/* Streak Counter Widget */}
-            <div className="bg-gradient-to-r from-amber-50 to-yellow-100 border border-amber-200 rounded-3xl p-6 shadow-sm flex items-center justify-between">
-              <div>
-                <span className="text-xs font-black text-amber-800 uppercase block">Streak Harian</span>
-                <h4 className="text-xl font-black text-amber-700 mt-0.5">🔥 5 Hari Berturut</h4>
-              </div>
-              <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-2xl shadow-sm">
-                🎁
               </div>
             </div>
 
