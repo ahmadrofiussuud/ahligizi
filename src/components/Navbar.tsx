@@ -38,27 +38,32 @@ export default function Navbar() {
     window.location.href = '/';
   };
 
+  // Hide top site Navbar on /app2 so App 2 uses its own clean header & layout
+  if (pathname === '/app2') {
+    return null;
+  }
+
   const isLandingPage = pathname === '/';
 
-  // Navigation links shown when logged in
+  // Navigation links shown when logged in (Clean professional labels without raw emojis)
   const loggedInLinks = [
-    { name: 'Pantry AI 🍳', href: '/pantry-ai' },
-    { name: 'CEKAT Station 🏥', href: '/station' },
-    { name: 'Scan Gizi 📸', href: '/scan' },
-    { name: 'Dashboard 📊', href: '/dashboard' },
-    { name: 'CEKAT App 📱', href: '/app' },
-    { name: 'CEKAT App 2 🌟', href: '/app2' },
-    { name: 'Gamifikasi 🏆', href: '/gamification' },
-    { name: 'Konsultasi 🩺', href: '/consultation' },
-    { name: 'Artikel 📚', href: '/articles' },
+    { name: 'Pantry AI', href: '/pantry-ai' },
+    { name: 'CEKAT Station', href: '/station' },
+    { name: 'Scan Gizi', href: '/scan' },
+    { name: 'Dashboard', href: '/dashboard' },
+    { name: 'CEKAT App', href: '/app' },
+    { name: 'CEKAT App 2', href: '/app2' },
+    { name: 'Gamifikasi', href: '/gamification' },
+    { name: 'Konsultasi', href: '/consultation' },
+    { name: 'Artikel', href: '/articles' },
   ];
 
   // Professional marketing navigation links shown on landing page (logged out)
   const landingLinks = [
-    { name: 'Pantry AI 🍳', href: '/pantry-ai' },
-    { name: 'CEKAT Station 🏥', href: '/station' },
-    { name: 'CEKAT App 📱', href: '/app' },
-    { name: 'CEKAT App 2 🌟', href: '/app2' },
+    { name: 'Pantry AI', href: '/pantry-ai' },
+    { name: 'CEKAT Station', href: '/station' },
+    { name: 'CEKAT App', href: '/app' },
+    { name: 'CEKAT App 2', href: '/app2' },
     { name: 'Fitur Utama', href: '#features-section' },
     { name: 'Cara Kerja', href: '#how-it-works-section' },
     { name: 'Tim Medis', href: '#doctors-section' },

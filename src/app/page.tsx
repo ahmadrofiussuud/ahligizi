@@ -18,13 +18,6 @@ import {
 export default function LandingPage() {
   const router = useRouter();
 
-  // Auto redirect to dashboard if already logged in
-  useEffect(() => {
-    const isLoggedIn = localStorage.getItem('nutrisnap_logged_in') === 'true';
-    if (isLoggedIn) {
-      router.push('/dashboard');
-    }
-  }, [router]);
 
   // Selected Service state to trigger offset background card visibility (Customized to Emerald green)
   const [selectedService, setSelectedService] = useState<number>(0);
