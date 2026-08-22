@@ -1108,7 +1108,7 @@ function CekatAppContent() {
                         )}
 
                         {/* Floating help bot inline */}
-                        <div className="absolute bottom-[80px] right-3 z-30 flex flex-col items-end pointer-events-none">
+                        <div className="hidden absolute bottom-[80px] right-3 z-30 flex-col items-end pointer-events-none">
                           <div className="bg-amber-400 text-slate-900 font-black text-[9px] rounded-full px-2 py-0.5 border border-white shadow-md animate-pulse mb-1">💡</div>
                           <div className="w-10 h-10 rounded-full bg-[#10b981] border-2 border-white shadow-lg flex items-center justify-center text-xl animate-bounce">🤖</div>
                         </div>

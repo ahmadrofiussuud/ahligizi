@@ -29,7 +29,8 @@ import {
   Star,
   Award,
   ShieldCheck,
-  Stethoscope
+  Stethoscope,
+  Plus
 } from 'lucide-react';
 
 export default function CekatApp2Page() {
@@ -66,9 +67,9 @@ export default function CekatApp2Page() {
 
   // Interactive Focus Targets (Mingguan)
   const [focusTargets, setFocusTargets] = useState([
-    { id: 1, text: 'Kurangi konsumsi gula tambahan hari ini', done: true },
+    { id: 1, text: 'Batasi konsumsi gula tambahan harian', done: true },
     { id: 2, text: 'Jalan cepat 30 menit / Senam ringan', done: true },
-    { id: 3, text: 'Makan sayur & buah 2x porsi', done: false }
+    { id: 3, text: 'Makan sayur & buah 2x porsi harian', done: false }
   ]);
   const toggleFocus = (id: number) => {
     setFocusTargets(focusTargets.map(t => t.id === id ? { ...t, done: !t.done } : t));
@@ -76,7 +77,7 @@ export default function CekatApp2Page() {
 
   // Interactive 7-Day Challenge Targets
   const [misiTargets, setMisiTargets] = useState([
-    { id: 1, text: 'Minum air 2 Liter (8 Gelas)', done: true },
+    { id: 1, text: 'Minum air sesuai target (2L / 8 gelas)', done: true },
     { id: 2, text: 'Aktivitas fisik 30 menit', done: true },
     { id: 3, text: 'Makan sayur 2x sehari', done: true },
     { id: 4, text: 'Kurangi minuman manis & boba', done: true },
@@ -163,7 +164,7 @@ export default function CekatApp2Page() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#f4f8f6] text-slate-800 font-sans antialiased selection:bg-emerald-100 selection:text-emerald-900">
+    <div className="min-h-screen bg-[#f0f8f7] text-slate-800 font-sans antialiased selection:bg-teal-100 selection:text-teal-900">
       
       {/* 
         ========================================================================
@@ -172,16 +173,16 @@ export default function CekatApp2Page() {
       */}
       <div className="hidden md:block max-w-7xl mx-auto px-6 py-8">
         
-        {/* Desktop Header Navigation Bar */}
-        <header className="bg-white rounded-3xl p-4 px-8 border border-emerald-100/80 shadow-[0_4px_25px_rgba(0,0,0,0.03)] flex items-center justify-between mb-8">
+        {/* Desktop Header Navigation Bar - Styled with Landing Page Teal (#2d8d81 / #3fa89b) */}
+        <header className="bg-white rounded-3xl p-4 px-8 border border-teal-100/80 shadow-[0_4px_25px_rgba(45,141,129,0.06)] flex items-center justify-between mb-8">
           <div className="flex items-center space-x-3">
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#00875A] to-[#10b981] text-white flex items-center justify-center shadow-md shadow-emerald-600/20">
+            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#2d8d81] to-[#3fa89b] text-white flex items-center justify-center shadow-md shadow-teal-700/20">
               <Leaf className="w-6 h-6" />
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="text-xl font-black text-slate-900 tracking-tight">CEKAT App 2</h1>
-                <span className="bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 font-black text-[9.5px] px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
+                <span className="bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 font-black text-[9.5px] px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
                   Modern & Fun
                 </span>
               </div>
@@ -190,7 +191,7 @@ export default function CekatApp2Page() {
           </div>
 
           {/* Tab Selection Bar */}
-          <div className="flex items-center gap-1.5 bg-slate-50 p-1.5 rounded-2xl border border-slate-100">
+          <div className="flex items-center gap-1.5 bg-teal-50/60 p-1.5 rounded-2xl border border-teal-100/60">
             {[
               { id: 'dashboard', name: 'Beranda', icon: Home },
               { id: 'nutrisi', name: 'Nutrisi Harian', icon: Utensils },
@@ -212,8 +213,8 @@ export default function CekatApp2Page() {
                   }}
                   className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black transition duration-200 ${
                     isActive
-                      ? 'bg-[#00875A] text-white shadow-md shadow-emerald-700/20'
-                      : 'text-slate-600 hover:text-emerald-700 hover:bg-white'
+                      ? 'bg-[#2d8d81] text-white shadow-md shadow-teal-700/20'
+                      : 'text-slate-650 hover:text-[#2d8d81] hover:bg-white'
                   }`}
                 >
                   <Icon className="w-4 h-4" />
@@ -227,9 +228,9 @@ export default function CekatApp2Page() {
           <div className="flex items-center space-x-3">
             <div className="text-right">
               <span className="text-xs font-black text-slate-900 block leading-tight">Sofia Kusuma</span>
-              <span className="text-[10px] text-emerald-600 font-bold block">Terhubung BPJS Kes</span>
+              <span className="text-[10px] text-[#2d8d81] font-bold block">Terhubung BPJS Kes</span>
             </div>
-            <div className="w-10 h-10 rounded-2xl bg-emerald-100 border-2 border-emerald-500 overflow-hidden shadow-sm">
+            <div className="w-10 h-10 rounded-2xl bg-teal-50 border-2 border-[#2d8d81] overflow-hidden shadow-sm">
               <img src="/landing/doctor_elina_photo.jpg" alt="User Profile" className="w-full h-full object-cover" />
             </div>
           </div>
@@ -244,37 +245,34 @@ export default function CekatApp2Page() {
             {/* TAB 1: BERANDA */}
             {activeTab === 'dashboard' && (
               <div className="space-y-6 animate-fadeIn">
-                {/* Hero Greeting Banner */}
-                <div className="bg-gradient-to-r from-[#00875A] via-[#059669] to-[#2d8d81] text-white rounded-3xl p-7 shadow-lg relative overflow-hidden flex items-center justify-between">
-                  <div className="space-y-3 z-10 max-w-lg">
+                {/* Hero Greeting Banner - Clean Teal Hero gradient from Landing Page (#2d8d81 to #3fa89b), NO robot emotes */}
+                <div className="bg-gradient-to-r from-[#2d8d81] via-[#3fa89b] to-[#267a70] text-white rounded-3xl p-8 shadow-lg relative overflow-hidden flex items-center justify-between">
+                  <div className="space-y-3 z-10 max-w-xl">
                     <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur border border-white/20 text-yellow-300 text-xs font-black">
                       <Sparkles className="w-3.5 h-3.5 fill-current" />
                       <span>Selamat Datang Kembali!</span>
                     </div>
                     <h2 className="text-3xl font-black tracking-tight leading-snug">Halo, Sofia Kusuma 👋</h2>
-                    <p className="text-sm text-emerald-100 font-semibold leading-relaxed">
+                    <p className="text-sm text-teal-50 font-semibold leading-relaxed opacity-95">
                       Pantau indeks kesehatan harian, porsi nutrisi seimbang, dan ikuti challenge mingguan untuk cegah Penyakit Tidak Menular.
                     </p>
-                    <div className="pt-2 flex gap-3">
-                      <button onClick={() => { setActiveTab('challenge'); setChallengeSubView('misi'); }} className="px-5 py-2.5 bg-[#f1c40f] hover:bg-yellow-400 text-slate-950 font-black text-xs rounded-xl shadow-md transition active:scale-95">
+                    <div className="pt-3 flex gap-3">
+                      <button onClick={() => { setActiveTab('challenge'); setChallengeSubView('misi'); }} className="px-6 py-3 bg-[#f1c40f] hover:bg-yellow-400 text-slate-950 font-black text-xs rounded-xl shadow-md transition active:scale-95">
                         Mulai Challenge
                       </button>
-                      <button onClick={() => { setActiveTab('nutrisi'); setNutrisiSubView('charts'); }} className="px-5 py-2.5 bg-white/15 hover:bg-white/25 text-white font-bold text-xs rounded-xl border border-white/20 transition">
+                      <button onClick={() => { setActiveTab('nutrisi'); setNutrisiSubView('charts'); }} className="px-6 py-3 bg-white/15 hover:bg-white/25 text-white font-bold text-xs rounded-xl border border-white/20 transition">
                         Cek IMT Harian
                       </button>
                     </div>
                   </div>
-                  <div className="w-32 h-32 shrink-0 bg-white/10 backdrop-blur rounded-full flex items-center justify-center text-6xl shadow-inner border border-white/20 z-10">
-                    🤖
-                  </div>
-                  <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-white/10 rounded-full blur-2xl"></div>
+                  <div className="absolute -right-10 -bottom-10 w-56 h-56 bg-white/10 rounded-full blur-2xl"></div>
                 </div>
 
                 {/* Cek Risiko Kesehatan Card */}
-                <div className="bg-white border border-emerald-100/80 rounded-3xl p-6 shadow-sm space-y-4">
+                <div className="bg-white border border-teal-100/80 rounded-3xl p-6 shadow-sm space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600 block">Hasil Screening Terbaru</span>
+                      <span className="text-[10px] font-black uppercase tracking-widest text-[#2d8d81] block">Hasil Screening Terbaru</span>
                       <h3 className="text-lg font-black text-slate-900">Cek Risiko Kesehatan PTM</h3>
                     </div>
                     <span className="text-xs font-extrabold text-slate-400">30 Agustus 2026</span>
@@ -306,22 +304,22 @@ export default function CekatApp2Page() {
                 </div>
 
                 {/* Ringkasan CEKAT Station Metrics Table */}
-                <div className="bg-white border border-emerald-100/80 rounded-3xl p-6 shadow-sm space-y-4">
+                <div className="bg-white border border-teal-100/80 rounded-3xl p-6 shadow-sm space-y-4">
                   <div className="flex items-center justify-between">
                     <h3 className="text-base font-black text-slate-900">Data Pengukuran CEKAT Station</h3>
-                    <span className="text-xs font-black text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-100">Puskesmas Pembantu Ngabab</span>
+                    <span className="text-xs font-black text-[#2d8d81] bg-teal-50 px-3 py-1 rounded-full border border-teal-100">Puskesmas Pembantu Ngabab</span>
                   </div>
 
                   <div className="border border-slate-150 rounded-2xl overflow-hidden shadow-inner">
                     <table className="w-full text-center text-xs font-black border-collapse">
                       <thead>
-                        <tr className="bg-[#00875A] text-white">
-                          <th className="py-3 px-2 border-r border-emerald-600/40">TD</th>
-                          <th className="py-3 px-2 border-r border-emerald-600/40">Gula Darah</th>
-                          <th className="py-3 px-2 border-r border-emerald-600/40">HR</th>
-                          <th className="py-3 px-2 border-r border-emerald-600/40">LP</th>
-                          <th className="py-3 px-2 border-r border-emerald-600/40">TB</th>
-                          <th className="py-3 px-2 border-r border-emerald-600/40">BB</th>
+                        <tr className="bg-[#2d8d81] text-white">
+                          <th className="py-3 px-2 border-r border-teal-600/40">TD</th>
+                          <th className="py-3 px-2 border-r border-teal-600/40">Gula Darah</th>
+                          <th className="py-3 px-2 border-r border-teal-600/40">HR</th>
+                          <th className="py-3 px-2 border-r border-teal-600/40">LP</th>
+                          <th className="py-3 px-2 border-r border-teal-600/40">TB</th>
+                          <th className="py-3 px-2 border-r border-teal-600/40">BB</th>
                           <th className="py-3 px-2">IMT</th>
                         </tr>
                       </thead>
@@ -343,17 +341,17 @@ export default function CekatApp2Page() {
                 {/* Articles & Webinars Grid */}
                 <div className="grid grid-cols-2 gap-6">
                   {/* Edukasi Articles */}
-                  <div className="bg-white border border-emerald-100/80 rounded-3xl p-6 shadow-sm space-y-4">
+                  <div className="bg-white border border-teal-100/80 rounded-3xl p-6 shadow-sm space-y-4">
                     <div className="flex items-center justify-between">
                       <h4 className="text-sm font-black text-slate-900">Artikel & Edukasi Gizi</h4>
-                      <button onClick={() => { setActiveTab('dashboard'); setDashboardSubView('edukasi'); }} className="text-xs font-bold text-emerald-600 hover:underline">Lihat Semua</button>
+                      <button onClick={() => { setActiveTab('dashboard'); setDashboardSubView('edukasi'); }} className="text-xs font-bold text-[#2d8d81] hover:underline">Lihat Semua</button>
                     </div>
                     <div className="space-y-3">
                       {articlesList.slice(0, 2).map(art => (
-                        <div key={art.id} onClick={() => { setSelectedArticle(art); setDashboardSubView('article_detail'); }} className="flex gap-3 p-2 bg-slate-50 border border-slate-100 rounded-2xl cursor-pointer hover:bg-emerald-50/50 transition">
+                        <div key={art.id} onClick={() => { setSelectedArticle(art); setDashboardSubView('article_detail'); }} className="flex gap-3 p-2 bg-slate-50 border border-slate-100 rounded-2xl cursor-pointer hover:bg-teal-50/50 transition">
                           <img src={art.image} alt={art.title} className="w-16 h-16 rounded-xl object-cover shrink-0" />
                           <div className="min-w-0 flex-1">
-                            <span className="text-[9px] font-black text-emerald-700 uppercase tracking-wider">{art.category}</span>
+                            <span className="text-[9px] font-black text-[#2d8d81] uppercase tracking-wider">{art.category}</span>
                             <h5 className="text-xs font-black text-slate-800 leading-snug line-clamp-2 mt-0.5">{art.title}</h5>
                           </div>
                         </div>
@@ -362,10 +360,10 @@ export default function CekatApp2Page() {
                   </div>
 
                   {/* Upcoming Webinars */}
-                  <div className="bg-white border border-emerald-100/80 rounded-3xl p-6 shadow-sm space-y-4">
+                  <div className="bg-white border border-teal-100/80 rounded-3xl p-6 shadow-sm space-y-4">
                     <div className="flex items-center justify-between">
                       <h4 className="text-sm font-black text-slate-900">Webinar Kesehatan</h4>
-                      <button onClick={() => { setActiveTab('dashboard'); setDashboardSubView('webinar_list'); }} className="text-xs font-bold text-emerald-600 hover:underline">Lihat Semua</button>
+                      <button onClick={() => { setActiveTab('dashboard'); setDashboardSubView('webinar_list'); }} className="text-xs font-bold text-[#2d8d81] hover:underline">Lihat Semua</button>
                     </div>
                     <div className="space-y-3">
                       {webinarsList.slice(0, 2).map(web => (
@@ -387,7 +385,7 @@ export default function CekatApp2Page() {
             {activeTab === 'nutrisi' && (
               <div className="space-y-6 animate-fadeIn">
                 {/* Header subtabs */}
-                <div className="flex bg-white p-2 rounded-2xl border border-emerald-100/80 shadow-sm gap-2">
+                <div className="flex bg-white p-2 rounded-2xl border border-teal-100/80 shadow-sm gap-2">
                   {[
                     { id: 'main', name: 'Nutrisi Harian' },
                     { id: 'charts', name: 'Statistik & Kalkulator IMT' },
@@ -398,7 +396,7 @@ export default function CekatApp2Page() {
                       onClick={() => setNutrisiSubView(sub.id as any)}
                       className={`flex-1 py-2.5 rounded-xl text-xs font-black transition ${
                         nutrisiSubView === sub.id
-                          ? 'bg-[#00875A] text-white shadow-sm'
+                          ? 'bg-[#2d8d81] text-white shadow-sm'
                           : 'text-slate-600 hover:bg-slate-50'
                       }`}
                     >
@@ -410,13 +408,13 @@ export default function CekatApp2Page() {
                 {nutrisiSubView === 'main' && (
                   <div className="space-y-6">
                     {/* Daily Calorie & Macro Stacked Pills */}
-                    <div className="bg-white border border-emerald-100/80 rounded-3xl p-6 shadow-sm space-y-4">
+                    <div className="bg-white border border-teal-100/80 rounded-3xl p-6 shadow-sm space-y-4">
                       <div className="flex items-center justify-between">
                         <div>
-                          <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600 block">Target Nutrisi Harian</span>
+                          <span className="text-[10px] font-black uppercase tracking-widest text-[#2d8d81] block">Target Nutrisi Harian</span>
                           <h3 className="text-xl font-black text-slate-900">2.100 kkal / Hari</h3>
                         </div>
-                        <button onClick={() => setNutrisiSubView('charts')} className="px-4 py-2 bg-emerald-50 text-emerald-700 border border-emerald-100 text-xs font-black rounded-xl hover:bg-emerald-100 transition">
+                        <button onClick={() => setNutrisiSubView('charts')} className="px-4 py-2 bg-teal-50 text-[#2d8d81] border border-teal-100 text-xs font-black rounded-xl hover:bg-teal-100 transition">
                           Detail Macro
                         </button>
                       </div>
@@ -425,15 +423,15 @@ export default function CekatApp2Page() {
                       <div className="space-y-2">
                         <div className="flex justify-between text-xs font-black text-slate-700">
                           <span>Progress Asupan Kalori</span>
-                          <span className="text-emerald-700">1.450 / 2.100 kkal (69%)</span>
+                          <span className="text-[#2d8d81]">1.450 / 2.100 kkal (69%)</span>
                         </div>
                         <div className="w-full h-4 bg-slate-100 rounded-full overflow-hidden flex p-0.5 border border-slate-200">
-                          <div className="h-full bg-emerald-500 rounded-l-full" style={{ width: '45%' }} title="Karbohidrat 45%"></div>
+                          <div className="h-full bg-[#3fa89b] rounded-l-full" style={{ width: '45%' }} title="Karbohidrat 45%"></div>
                           <div className="h-full bg-amber-400" style={{ width: '15%' }} title="Protein 15%"></div>
                           <div className="h-full bg-purple-500 rounded-r-full" style={{ width: '9%' }} title="Lemak 9%"></div>
                         </div>
                         <div className="flex gap-4 text-[11px] font-bold text-slate-600 pt-2">
-                          <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span> Karbo (220g)</span>
+                          <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-[#3fa89b] inline-block"></span> Karbo (220g)</span>
                           <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-amber-400 inline-block"></span> Protein (100g)</span>
                           <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-purple-500 inline-block"></span> Lemak (60g)</span>
                         </div>
@@ -441,14 +439,14 @@ export default function CekatApp2Page() {
                     </div>
 
                     {/* Meal Scan Prompt Card */}
-                    <div className="bg-gradient-to-r from-amber-500 via-yellow-500 to-emerald-600 text-slate-950 rounded-3xl p-6 shadow-md flex items-center justify-between">
+                    <div className="bg-gradient-to-r from-[#2d8d81] via-[#3fa89b] to-amber-500 text-white rounded-3xl p-6 shadow-md flex items-center justify-between">
                       <div className="space-y-2">
-                        <span className="bg-slate-950 text-yellow-300 font-black text-[10px] px-3 py-1 rounded-full uppercase tracking-wider inline-block">Fitur AI Scan</span>
+                        <span className="bg-white/20 backdrop-blur text-yellow-300 font-black text-[10px] px-3 py-1 rounded-full uppercase tracking-wider inline-block">Fitur AI Scan</span>
                         <h4 className="text-xl font-black text-white leading-snug">Foto Makananmu & Hitung Kalori Otomatis</h4>
-                        <p className="text-xs text-slate-900 font-bold">Deteksi jenis makanan, karbo, protein, dan lemak secara instan.</p>
+                        <p className="text-xs text-teal-50 font-bold">Deteksi jenis makanan, karbo, protein, dan lemak secara instan.</p>
                       </div>
-                      <button onClick={() => alert('Membuka kamera Scan Gizi AI...')} className="px-5 py-3 bg-slate-950 hover:bg-slate-900 text-white font-black text-xs rounded-xl shadow-lg transition active:scale-95 shrink-0 flex items-center gap-2">
-                        <Camera className="w-4 h-4 text-yellow-400" />
+                      <button onClick={() => alert('Membuka kamera Scan Gizi AI...')} className="px-5 py-3 bg-white hover:bg-slate-50 text-[#2d8d81] font-black text-xs rounded-xl shadow-lg transition active:scale-95 shrink-0 flex items-center gap-2">
+                        <Camera className="w-4 h-4 text-[#2d8d81]" />
                         <span>Mulai Scan</span>
                       </button>
                     </div>
@@ -456,7 +454,7 @@ export default function CekatApp2Page() {
                 )}
 
                 {nutrisiSubView === 'charts' && (
-                  <div className="bg-white border border-emerald-100/80 rounded-3xl p-6 shadow-sm space-y-6">
+                  <div className="bg-white border border-teal-100/80 rounded-3xl p-6 shadow-sm space-y-6">
                     <div className="border-b border-slate-100 pb-4">
                       <h3 className="text-lg font-black text-slate-900">Live Kalkulator IMT & Status Gizi</h3>
                       <p className="text-xs text-slate-500 font-semibold mt-1">Masukkan berat dan tinggi badan Anda untuk menghitung Indeks Massa Tubuh secara real-time.</p>
@@ -470,7 +468,7 @@ export default function CekatApp2Page() {
                             type="number" 
                             value={weightInput}
                             onChange={(e) => { setWeightInput(e.target.value); calculateBmi(); }}
-                            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 font-black text-slate-800 focus:outline-none focus:border-emerald-600"
+                            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 font-black text-slate-800 focus:outline-none focus:border-[#2d8d81]"
                           />
                         </div>
 
@@ -481,21 +479,21 @@ export default function CekatApp2Page() {
                             step="0.01"
                             value={heightInput}
                             onChange={(e) => { setHeightInput(e.target.value); calculateBmi(); }}
-                            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 font-black text-slate-800 focus:outline-none focus:border-emerald-600"
+                            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 font-black text-slate-800 focus:outline-none focus:border-[#2d8d81]"
                           />
                         </div>
 
-                        <button onClick={calculateBmi} className="w-full py-3 bg-[#00875A] text-white font-black text-xs rounded-xl shadow-md hover:bg-emerald-700 transition">
+                        <button onClick={calculateBmi} className="w-full py-3 bg-[#2d8d81] text-white font-black text-xs rounded-xl shadow-md hover:bg-[#267a70] transition">
                           Hitung Ulang IMT
                         </button>
                       </div>
 
                       {/* Display Result Gauge */}
-                      <div className="bg-emerald-50/50 border border-emerald-100 rounded-3xl p-6 text-center space-y-3">
-                        <span className="text-[10px] font-black text-emerald-700 uppercase tracking-widest block">Hasil Kalkulasi IMT</span>
+                      <div className="bg-teal-50/50 border border-teal-100 rounded-3xl p-6 text-center space-y-3">
+                        <span className="text-[10px] font-black text-[#2d8d81] uppercase tracking-widest block">Hasil Kalkulasi IMT</span>
                         <div className="text-4xl font-black text-slate-900">{bmiValue} <span className="text-xs text-slate-500 font-bold">kg/m²</span></div>
                         <div className={`inline-block px-4 py-1 rounded-full text-xs font-black uppercase tracking-wider ${
-                          bmiCategory === 'Normal' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
+                          bmiCategory === 'Normal' ? 'bg-teal-100 text-[#2d8d81]' : 'bg-amber-100 text-amber-800'
                         }`}>
                           Kategori: {bmiCategory}
                         </div>
@@ -505,9 +503,9 @@ export default function CekatApp2Page() {
                 )}
 
                 {nutrisiSubView === 'pantry' && (
-                  <div className="bg-white border border-emerald-100/80 rounded-3xl p-6 shadow-sm space-y-6">
+                  <div className="bg-white border border-teal-100/80 rounded-3xl p-6 shadow-sm space-y-6">
                     <div>
-                      <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600 block">Kulkas AI (Pantry)</span>
+                      <span className="text-[10px] font-black uppercase tracking-widest text-[#2d8d81] block">Kulkas AI (Pantry)</span>
                       <h3 className="text-lg font-black text-slate-900">Rekomendasi Resep dari Bahan yang Ada</h3>
                     </div>
 
@@ -523,7 +521,7 @@ export default function CekatApp2Page() {
                             }}
                             className={`px-4 py-2 rounded-full text-xs font-black transition border ${
                               isSelected 
-                                ? 'bg-[#00875A] text-white border-[#00875A]' 
+                                ? 'bg-[#2d8d81] text-white border-[#2d8d81]' 
                                 : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
                             }`}
                           >
@@ -533,12 +531,12 @@ export default function CekatApp2Page() {
                       })}
                     </div>
 
-                    <div className="p-4 bg-emerald-50 border border-emerald-100 rounded-2xl flex items-center justify-between">
+                    <div className="p-4 bg-teal-50 border border-teal-100 rounded-2xl flex items-center justify-between">
                       <div className="space-y-1">
                         <h4 className="text-sm font-black text-slate-900">Salad Tumis Ayam Telur Sehat</h4>
                         <p className="text-xs text-slate-600 font-semibold">Tinggi protein hewani & serat untuk pencegahan PTM.</p>
                       </div>
-                      <span className="text-xs font-black text-emerald-700 bg-white px-3 py-1 rounded-xl shadow-sm">307 kkal</span>
+                      <span className="text-xs font-black text-[#2d8d81] bg-white px-3 py-1 rounded-xl shadow-sm">307 kkal</span>
                     </div>
                   </div>
                 )}
@@ -549,28 +547,25 @@ export default function CekatApp2Page() {
             {activeTab === 'challenge' && (
               <div className="space-y-6 animate-fadeIn">
                 {/* 7-Day Healthy Challenge Card */}
-                <div className="bg-gradient-to-br from-[#00875A] via-[#059669] to-[#047857] text-white rounded-3xl p-6 shadow-md flex items-center justify-between">
+                <div className="bg-gradient-to-br from-[#2d8d81] via-[#3fa89b] to-[#267a70] text-white rounded-3xl p-6 shadow-md flex items-center justify-between">
                   <div className="space-y-3 max-w-md">
                     <span className="bg-yellow-400 text-slate-950 font-black text-[10px] px-3 py-1 rounded-full uppercase tracking-wider inline-block">Challenge Mingguan</span>
                     <h3 className="text-2xl font-black tracking-tight leading-tight">7-Day Healthy Challenge</h3>
-                    <div className="text-2xl font-extrabold text-[#cbd52d]">
-                      {misiTargets.filter(t => t.done).length}/7 <span className="text-xs text-emerald-100 font-semibold">hari selesai</span>
+                    <div className="text-2xl font-extrabold text-yellow-300">
+                      {misiTargets.filter(t => t.done).length}/7 <span className="text-xs text-teal-100 font-semibold">hari selesai</span>
                     </div>
                     {/* Dynamic Progress Bar */}
-                    <div className="w-full h-3 bg-emerald-950/40 rounded-full overflow-hidden border border-white/10">
-                      <div className="h-full bg-[#cbd52d] rounded-full transition-all duration-300" style={{ width: `${(misiTargets.filter(t => t.done).length / 7) * 100}%` }}></div>
+                    <div className="w-full h-3 bg-teal-950/40 rounded-full overflow-hidden border border-white/10">
+                      <div className="h-full bg-yellow-300 rounded-full transition-all duration-300" style={{ width: `${(misiTargets.filter(t => t.done).length / 7) * 100}%` }}></div>
                     </div>
-                  </div>
-                  <div className="w-24 h-24 rounded-3xl bg-white/10 backdrop-blur flex items-center justify-center text-5xl border border-white/20">
-                    🤖
                   </div>
                 </div>
 
                 {/* Misi Hari Ini Interactive Checklist */}
-                <div className="bg-white border border-emerald-100/80 rounded-3xl p-6 shadow-sm space-y-4">
+                <div className="bg-white border border-teal-100/80 rounded-3xl p-6 shadow-sm space-y-4">
                   <div className="flex items-center justify-between pb-2 border-b border-slate-100">
                     <h3 className="text-base font-black text-slate-900">Misi Hari Ini (Klik untuk Centang)</h3>
-                    <span className="text-xs font-black text-emerald-700">Target Minggu Ini</span>
+                    <span className="text-xs font-black text-[#2d8d81]">Target Minggu Ini</span>
                   </div>
 
                   <div className="grid grid-cols-2 gap-3">
@@ -580,7 +575,7 @@ export default function CekatApp2Page() {
                         onClick={() => toggleMisi(target.id)}
                         className={`p-3.5 rounded-2xl border flex items-center justify-between cursor-pointer transition active:scale-98 ${
                           target.done 
-                            ? 'bg-emerald-50/60 border-emerald-200 text-slate-800' 
+                            ? 'bg-teal-50/60 border-teal-200 text-slate-800' 
                             : 'bg-slate-50 border-slate-100 hover:bg-slate-100 text-slate-600'
                         }`}
                       >
@@ -588,7 +583,7 @@ export default function CekatApp2Page() {
                           {target.text}
                         </span>
                         <div className={`w-5 h-5 rounded-full border flex items-center justify-center text-[10px] font-black shrink-0 ${
-                          target.done ? 'bg-emerald-600 border-emerald-600 text-white' : 'border-slate-300 bg-white'
+                          target.done ? 'bg-[#2d8d81] border-[#2d8d81] text-white' : 'border-slate-300 bg-white'
                         }`}>
                           {target.done && '✓'}
                         </div>
@@ -598,10 +593,10 @@ export default function CekatApp2Page() {
                 </div>
 
                 {/* 3x3 Mini Games Grid */}
-                <div className="bg-white border border-emerald-100/80 rounded-3xl p-6 shadow-sm space-y-4">
+                <div className="bg-white border border-teal-100/80 rounded-3xl p-6 shadow-sm space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <span className="text-[10px] font-black uppercase tracking-widest text-emerald-600 block">Edukasi Interaktif</span>
+                      <span className="text-[10px] font-black uppercase tracking-widest text-[#2d8d81] block">Edukasi Interaktif</span>
                       <h3 className="text-base font-black text-slate-900">Mini Games Kesehatan</h3>
                     </div>
                     <span className="text-xs font-black text-slate-400">9 Permainan Edukatif</span>
@@ -622,7 +617,7 @@ export default function CekatApp2Page() {
                       <div 
                         key={game.id}
                         onClick={() => alert(`Membuka permainan edukasi: ${game.name}...`)}
-                        className="bg-slate-50 border border-slate-100 rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-2 cursor-pointer hover:bg-emerald-50/50 hover:border-emerald-200 active:scale-95 transition"
+                        className="bg-slate-50 border border-slate-100 rounded-2xl p-4 flex flex-col items-center justify-center text-center gap-2 cursor-pointer hover:bg-teal-50/50 hover:border-teal-200 active:scale-95 transition"
                       >
                         <div className="w-12 h-12 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-2xl shadow-sm">
                           {game.icon}
@@ -638,13 +633,13 @@ export default function CekatApp2Page() {
             {/* TAB 4: RIWAYAT & WRAPPED */}
             {activeTab === 'riwayat' && (
               <div className="space-y-6 animate-fadeIn">
-                <div className="flex bg-white p-2 rounded-2xl border border-emerald-100/80 shadow-sm gap-2">
-                  <button onClick={() => setRiwayatSubView('home')} className={`flex-1 py-2.5 rounded-xl text-xs font-black transition ${riwayatSubView === 'home' ? 'bg-[#00875A] text-white shadow-sm' : 'text-slate-600'}`}>Timeline Riwayat</button>
-                  <button onClick={() => setRiwayatSubView('wrapped')} className={`flex-1 py-2.5 rounded-xl text-xs font-black transition ${riwayatSubView === 'wrapped' ? 'bg-[#00875A] text-white shadow-sm' : 'text-slate-600'}`}>CEKAT Wrapped 2026 🏆</button>
+                <div className="flex bg-white p-2 rounded-2xl border border-teal-100/80 shadow-sm gap-2">
+                  <button onClick={() => setRiwayatSubView('home')} className={`flex-1 py-2.5 rounded-xl text-xs font-black transition ${riwayatSubView === 'home' ? 'bg-[#2d8d81] text-white shadow-sm' : 'text-slate-600'}`}>Timeline Riwayat</button>
+                  <button onClick={() => setRiwayatSubView('wrapped')} className={`flex-1 py-2.5 rounded-xl text-xs font-black transition ${riwayatSubView === 'wrapped' ? 'bg-[#2d8d81] text-white shadow-sm' : 'text-slate-600'}`}>CEKAT Wrapped 2026 🏆</button>
                 </div>
 
                 {riwayatSubView === 'home' && (
-                  <div className="bg-white border border-emerald-100/80 rounded-3xl p-6 shadow-sm space-y-6">
+                  <div className="bg-white border border-teal-100/80 rounded-3xl p-6 shadow-sm space-y-6">
                     {/* Category pills */}
                     <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
                       {['Semua', 'CEKAT Station', 'Nutrisi', 'My health progress', 'Riwayat Konsultasi'].map(cat => (
@@ -652,7 +647,7 @@ export default function CekatApp2Page() {
                           key={cat}
                           onClick={() => setRiwayatCategory(cat)}
                           className={`px-4 py-2 rounded-full text-xs font-black transition shrink-0 border ${
-                            riwayatCategory === cat ? 'bg-[#cbd52d] border-[#cbd52d] text-slate-950' : 'bg-slate-50 border-slate-200 text-slate-600'
+                            riwayatCategory === cat ? 'bg-amber-400 border-amber-400 text-slate-950' : 'bg-slate-50 border-slate-200 text-slate-600'
                           }`}
                         >
                           {cat}
@@ -678,7 +673,7 @@ export default function CekatApp2Page() {
                             <span className="text-xs font-black text-slate-900 block">Nutrisi & Scan Makanan: Salad Ayam</span>
                             <span className="text-[10px] text-slate-450 font-semibold block">30 Agustus 2026 08.30</span>
                           </div>
-                          <span className="text-xs font-black text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full">307 kkal (GOOD)</span>
+                          <span className="text-xs font-black text-[#2d8d81] bg-teal-50 px-3 py-1 rounded-full">307 kkal (GOOD)</span>
                         </div>
                       )}
                     </div>
@@ -686,11 +681,11 @@ export default function CekatApp2Page() {
                 )}
 
                 {riwayatSubView === 'wrapped' && (
-                  <div className="bg-gradient-to-br from-yellow-500 via-[#10b981] to-emerald-800 text-white rounded-3xl p-8 shadow-xl space-y-6">
+                  <div className="bg-gradient-to-br from-yellow-500 via-[#3fa89b] to-[#2d8d81] text-white rounded-3xl p-8 shadow-xl space-y-6">
                     <div className="text-center space-y-2">
                       <span className="text-xs font-black uppercase tracking-widest text-yellow-200">Pencapaian Tahunan Anda</span>
                       <h2 className="text-4xl font-black tracking-tight">CEKAT Wrapped 2026</h2>
-                      <p className="text-sm text-emerald-100 font-semibold">Your 2026 Nutrition Journey</p>
+                      <p className="text-sm text-teal-50 font-semibold">Your 2026 Nutrition Journey</p>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4 text-slate-900">
@@ -708,14 +703,14 @@ export default function CekatApp2Page() {
                       <div className="bg-white rounded-2xl p-4 text-center space-y-2 shadow-md flex flex-col justify-between">
                         <div>
                           <span className="text-[10px] font-black text-slate-400 block uppercase">Skor Nutrisi Harian</span>
-                          <h4 className="text-2xl font-black text-[#00875A] mt-1">BALANCED (80/100)</h4>
+                          <h4 className="text-2xl font-black text-[#2d8d81] mt-1">BALANCED (80/100)</h4>
                         </div>
                         {/* Animated Balance SVG scale */}
                         <div className="w-20 h-20 mx-auto">
-                          <svg viewBox="0 0 100 100" className="w-full h-full text-emerald-600">
+                          <svg viewBox="0 0 100 100" className="w-full h-full text-[#2d8d81]">
                             <line x1="10" y1="80" x2="90" y2="80" stroke="#475569" strokeWidth="4" />
                             <polygon points="50,80 40,95 60,95" fill="#64748b" />
-                            <line x1="20" y1="55" x2="80" y2="55" stroke="#10b981" strokeWidth="3" />
+                            <line x1="20" y1="55" x2="80" y2="55" stroke="#3fa89b" strokeWidth="3" />
                             <circle cx="50" cy="35" r="6" fill="#f87171" />
                             <circle cx="30" cy="37" r="3" fill="#ef4444" />
                             <circle cx="70" cy="37" r="3" fill="#f97316" />
@@ -730,8 +725,8 @@ export default function CekatApp2Page() {
 
             {/* TAB 5: PROFIL */}
             {activeTab === 'profil' && (
-              <div className="bg-white border border-emerald-100/80 rounded-3xl p-8 shadow-sm space-y-6 text-center">
-                <div className="w-24 h-24 rounded-full border-4 border-emerald-500 mx-auto overflow-hidden shadow-md">
+              <div className="bg-white border border-teal-100/80 rounded-3xl p-8 shadow-sm space-y-6 text-center">
+                <div className="w-24 h-24 rounded-full border-4 border-[#2d8d81] mx-auto overflow-hidden shadow-md">
                   <img src="/landing/doctor_elina_photo.jpg" alt="Sofia Profile" className="w-full h-full object-cover" />
                 </div>
                 <div>
@@ -739,7 +734,7 @@ export default function CekatApp2Page() {
                   <span className="text-xs text-slate-400 font-bold block mt-0.5">NIK: 3174XXXXXXXX0002 • Terhubung BPJS Kes</span>
                 </div>
 
-                <div className="p-4 bg-emerald-50 rounded-2xl text-left text-xs font-bold text-slate-700 space-y-2">
+                <div className="p-4 bg-teal-50 rounded-2xl text-left text-xs font-bold text-slate-700 space-y-2">
                   <p>✓ Status Fasilitas Kesehatan: Puskesmas Pembantu Ngabab</p>
                   <p>✓ Program Pendampingan: Pencegahan Risiko Hipertensi & Stunting</p>
                 </div>
@@ -752,13 +747,13 @@ export default function CekatApp2Page() {
           <aside className="col-span-4 space-y-6">
             
             {/* User Profile Card */}
-            <div className="bg-white border border-emerald-100/80 rounded-3xl p-6 shadow-sm text-center space-y-4">
-              <div className="w-20 h-20 rounded-full border-2 border-emerald-500 mx-auto overflow-hidden shadow">
+            <div className="bg-white border border-teal-100/80 rounded-3xl p-6 shadow-sm text-center space-y-4">
+              <div className="w-20 h-20 rounded-full border-2 border-[#2d8d81] mx-auto overflow-hidden shadow">
                 <img src="/landing/doctor_elina_photo.jpg" alt="Sofia Profile" className="w-full h-full object-cover" />
               </div>
               <div>
                 <h3 className="text-base font-black text-slate-900">Sofia Kusuma</h3>
-                <p className="text-xs text-emerald-600 font-bold mt-0.5">Pasien Terintegrasi Kemkes</p>
+                <p className="text-xs text-[#2d8d81] font-bold mt-0.5">Pasien Terintegrasi Kemkes</p>
               </div>
 
               <div className="grid grid-cols-2 gap-2 text-left bg-slate-50 p-3 rounded-2xl text-xs font-bold text-slate-700">
@@ -779,9 +774,9 @@ export default function CekatApp2Page() {
             </div>
 
             {/* Doctor Consultation Link */}
-            <div className="bg-white border border-emerald-100/80 rounded-3xl p-6 shadow-sm space-y-3">
+            <div className="bg-white border border-teal-100/80 rounded-3xl p-6 shadow-sm space-y-3">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xl">
+                <div className="w-10 h-10 rounded-2xl bg-teal-100 text-[#2d8d81] flex items-center justify-center font-bold text-xl">
                   🩺
                 </div>
                 <div>
@@ -789,7 +784,7 @@ export default function CekatApp2Page() {
                   <span className="text-[10px] text-slate-400 font-bold block">Dokter Spesialis Gizi</span>
                 </div>
               </div>
-              <button onClick={() => alert('Membuka sesi konsultasi medis...')} className="w-full py-2.5 bg-[#00875A] text-white font-black text-xs rounded-xl hover:bg-emerald-700 transition shadow-sm">
+              <button onClick={() => alert('Membuka sesi konsultasi medis...')} className="w-full py-2.5 bg-[#2d8d81] text-white font-black text-xs rounded-xl hover:bg-[#267a70] transition shadow-sm">
                 Hubungi Dokter
               </button>
             </div>
@@ -800,21 +795,21 @@ export default function CekatApp2Page() {
 
       {/* 
         ========================================================================
-        MOBILE SUITE (Visible on Mobile screens < md)
+        MOBILE SUITE (Visible on Mobile screens < md) - FULL CONTENT FOR ALL TABS
         ========================================================================
       */}
-      <div className="block md:hidden w-full max-w-md mx-auto min-h-screen bg-[#f4f8f6] pb-24 relative select-none">
+      <div className="block md:hidden w-full max-w-md mx-auto min-h-screen bg-[#f0f8f7] pb-24 relative select-none">
         
         {/* Mobile Header Bar */}
-        <div className="bg-[#00875A] text-white px-5 pt-8 pb-4 flex items-center justify-between sticky top-0 z-30 shadow-md">
+        <div className="bg-[#2d8d81] text-white px-5 pt-8 pb-4 flex items-center justify-between sticky top-0 z-30 shadow-md">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 rounded-xl bg-white text-[#00875A] flex items-center justify-center shadow-sm">
+            <div className="w-8 h-8 rounded-xl bg-white text-[#2d8d81] flex items-center justify-center shadow-sm">
               <Leaf className="w-5 h-5" />
             </div>
             <span className="text-base font-black tracking-tight">CEKAT App 2</span>
           </div>
           <div className="flex items-center space-x-2">
-            <span className="text-[9.5px] bg-yellow-400 text-slate-950 font-black px-2 py-0.5 rounded-full uppercase">Modern & Fun</span>
+            <span className="text-[9.5px] bg-amber-400 text-slate-950 font-black px-2 py-0.5 rounded-full uppercase">Modern & Fun</span>
             <div className="w-8 h-8 rounded-full bg-white/20 border border-white/30 overflow-hidden">
               <img src="/landing/doctor_elina_photo.jpg" alt="Profile" className="w-full h-full object-cover" />
             </div>
@@ -823,48 +818,76 @@ export default function CekatApp2Page() {
 
         {/* Mobile Main Body Content */}
         <div className="p-4 space-y-5">
+          
+          {/* TAB 1: BERANDA MOBILE */}
           {activeTab === 'dashboard' && (
             <div className="space-y-4 animate-fadeIn">
-              <div className="bg-gradient-to-r from-[#00875A] to-[#059669] text-white rounded-3xl p-5 shadow-sm space-y-2">
+              {/* Hero Banner */}
+              <div className="bg-gradient-to-r from-[#2d8d81] to-[#3fa89b] text-white rounded-3xl p-5 shadow-sm space-y-2">
                 <span className="text-[10px] font-black uppercase text-yellow-300 block">Halo, Sofia Kusuma 👋</span>
                 <h2 className="text-xl font-black leading-tight">Pantau Gizi & Cegah PTM Hari Ini</h2>
+                <p className="text-xs text-teal-50 font-semibold leading-relaxed">
+                  Cek risiko kesehatan, porsi makro seimbang, dan ikuti challenge harian.
+                </p>
               </div>
 
-              <div className="bg-white border border-emerald-100/80 rounded-3xl p-4 shadow-sm space-y-3">
+              {/* Cek Risiko Kesehatan Card */}
+              <div className="bg-white border border-teal-100/80 rounded-3xl p-4 shadow-sm space-y-3">
                 <div className="flex justify-between items-center">
                   <h4 className="text-xs font-black text-slate-900">Hasil Cek Risiko Kesehatan</h4>
                   <span className="text-[9px] font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded">Tinggi</span>
                 </div>
-                <p className="text-[10px] text-slate-500 font-bold">Risiko Hipertensi • Tensi: 140/85 mmHg</p>
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'nutrisi' && (
-            <div className="bg-white border border-emerald-100/80 rounded-3xl p-5 shadow-sm space-y-4 animate-fadeIn">
-              <h3 className="text-sm font-black text-slate-900">Target Nutrisi Harian: 2.100 kkal</h3>
-              <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden flex">
-                <div className="h-full bg-emerald-500" style={{ width: '45%' }}></div>
-                <div className="h-full bg-amber-400" style={{ width: '15%' }}></div>
-                <div className="h-full bg-purple-500" style={{ width: '9%' }}></div>
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'challenge' && (
-            <div className="space-y-4 animate-fadeIn">
-              <div className="bg-gradient-to-r from-[#00875A] to-[#047857] text-white rounded-3xl p-5 shadow-sm space-y-3">
-                <h3 className="text-base font-black">7-Day Healthy Challenge</h3>
-                <div className="text-xl font-extrabold text-[#cbd52d]">{misiTargets.filter(t => t.done).length}/7 hari selesai</div>
+                <div className="p-3 bg-red-50 border border-red-100 rounded-2xl flex items-center gap-3">
+                  <Heart className="w-5 h-5 text-red-600 fill-current shrink-0" />
+                  <div>
+                    <p className="text-xs font-black text-slate-800">Risiko Hipertensi</p>
+                    <p className="text-[10px] text-slate-500 font-bold">Tekanan Darah: 140/85 mmHg</p>
+                  </div>
+                </div>
               </div>
 
-              <div className="bg-white border border-emerald-100/80 rounded-3xl p-4 shadow-sm space-y-3">
-                <h4 className="text-xs font-black text-slate-900">Misi Hari Ini</h4>
+              {/* Data Pengukuran CEKAT Station Table Mobile */}
+              <div className="bg-white border border-teal-100/80 rounded-3xl p-4 shadow-sm space-y-3">
+                <h4 className="text-xs font-black text-slate-900">Data Pengukuran CEKAT Station</h4>
+                <div className="border border-slate-150 rounded-xl overflow-x-auto shadow-inner">
+                  <table className="w-full text-center text-[10px] font-black border-collapse min-w-[320px]">
+                    <thead>
+                      <tr className="bg-[#2d8d81] text-white">
+                        <th className="py-2 px-1 border-r border-teal-600/40">TD</th>
+                        <th className="py-2 px-1 border-r border-teal-600/40">Gula</th>
+                        <th className="py-2 px-1 border-r border-teal-600/40">HR</th>
+                        <th className="py-2 px-1 border-r border-teal-600/40">LP</th>
+                        <th className="py-2 px-1 border-r border-teal-600/40">TB</th>
+                        <th className="py-2 px-1 border-r border-teal-600/40">BB</th>
+                        <th className="py-2 px-1">IMT</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr className="bg-white text-slate-800">
+                        <td className="py-2 px-1 border-r border-slate-100">140/85</td>
+                        <td className="py-2 px-1 border-r border-slate-100">85</td>
+                        <td className="py-2 px-1 border-r border-slate-100">60</td>
+                        <td className="py-2 px-1 border-r border-slate-100">83</td>
+                        <td className="py-2 px-1 border-r border-slate-100">158</td>
+                        <td className="py-2 px-1 border-r border-slate-100">60</td>
+                        <td className="py-2 px-1 text-amber-700 font-extrabold">24,03</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Edukasi Articles */}
+              <div className="bg-white border border-teal-100/80 rounded-3xl p-4 shadow-sm space-y-3">
+                <h4 className="text-xs font-black text-slate-900">Artikel Edukasi Gizi</h4>
                 <div className="space-y-2">
-                  {misiTargets.map(target => (
-                    <div key={target.id} onClick={() => toggleMisi(target.id)} className="flex justify-between items-center text-xs font-bold p-2 bg-slate-50 rounded-xl cursor-pointer">
-                      <span className={target.done ? 'line-through text-slate-400' : 'text-slate-800'}>{target.text}</span>
-                      <span className={target.done ? 'text-emerald-600 font-black' : 'text-slate-300'}>{target.done ? '✓' : '○'}</span>
+                  {articlesList.slice(0, 2).map(art => (
+                    <div key={art.id} onClick={() => alert(`Membuka artikel: ${art.title}`)} className="flex gap-3 p-2 bg-slate-50 border border-slate-100 rounded-xl cursor-pointer">
+                      <img src={art.image} alt={art.title} className="w-14 h-14 rounded-lg object-cover shrink-0" />
+                      <div className="min-w-0 flex-1">
+                        <span className="text-[8px] font-black text-[#2d8d81] uppercase">{art.category}</span>
+                        <h5 className="text-[11px] font-black text-slate-800 leading-tight line-clamp-2 mt-0.5">{art.title}</h5>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -872,23 +895,186 @@ export default function CekatApp2Page() {
             </div>
           )}
 
-          {activeTab === 'riwayat' && (
-            <div className="bg-white border border-emerald-100/80 rounded-3xl p-5 shadow-sm space-y-4 animate-fadeIn">
-              <h3 className="text-sm font-black text-slate-900">Riwayat Kesehatan & CEKAT Wrapped</h3>
-              <p className="text-xs text-slate-500 font-semibold">Skor Tahunan: BALANCED (80/100)</p>
+          {/* TAB 2: NUTRISI MOBILE */}
+          {activeTab === 'nutrisi' && (
+            <div className="space-y-4 animate-fadeIn">
+              {/* Subtab Toggle */}
+              <div className="flex bg-white p-1.5 rounded-2xl border border-teal-100/80 shadow-sm gap-1 text-[11px] font-black">
+                <button onClick={() => setNutrisiSubView('main')} className={`flex-1 py-2 rounded-xl transition ${nutrisiSubView === 'main' ? 'bg-[#2d8d81] text-white shadow-sm' : 'text-slate-600'}`}>Harian</button>
+                <button onClick={() => setNutrisiSubView('charts')} className={`flex-1 py-2 rounded-xl transition ${nutrisiSubView === 'charts' ? 'bg-[#2d8d81] text-white shadow-sm' : 'text-slate-600'}`}>IMT Calc</button>
+                <button onClick={() => setNutrisiSubView('pantry')} className={`flex-1 py-2 rounded-xl transition ${nutrisiSubView === 'pantry' ? 'bg-[#2d8d81] text-white shadow-sm' : 'text-slate-600'}`}>Kulkas AI</button>
+              </div>
+
+              {nutrisiSubView === 'main' && (
+                <div className="space-y-4">
+                  <div className="bg-white border border-teal-100/80 rounded-3xl p-4 shadow-sm space-y-3">
+                    <h3 className="text-sm font-black text-slate-900">Target Nutrisi Harian: 2.100 kkal</h3>
+                    <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden flex">
+                      <div className="h-full bg-[#3fa89b]" style={{ width: '45%' }}></div>
+                      <div className="h-full bg-amber-400" style={{ width: '15%' }}></div>
+                      <div className="h-full bg-purple-500" style={{ width: '9%' }}></div>
+                    </div>
+                    <div className="flex justify-between text-[10px] font-bold text-slate-600 pt-1">
+                      <span>Karbo: 220g</span>
+                      <span>Protein: 100g</span>
+                      <span>Lemak: 60g</span>
+                    </div>
+                  </div>
+
+                  <div className="bg-gradient-to-r from-[#2d8d81] to-[#3fa89b] text-white rounded-3xl p-5 shadow-sm space-y-2">
+                    <h4 className="text-sm font-black">AI Meal Scanner 📸</h4>
+                    <p className="text-[11px] text-teal-50">Foto piring makan untuk hitung kalori makro otomatis.</p>
+                    <button onClick={() => alert('Membuka kamera AI Meal Scanner...')} className="w-full py-2 bg-white text-[#2d8d81] font-black text-xs rounded-xl shadow mt-2">
+                      Scan Foto Makanan
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {nutrisiSubView === 'charts' && (
+                <div className="bg-white border border-teal-100/80 rounded-3xl p-4 shadow-sm space-y-4">
+                  <h3 className="text-sm font-black text-slate-900">Kalkulator IMT Real-time</h3>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="text-[11px] font-black text-slate-700 block mb-1">Berat Badan (kg)</label>
+                      <input type="number" value={weightInput} onChange={(e) => { setWeightInput(e.target.value); calculateBmi(); }} className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-black" />
+                    </div>
+                    <div>
+                      <label className="text-[11px] font-black text-slate-700 block mb-1">Tinggi Badan (m)</label>
+                      <input type="number" step="0.01" value={heightInput} onChange={(e) => { setHeightInput(e.target.value); calculateBmi(); }} className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-black" />
+                    </div>
+                    <div className="p-3 bg-teal-50 rounded-2xl text-center">
+                      <span className="text-[10px] font-black text-[#2d8d81] uppercase block">Hasil IMT</span>
+                      <span className="text-2xl font-black text-slate-900">{bmiValue} kg/m²</span>
+                      <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 block mt-1">Kategori: {bmiCategory}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {nutrisiSubView === 'pantry' && (
+                <div className="bg-white border border-teal-100/80 rounded-3xl p-4 shadow-sm space-y-3">
+                  <h3 className="text-sm font-black text-slate-900">Kulkas AI (Pantry)</h3>
+                  <div className="flex flex-wrap gap-1.5">
+                    {pantryTagsList.map(tag => (
+                      <button key={tag} onClick={() => setSelectedPantryTags(selectedPantryTags.includes(tag) ? selectedPantryTags.filter(t => t !== tag) : [...selectedPantryTags, tag])} className={`px-3 py-1.5 rounded-full text-[10px] font-black border ${selectedPantryTags.includes(tag) ? 'bg-[#2d8d81] text-white border-[#2d8d81]' : 'bg-slate-50 text-slate-600 border-slate-200'}`}>
+                        {selectedPantryTags.includes(tag) ? '✓ ' : '+ '}{tag}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
-          {activeTab === 'profil' && (
-            <div className="bg-white border border-emerald-100/80 rounded-3xl p-6 shadow-sm text-center space-y-3 animate-fadeIn">
-              <h3 className="text-base font-black text-slate-900">Sofia Kusuma</h3>
-              <p className="text-xs text-slate-400 font-bold">Terintegrasi BPJS Kes</p>
+          {/* TAB 3: CHALLENGE MOBILE */}
+          {activeTab === 'challenge' && (
+            <div className="space-y-4 animate-fadeIn">
+              {/* Subtab Toggle */}
+              <div className="flex bg-white p-1.5 rounded-2xl border border-teal-100/80 shadow-sm gap-1 text-[11px] font-black">
+                <button onClick={() => setChallengeSubView('home')} className={`flex-1 py-2 rounded-xl transition ${challengeSubView === 'home' ? 'bg-[#2d8d81] text-white shadow-sm' : 'text-slate-600'}`}>Langkah Sehat</button>
+                <button onClick={() => setChallengeSubView('misi')} className={`flex-1 py-2 rounded-xl transition ${challengeSubView === 'misi' ? 'bg-[#2d8d81] text-white shadow-sm' : 'text-slate-600'}`}>Checklist Misi</button>
+                <button onClick={() => setChallengeSubView('games')} className={`flex-1 py-2 rounded-xl transition ${challengeSubView === 'games' ? 'bg-[#2d8d81] text-white shadow-sm' : 'text-slate-600'}`}>Mini Games</button>
+              </div>
+
+              {challengeSubView !== 'games' ? (
+                <div className="space-y-4">
+                  <div className="bg-gradient-to-r from-[#2d8d81] to-[#3fa89b] text-white rounded-3xl p-5 shadow-sm space-y-3">
+                    <h3 className="text-base font-black">7-Day Healthy Challenge</h3>
+                    <div className="text-xl font-extrabold text-yellow-300">{misiTargets.filter(t => t.done).length}/7 hari selesai</div>
+                    <div className="w-full h-2.5 bg-teal-950/40 rounded-full overflow-hidden">
+                      <div className="h-full bg-yellow-300 rounded-full transition-all duration-300" style={{ width: `${(misiTargets.filter(t => t.done).length / 7) * 100}%` }}></div>
+                    </div>
+                  </div>
+
+                  <div className="bg-white border border-teal-100/80 rounded-3xl p-4 shadow-sm space-y-3">
+                    <h4 className="text-xs font-black text-slate-900">Misi Hari Ini (Klik untuk Centang)</h4>
+                    <div className="space-y-2">
+                      {misiTargets.map(target => (
+                        <div key={target.id} onClick={() => toggleMisi(target.id)} className="flex justify-between items-center text-xs font-bold p-2.5 bg-slate-50 rounded-xl cursor-pointer">
+                          <span className={target.done ? 'line-through text-slate-400' : 'text-slate-800'}>{target.text}</span>
+                          <span className={target.done ? 'text-[#2d8d81] font-black' : 'text-slate-300'}>{target.done ? '✓' : '○'}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="bg-white border border-teal-100/80 rounded-3xl p-4 shadow-sm space-y-3">
+                  <h4 className="text-xs font-black text-slate-900">9 Mini Games Kesehatan</h4>
+                  <div className="grid grid-cols-3 gap-2">
+                    {[
+                      { id: 'tebak', name: 'Tebak Gambar', icon: '👩‍💻' },
+                      { id: 'fruity', name: 'Tutty Fruity', icon: '🍉' },
+                      { id: 'uno', name: 'Health Uno', icon: '🃏' },
+                      { id: 'boom', name: 'Healthy Boom', icon: '💣' },
+                      { id: 'sudoku', name: 'Sudoku Fruity', icon: '🧩' },
+                      { id: 'xox', name: 'Health XOX', icon: '🎮' },
+                      { id: 'search', name: 'Search Health', icon: '🔍' },
+                      { id: 'puzzle', name: 'Puzzle Nutritone', icon: '🧩' },
+                      { id: 'monopoly', name: 'Monopoli', icon: '🎲' }
+                    ].map(g => (
+                      <div key={g.id} onClick={() => alert(`Membuka game: ${g.name}`)} className="p-2.5 bg-slate-50 border border-slate-100 rounded-xl text-center flex flex-col items-center gap-1 cursor-pointer">
+                        <span className="text-xl">{g.icon}</span>
+                        <span className="text-[9px] font-black text-slate-800">{g.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           )}
+
+          {/* TAB 4: RIWAYAT MOBILE */}
+          {activeTab === 'riwayat' && (
+            <div className="space-y-4 animate-fadeIn">
+              <div className="flex bg-white p-1.5 rounded-2xl border border-teal-100/80 shadow-sm gap-1 text-[11px] font-black">
+                <button onClick={() => setRiwayatSubView('home')} className={`flex-1 py-2 rounded-xl transition ${riwayatSubView === 'home' ? 'bg-[#2d8d81] text-white shadow-sm' : 'text-slate-600'}`}>Timeline</button>
+                <button onClick={() => setRiwayatSubView('wrapped')} className={`flex-1 py-2 rounded-xl transition ${riwayatSubView === 'wrapped' ? 'bg-[#2d8d81] text-white shadow-sm' : 'text-slate-600'}`}>Wrapped 2026 🏆</button>
+              </div>
+
+              {riwayatSubView === 'home' ? (
+                <div className="bg-white border border-teal-100/80 rounded-3xl p-4 shadow-sm space-y-3">
+                  <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+                    {['Semua', 'CEKAT Station', 'Nutrisi'].map(cat => (
+                      <button key={cat} onClick={() => setRiwayatCategory(cat)} className={`px-3 py-1 rounded-full text-[10px] font-black border ${riwayatCategory === cat ? 'bg-amber-400 border-amber-400 text-slate-950' : 'bg-slate-50 text-slate-600'}`}>
+                        {cat}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="p-3 bg-slate-50 rounded-2xl text-xs space-y-1">
+                    <span className="font-black text-slate-900 block">Hasil CEKAT Station - Puskesmas Ngabab</span>
+                    <span className="text-[10px] text-amber-700 font-bold block">140/85 mmHg • Gula 85 mg/dL • IMT 24.03 kg/m²</span>
+                  </div>
+                </div>
+              ) : (
+                <div className="bg-gradient-to-br from-yellow-500 via-[#3fa89b] to-[#2d8d81] text-white rounded-3xl p-6 shadow-md space-y-4 text-center">
+                  <h3 className="text-xl font-black">CEKAT Wrapped 2026</h3>
+                  <p className="text-xs text-teal-50 font-bold">Skor Nutrisi Harian: BALANCED (80/100)</p>
+                  <div className="bg-white rounded-2xl p-3 text-slate-900 text-xs font-bold text-left space-y-1">
+                    <span className="font-black text-[#2d8d81] block">Top Makanan Favorit:</span>
+                    <p>1. Salad Sayur • 2. Nasi Campur • 3. Nasi Goreng</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* TAB 5: PROFIL MOBILE */}
+          {activeTab === 'profil' && (
+            <div className="bg-white border border-teal-100/80 rounded-3xl p-6 shadow-sm text-center space-y-3 animate-fadeIn">
+              <div className="w-20 h-20 rounded-full border-2 border-[#2d8d81] mx-auto overflow-hidden shadow">
+                <img src="/landing/doctor_elina_photo.jpg" alt="Sofia Profile" className="w-full h-full object-cover" />
+              </div>
+              <h3 className="text-base font-black text-slate-900">Sofia Kusuma</h3>
+              <p className="text-xs text-[#2d8d81] font-bold">Terintegrasi BPJS Kesehatan</p>
+            </div>
+          )}
+
         </div>
 
         {/* Floating Bottom Navigation Bar for Mobile */}
-        <nav className="fixed bottom-0 left-0 w-full bg-[#00875A] text-white py-2 px-4 flex justify-around items-center z-40 border-t border-emerald-700 shadow-lg">
+        <nav className="fixed bottom-0 left-0 w-full bg-[#2d8d81] text-white py-2 px-4 flex justify-around items-center z-40 border-t border-teal-700 shadow-lg">
           {[
             { id: 'dashboard', label: 'Beranda', icon: Home },
             { id: 'nutrisi', label: 'Nutrisi', icon: Utensils },
@@ -903,7 +1089,7 @@ export default function CekatApp2Page() {
                 key={item.id}
                 onClick={() => setActiveTab(item.id as any)}
                 className={`flex flex-col items-center py-1 px-3 rounded-xl transition ${
-                  isActive ? 'bg-white/20 text-yellow-300 font-black scale-105' : 'text-emerald-100 font-medium opacity-80'
+                  isActive ? 'bg-white/20 text-yellow-300 font-black scale-105' : 'text-teal-100 font-medium opacity-80'
                 }`}
               >
                 <Icon className="w-5 h-5" />
