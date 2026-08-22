@@ -55,8 +55,137 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import DashboardPage from '../dashboard/page';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 
-export default function CekatApp() {
+// Data artikel static
+const articlesData = [
+  {
+    id: 'hipertensi',
+    title: 'Kenali Hipertensi, Cegah Komplikasi',
+    category: 'Hipertensi',
+    description: 'Pahami penyebab, gejala, dan cara mencegah hipertensi.',
+    readTime: '4 menit baca',
+    date: '21 Agustus 2026',
+    author: 'dr. Andi Wijaya',
+    points: 10,
+    content: `
+Hipertensi, atau tekanan darah tinggi, adalah kondisi medis serius yang secara signifikan meningkatkan risiko penyakit jantung, otak, ginjal, dan penyakit lainnya. Sering disebut sebagai **"silent killer"** karena banyak orang tidak menyadari mereka mengalaminya.
+
+### Penyebab & Faktor Risiko
+* **Konsumsi garam berlebih**: Mengikat air dalam darah dan menaikkan tekanan.
+* **Kurang gerak**: Meningkatkan beban kerja jantung.
+* **Faktor usia & genetik**: Penurunan elastisitas pembuluh darah.
+* **Stres**: Memicu hormon adrenalin yang meningkatkan detak jantung.
+
+### Gejala Utama
+Sebagian besar penderita tidak menunjukkan gejala apa pun. Namun, jika tekanan darah sangat tinggi, gejala yang mungkin timbul meliputi:
+1. Sakit kepala bagian belakang yang parah.
+2. Rasa lelah berlebih dan sesak napas.
+3. Gangguan penglihatan (kabur).
+4. Nyeri dada atau jantung berdebar kencang.
+
+### Langkah Pencegahan & Pengendalian
+* **Diet Rendah Garam**: Maksimal 1 sendok teh garam per hari.
+* **Aktivitas Fisik Rutin**: Minimal 30 menit jalan cepat atau bersepeda setiap hari.
+* **Kelola Stres**: Meditasi, tidur cukup 7-8 jam per hari.
+* **Cek Tekanan Darah**: Lakukan pemeriksaan berkala minimal sebulan sekali.
+    `,
+    svgId: 'hipertensi'
+  },
+  {
+    id: 'stunting',
+    title: 'Cegah Stunting Sejak Dini',
+    category: 'Stunting',
+    description: 'Nutrisi, pola asuh, dan sanitasi untuk tumbuh kembang optimal.',
+    readTime: '5 menit baca',
+    date: '20 Agustus 2026',
+    author: 'Aulia Rahman, M.Gizi',
+    points: 10,
+    content: `
+Stunting adalah gangguan pertumbuhan dan perkembangan anak akibat kekurangan gizi kronis dan infeksi berulang, yang ditandai dengan panjang atau tinggi badannya berada di bawah standar usia.
+
+### Mengapa 1.000 Hari Pertama Sangat Penting?
+Periode emas tumbuh kembang anak dimulai sejak konsepsi (dalam kandungan) hingga anak berusia 2 tahun. Kekurangan gizi pada masa ini berakibat permanen pada kecerdasan anak.
+
+### Penyebab Utama Stunting
+* **Gizi buruk pada ibu**: Kekurangan zat besi saat hamil menyebabkan bayi lahir dengan berat rendah.
+* **Pola asuh kurang optimal**: Kurangnya pengetahuan ibu tentang pemberian ASI dan MPASI.
+* **Sanitasi buruk**: Memicu infeksi bakteri pencernaan berulang pada balita.
+
+### Langkah Nyata Mencegah Stunting
+1. **Penuhi Nutrisi Bumil**: Ibu hamil wajib mengonsumsi suplemen zat besi dan makanan berprotein tinggi.
+2. **ASI Eksklusif**: Berikan hanya ASI selama 6 bulan pertama bayi lahir.
+3. **Pemberian MPASI Berkualitas**: Berikan makanan pendamping kaya protein hewani (telur, ikan, daging) mulai usia 6 bulan.
+4. **Air Bersih & Sanitasi**: Selalu cuci tangan pakai sabun dan gunakan air bersih untuk sanitasi rumah tangga.
+    `,
+    svgId: 'stunting'
+  }
+];
+
+// Helper to render article SVGs
+const renderArticleSvg = (svgId: string) => {
+  if (svgId === 'hipertensi') {
+    return (
+      <svg viewBox="0 0 120 90" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+        <defs>
+          <radialGradient id="bgHtDetail" cx="50%" cy="50%" r="70%">
+            <stop offset="0%" stopColor="#fff1f2"/>
+            <stop offset="100%" stopColor="#fecdd3"/>
+          </radialGradient>
+        </defs>
+        <rect width="120" height="90" fill="url(#bgHtDetail)"/>
+        <rect x="6" y="18" width="42" height="28" rx="7" fill="#1e40af" opacity="0.92"/>
+        <rect x="9" y="21" width="36" height="19" rx="4" fill="#dbeafe"/>
+        <text x="27" y="31" textAnchor="middle" fontSize="8" fill="#1e3a8a" fontWeight="bold">140</text>
+        <text x="27" y="37" textAnchor="middle" fontSize="5.5" fill="#3b82f6">/ 85 mmHg</text>
+        <rect x="12" y="43" width="30" height="5" rx="2.5" fill="#ef4444" opacity="0.3"/>
+        <rect x="12" y="43" width="22" height="5" rx="2.5" fill="#ef4444"/>
+        <ellipse cx="27" cy="60" rx="18" ry="8" fill="#fca5a5" stroke="#f87171" strokeWidth="1.2"/>
+        <rect x="15" y="55" width="24" height="10" rx="5" fill="#fca5a5" stroke="#f87171" strokeWidth="1"/>
+        <line x1="27" y1="46" x2="27" y2="52" stroke="#94a3b8" strokeWidth="1.5" strokeLinecap="round"/>
+        <polyline points="55,45 65,45 68,36 73,56 77,30 81,50 85,40 89,50 95,45 115,45" fill="none" stroke="#ef4444" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <circle cx="100" cy="24" r="12" fill="#f59e0b" stroke="white" strokeWidth="2"/>
+        <text x="100" y="29" textAnchor="middle" fontSize="14" fill="white" fontWeight="bold">!</text>
+        <path d="M68 76 C63 70,52 65,52 58 C52 54,55 52,58.5 54.5 C62 56.5,68 62,68 62 C68 62,74 56.5,77.5 54.5 C81 52,84 54,84 58 C84 65,73 70,68 76Z" fill="#ef4444" stroke="#b91c1c" strokeWidth="0.8"/>
+      </svg>
+    );
+  }
+  if (svgId === 'stunting') {
+    return (
+      <svg viewBox="0 0 120 90" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+        <defs>
+          <radialGradient id="bgStDetail" cx="50%" cy="50%" r="70%">
+            <stop offset="0%" stopColor="#fffbeb"/>
+            <stop offset="100%" stopColor="#fef3c7"/>
+          </radialGradient>
+        </defs>
+        <rect width="120" height="90" fill="url(#bgStDetail)"/>
+        <circle cx="38" cy="18" r="10" fill="#fbbf24" stroke="#f59e0b" strokeWidth="1"/>
+        <path d="M38 28 Q28 35 26 55 L50 55 Q48 35 38 28Z" fill="#f97316"/>
+        <line x1="28" y1="38" x2="18" y2="52" stroke="#f97316" strokeWidth="4" strokeLinecap="round"/>
+        <line x1="48" y1="38" x2="58" y2="52" stroke="#f97316" strokeWidth="4" strokeLinecap="round"/>
+        <line x1="32" y1="55" x2="30" y2="72" stroke="#f97316" strokeWidth="4" strokeLinecap="round"/>
+        <line x1="44" y1="55" x2="46" y2="72" stroke="#f97316" strokeWidth="4" strokeLinecap="round"/>
+        <circle cx="72" cy="24" r="7.5" fill="#fcd34d" stroke="#fbbf24" strokeWidth="1"/>
+        <path d="M72 32 Q65 37 64 50 L80 50 Q79 37 72 32Z" fill="#86efac"/>
+        <line x1="65" y1="38" x2="57" y2="50" stroke="#86efac" strokeWidth="3" strokeLinecap="round"/>
+        <line x1="79" y1="38" x2="87" y2="50" stroke="#86efac" strokeWidth="3" strokeLinecap="round"/>
+        <line x1="67" y1="50" x2="65" y2="65" stroke="#86efac" strokeWidth="3" strokeLinecap="round"/>
+        <line x1="77" y1="50" x2="79" y2="65" stroke="#86efac" strokeWidth="3" strokeLinecap="round"/>
+        <circle cx="15" cy="74" r="8" fill="#4ade80" stroke="#16a34a" strokeWidth="1"/>
+        <path d="M15 66 Q13 60 15 58 Q17 56 15 66Z" fill="#16a34a"/>
+        <circle cx="36" cy="76" r="7" fill="#fb923c" stroke="#ea580c" strokeWidth="1"/>
+        <circle cx="56" cy="75" r="7" fill="#f87171" stroke="#ef4444" strokeWidth="1"/>
+        <ellipse cx="96" cy="74" rx="12" ry="8" fill="#fbbf24" stroke="#f59e0b" strokeWidth="1"/>
+        <text x="105" y="20" fontSize="12" fill="#fbbf24">✦</text>
+        <text x="10" y="40" fontSize="8" fill="#34d399">✦</text>
+      </svg>
+    );
+  }
+  return null;
+};
+
+function CekatAppContent() {
   const [isMobile, setIsMobile] = useState<boolean>(true);
   const [isClient, setIsClient] = useState<boolean>(false);
 
@@ -76,16 +205,52 @@ export default function CekatApp() {
   
   // Sub-views for detailed pages
   // - For 'dashboard': 'home' (Kebutuhanmu), 'station_summary' (Hasil Station), 'cek_risiko' (Risiko Kesehatan), 'reminders' (Pengingat & Jadwal), 'marketplace' (Keranjangmu)
-  const [dashboardSubView, setDashboardSubView] = useState<'home' | 'station_summary' | 'cek_risiko' | 'reminders' | 'marketplace' | 'edukasi'>('home');
+  const [dashboardSubView, setDashboardSubView] = useState<'home' | 'station_summary' | 'cek_risiko' | 'reminders' | 'marketplace' | 'edukasi' | 'article_detail' | 'webinar_list'>('home');
+  const [selectedArticle, setSelectedArticle] = useState<any | null>(null);
+
+  // BMI State Variables
+  const [weightInput, setWeightInput] = useState<string>('68');
+  const [heightInput, setHeightInput] = useState<string>('1.60');
+  const [bmiValue, setBmiValue] = useState<number>(26.56);
+  const [bmiCategory, setBmiCategory] = useState<'Kurus' | 'Normal' | 'Gemuk'>('Gemuk');
+
+  const calculateBmi = () => {
+    const w = parseFloat(weightInput);
+    const h = parseFloat(heightInput);
+    if (w > 0 && h > 0) {
+      const calculated = w / (h * h);
+      setBmiValue(parseFloat(calculated.toFixed(2)));
+      if (calculated < 18.5) setBmiCategory('Kurus');
+      else if (calculated < 25) setBmiCategory('Normal');
+      else setBmiCategory('Gemuk');
+    }
+  };
   
   // - For 'nutrisi': 'main' (Nutrisi Harianmu), 'scan_camera' (Camera scanner), 'scan_result' (Score & details), 'charts' (IMT & Charts), 'pantry' (Kulkas resep)
   const [nutrisiSubView, setNutrisiSubView] = useState<'main' | 'scan_camera' | 'scan_result' | 'charts' | 'pantry'>('main');
   
-  // - For 'challenge': 'home' (Langkah Sehatmu), 'misi' (7-Day challenge)
-  const [challengeSubView, setChallengeSubView] = useState<'home' | 'misi'>('home');
+  // - For 'challenge': 'home' (Langkah Sehatmu), 'misi' (7-Day challenge), 'games' (Mini Games grid)
+  const [challengeSubView, setChallengeSubView] = useState<'home' | 'misi' | 'games'>('home');
   
   // - For 'riwayat': 'home' (Riwayat List), 'wrapped' (Cekat Wrapped)
   const [riwayatSubView, setRiwayatSubView] = useState<'home' | 'wrapped'>('home');
+  
+  // Riwayat scroll category
+  const [riwayatCategory, setRiwayatCategory] = useState<string>('Semua');
+
+  // Misi / Challenge checklist targets
+  const [misiTargets, setMisiTargets] = useState([
+    { id: 1, text: 'Minum air sesuai target', done: true },
+    { id: 2, text: 'Aktivitas fisik 30 menit', done: true },
+    { id: 3, text: 'Makan sayur 2x sehari', done: true },
+    { id: 4, text: 'Kurangi minuman manis', done: true },
+    { id: 5, text: 'Tidur cukup 7-8 jam', done: true },
+    { id: 6, text: 'Kurangi makanan tinggi garam', done: false },
+    { id: 7, text: 'Food Scan 3x minggu ini', done: false }
+  ]);
+  const toggleMisi = (id: number) => {
+    setMisiTargets(misiTargets.map(t => t.id === id ? { ...t, done: !t.done } : t));
+  };
 
   // Kebutuhanmu popup list toggle
   const [showKebutuhanmu, setShowKebutuhanmu] = useState<boolean>(false);
@@ -104,6 +269,66 @@ export default function CekatApp() {
 
   // Search query for marketplace & recipes
   const [searchQuery, setSearchQuery] = useState<string>('');
+
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+
+  // 1. Sync from URL query parameters to local state (for back/forward browser navigation)
+  useEffect(() => {
+    const urlState = searchParams.get('state');
+    const urlTab = searchParams.get('tab');
+    const urlView = searchParams.get('view');
+    const urlArticleId = searchParams.get('id');
+
+    if (urlState && ['splash', 'welcome', 'login', 'main'].includes(urlState)) {
+      setAppState(urlState as any);
+    }
+    if (urlTab && ['dashboard', 'nutrisi', 'challenge', 'riwayat', 'profil'].includes(urlTab)) {
+      setActiveTab(urlTab as any);
+      if (urlView) {
+        if (urlTab === 'dashboard') {
+          setDashboardSubView(urlView as any);
+          if (urlView === 'article_detail' && urlArticleId) {
+            const art = articlesData.find(a => a.id === urlArticleId);
+            if (art) setSelectedArticle(art);
+          }
+        }
+        if (urlTab === 'nutrisi') setNutrisiSubView(urlView as any);
+        if (urlTab === 'challenge') setChallengeSubView(urlView as any);
+        if (urlTab === 'riwayat') setRiwayatSubView(urlView as any);
+      }
+    }
+  }, [searchParams]);
+
+  // 2. Sync from local state to URL query parameters (updates URL as user clicks)
+  useEffect(() => {
+    if (!isClient) return;
+    
+    const params = new URLSearchParams();
+    params.set('state', appState);
+    params.set('tab', activeTab);
+    
+    let activeView = 'home';
+    if (activeTab === 'dashboard') activeView = dashboardSubView;
+    if (activeTab === 'nutrisi') activeView = nutrisiSubView;
+    if (activeTab === 'challenge') activeView = challengeSubView;
+    if (activeTab === 'riwayat') activeView = riwayatSubView;
+    params.set('view', activeView);
+
+    if (activeView === 'article_detail' && selectedArticle) {
+      params.set('id', selectedArticle.id);
+    }
+
+    const newSearch = `?${params.toString()}`;
+    if (window.location.search !== newSearch) {
+      if (window.location.search === '') {
+        router.replace(`${pathname}${newSearch}`);
+      } else {
+        router.push(`${pathname}${newSearch}`);
+      }
+    }
+  }, [appState, activeTab, dashboardSubView, nutrisiSubView, challengeSubView, riwayatSubView, selectedArticle, isClient]);
 
   // Scanning animation states
   const [isScanning, setIsScanning] = useState<boolean>(false);
@@ -463,7 +688,7 @@ export default function CekatApp() {
       <div className="flex-1 flex items-center justify-center p-0 md:p-6 bg-slate-950">
         
         {/* Smartphone Wrapper Bezel (Hidden on Mobile screens, active on md and up) */}
-        <div className="w-full max-w-md md:h-[824px] md:rounded-[45px] md:border-[10px] md:border-slate-800 md:bg-slate-950 md:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] md:ring-4 md:ring-slate-900 md:relative md:overflow-hidden flex flex-col justify-between">
+        <div className="w-full max-w-md min-h-screen md:min-h-0 md:h-[824px] md:rounded-[45px] md:border-[10px] md:border-slate-800 md:bg-slate-950 md:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] md:ring-4 md:ring-slate-900 md:relative md:overflow-hidden flex flex-col justify-between">
           
           {/* Camera Notch on Desktop simulation */}
           <div className="hidden md:block absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-slate-800 rounded-b-2xl z-50 pointer-events-none">
@@ -731,6 +956,9 @@ export default function CekatApp() {
                             </div>
                           </div>
                         </div>
+
+                        {/* Flexible spacer to push grid menu closer to bottom nav */}
+                        <div className="flex-1 min-h-[12px] md:min-h-0" />
 
                         {/* Circular 6-item Grid Menu */}
                         <div className="mx-4 mt-2 shrink-0">
@@ -1398,7 +1626,16 @@ export default function CekatApp() {
                             <div className="grid grid-cols-2 gap-3">
 
                               {/* ── Article 1: Hipertensi ── */}
-                              <div className="bg-white rounded-2xl overflow-hidden shadow-md">
+                              <div 
+                                onClick={() => {
+                                  const art = articlesData.find(a => a.id === 'hipertensi');
+                                  if (art) {
+                                    setSelectedArticle(art);
+                                    setDashboardSubView('article_detail');
+                                  }
+                                }}
+                                className="bg-white rounded-2xl overflow-hidden shadow-md cursor-pointer hover:shadow-lg active:scale-98 transition duration-200"
+                              >
                                 <div className="h-[90px] overflow-hidden">
                                   <svg viewBox="0 0 120 90" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
                                     <defs>
@@ -1436,7 +1673,16 @@ export default function CekatApp() {
                               </div>
 
                               {/* ── Article 2: Stunting ── */}
-                              <div className="bg-white rounded-2xl overflow-hidden shadow-md">
+                              <div 
+                                onClick={() => {
+                                  const art = articlesData.find(a => a.id === 'stunting');
+                                  if (art) {
+                                    setSelectedArticle(art);
+                                    setDashboardSubView('article_detail');
+                                  }
+                                }}
+                                className="bg-white rounded-2xl overflow-hidden shadow-md cursor-pointer hover:shadow-lg active:scale-98 transition duration-200"
+                              >
                                 <div className="h-[90px] overflow-hidden">
                                   <svg viewBox="0 0 120 90" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
                                     <defs>
@@ -1484,42 +1730,61 @@ export default function CekatApp() {
 
                         {/* ── Webinar Kesehatan ── */}
                         <div className="mx-4 mt-4">
-                          <div className="bg-white border border-slate-200 rounded-3xl p-4 shadow-sm">
-                            <div className="flex items-center justify-between mb-2">
-                              <span className="text-[13px] font-black text-slate-900">Webinar Kesehatan</span>
-                              <button className="text-[10.5px] font-black text-emerald-700 flex items-center gap-0.5">Lihat Semua <ChevronRight className="w-3.5 h-3.5" /></button>
-                            </div>
-                            <h4 className="text-[11.5px] font-black text-slate-900 leading-snug">Cegah Hipertensi dengan Pola Hidup Sehat</h4>
-                            <p className="text-[9.5px] font-bold text-slate-600 mt-0.5">Bersama: Rahmad Raffi S.Kep., Ns., M.Kep</p>
-                            <div className="flex items-center gap-1 mt-1.5 mb-3">
-                              <Clock className="w-3 h-3 text-slate-500 shrink-0" />
-                              <span className="text-[9px] font-bold text-slate-600">Sabtu, 30 September 2026 • 10.00 WIB</span>
-                            </div>
-                            <div className="flex items-end justify-between">
-                              <button className="py-2 px-5 bg-emerald-700 hover:bg-emerald-600 text-white font-black text-[12px] rounded-xl shadow-sm transition active:scale-95">
-                                Daftar
-                              </button>
-                              <div className="flex items-center gap-3">
-                                <div className="text-right">
-                                  <span className="text-[8.5px] font-black text-slate-500 block">HTM</span>
-                                  <span className="text-[14px] font-black text-red-600 leading-none">Rp 20.000</span>
-                                </div>
-                                {/* Speaker photo — real Unsplash doctor */}
-                                <div className="flex flex-col items-center gap-1">
-                                  <div className="w-14 h-14 rounded-xl overflow-hidden border-2 border-emerald-200 shadow-md">
-                                    <img
-                                      src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=120&q=90"
-                                      alt="Rahmad Raffi"
-                                      className="w-full h-full object-cover object-top"
-                                    />
-                                  </div>
-                                  <div className="text-right">
-                                    <p className="text-[7px] font-black text-slate-800 leading-tight">Rahmad Raffi S.Kep., Ns., M.Kep</p>
-                                    <p className="text-[6.5px] font-bold text-slate-500 leading-tight">Kepala Hubungan Inna Medica</p>
-                                    <p className="text-[6px] font-bold text-slate-400 leading-tight">RS. Dr. Sutomo Surabaya</p>
-                                  </div>
-                                </div>
+                          <div className="bg-white border border-slate-200/80 rounded-3xl p-4 shadow-[0_4px_18px_-4px_rgba(15,23,42,0.05)]">
+                            <div className="flex items-center justify-between mb-3">
+                              <div className="flex items-center gap-1.5">
+                                <div className="w-1.5 h-3.5 bg-emerald-600 rounded-full"></div>
+                                <span className="text-[12.5px] font-extrabold text-slate-900 tracking-tight">Webinar Kesehatan</span>
                               </div>
+                              <button 
+                                onClick={() => setDashboardSubView('webinar_list')}
+                                className="text-[10px] font-bold text-emerald-700 flex items-center gap-0.5 hover:underline"
+                              >
+                                Lihat Semua <ChevronRight className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                            
+                            <h4 className="text-[12px] font-extrabold text-slate-900 leading-snug tracking-tight px-0.5">
+                              Cegah Hipertensi dengan Pola Hidup Sehat
+                            </h4>
+
+                            {/* Speaker Info Card */}
+                            <div className="flex items-center gap-2.5 mt-2.5 mb-2.5 bg-slate-50 border border-slate-100 p-2 rounded-2xl">
+                              <div className="w-8 h-8 rounded-full overflow-hidden border border-emerald-200 shrink-0">
+                                <img
+                                  src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=120&q=90"
+                                  alt="Rahmad Raffi"
+                                  className="w-full h-full object-cover object-top"
+                                />
+                              </div>
+                              <div className="min-w-0">
+                                <p className="text-[9.5px] font-black text-slate-800 leading-tight">Rahmad Raffi, S.Kep., Ns., M.Kep</p>
+                                <p className="text-[8px] font-semibold text-slate-500 truncate leading-normal mt-0.5">
+                                  Kepala Hubungan Inna Medica • RS Dr. Sutomo
+                                </p>
+                              </div>
+                            </div>
+
+                            {/* Time & Date */}
+                            <div className="flex items-center gap-1.5 text-slate-500 mb-3 px-0.5">
+                              <CalendarDays className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                              <span className="text-[9.5px] font-bold text-slate-600">Sabtu, 30 September 2026 • 10.00 WIB</span>
+                            </div>
+
+                            {/* Divider */}
+                            <div className="h-px bg-slate-100 mb-3"></div>
+
+                            {/* Bottom row: Pricing & Button */}
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-1">
+                                <span className="text-[8.5px] font-bold text-slate-400 uppercase tracking-wider">HTM</span>
+                                <span className="text-[12px] font-black text-emerald-800 bg-emerald-50/70 border border-emerald-100 px-2 py-0.5 rounded-lg">
+                                  Rp 20.000
+                                </span>
+                              </div>
+                              <button className="py-2 px-5 bg-emerald-700 hover:bg-emerald-600 active:scale-95 text-white font-extrabold text-[11px] rounded-xl shadow-md shadow-emerald-700/10 transition">
+                                Daftar Sekarang
+                              </button>
                             </div>
                           </div>
                         </div>
@@ -1569,6 +1834,140 @@ export default function CekatApp() {
                           </div>
                         </div>
 
+                      </div>
+                    )}
+
+                    {/* View: Detail Artikel */}
+                    {dashboardSubView === 'article_detail' && selectedArticle && (
+                      <div className="space-y-0 animate-fadeIn pb-24 bg-white min-h-screen">
+                        {/* ── Header ── */}
+                        <div className="sticky top-0 bg-white/95 backdrop-blur-md border-b border-slate-100 px-4 pt-8 pb-3 flex items-center justify-between z-30">
+                          <button onClick={() => setDashboardSubView('edukasi')} className="p-1.5 hover:bg-slate-50 rounded-full transition">
+                            <ArrowLeft className="w-5 h-5 text-slate-800" />
+                          </button>
+                          <span className="text-[13px] font-black text-slate-900 tracking-tight">Baca Artikel</span>
+                          <button 
+                            onClick={() => {
+                              if (navigator.share) {
+                                navigator.share({
+                                  title: selectedArticle.title,
+                                  text: selectedArticle.description,
+                                  url: window.location.href,
+                                }).catch(() => {});
+                              } else {
+                                alert('Link berhasil disalin!');
+                              }
+                            }}
+                            className="p-1.5 hover:bg-slate-50 rounded-full transition"
+                          >
+                            <Compass className="w-[18px] h-[18px] text-slate-700" />
+                          </button>
+                        </div>
+
+                        {/* ── Cover Image (SVG) ── */}
+                        <div className="h-[180px] w-full overflow-hidden relative border-b border-slate-100">
+                          {renderArticleSvg(selectedArticle.svgId)}
+                        </div>
+
+                        {/* ── Content Container ── */}
+                        <div className="px-5 py-6 space-y-4">
+                          {/* Category Badge */}
+                          <div>
+                            <span className={`text-[9px] font-black uppercase tracking-wider px-3 py-1 rounded-full ${
+                              selectedArticle.category === 'Hipertensi' 
+                                ? 'bg-red-50 text-red-700 border border-red-100' 
+                                : 'bg-orange-50 text-orange-700 border border-orange-100'
+                            }`}>
+                              {selectedArticle.category}
+                            </span>
+                          </div>
+
+                          {/* Title */}
+                          <h1 className="text-[16px] font-black text-slate-900 leading-tight tracking-tight">
+                            {selectedArticle.title}
+                          </h1>
+
+                          {/* Author & Read Time metadata */}
+                          <div className="flex items-center justify-between text-slate-500 pb-3 border-b border-slate-100">
+                            <div className="flex items-center gap-2">
+                              <div className="w-6 h-6 rounded-full bg-emerald-100 border border-emerald-200 flex items-center justify-center text-[9px] font-black text-emerald-800">
+                                CG
+                              </div>
+                              <span className="text-[10px] font-bold text-slate-705">{selectedArticle.author}</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <Clock className="w-3.5 h-3.5 text-slate-400" />
+                              <span className="text-[10px] font-bold text-slate-500">{selectedArticle.readTime}</span>
+                            </div>
+                          </div>
+
+                          {/* Article Body */}
+                          <div className="text-[11.5px] text-slate-750 font-medium leading-relaxed space-y-4 pt-2">
+                            {selectedArticle.content.split('\n\n').map((para, i) => {
+                              const trimmed = para.trim();
+                              if (!trimmed) return null;
+
+                              // Handle header style (### ...)
+                              if (trimmed.startsWith('###')) {
+                                return (
+                                  <h3 key={i} className="text-[13px] font-extrabold text-slate-900 pt-3">
+                                    {trimmed.replace('###', '').trim()}
+                                  </h3>
+                                );
+                              }
+
+                              // Handle bullet points (* or - or numbers)
+                              if (trimmed.startsWith('*') || trimmed.startsWith('-') || /^\d+\./.test(trimmed)) {
+                                return (
+                                  <ul key={i} className="list-disc pl-4 space-y-1.5 text-slate-650">
+                                    {trimmed.split('\n').map((li, j) => {
+                                      const cleanLi = li.replace(/^[\*\-\d\.\s]+/, '').trim();
+                                      // Bold highlight inside lists e.g. **text**:
+                                      const boldMatch = cleanLi.match(/^\*\*(.*?)\*\*(.*)/);
+                                      if (boldMatch) {
+                                        return (
+                                          <li key={j} className="leading-relaxed">
+                                            <strong>{boldMatch[1]}</strong>{boldMatch[2]}
+                                          </li>
+                                        );
+                                      }
+                                      return <li key={j}>{cleanLi}</li>;
+                                    })}
+                                  </ul>
+                                );
+                              }
+
+                              // Handle bold text in paragraphs
+                              const boldMatch = trimmed.match(/\*\*(.*?)\*\*/g);
+                              if (boldMatch) {
+                                let html = trimmed;
+                                boldMatch.forEach(m => {
+                                  const text = m.replace(/\*\*/g, '');
+                                  html = html.replace(m, `<strong>${text}</strong>`);
+                                });
+                                return (
+                                  <p key={i} dangerouslySetInnerHTML={{ __html: html }} />
+                                );
+                              }
+
+                              return <p key={i}>{trimmed}</p>;
+                            })}
+                          </div>
+                        </div>
+
+                        {/* ── Gamified Action Button at Bottom ── */}
+                        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur-md border-t border-slate-100 flex justify-center z-20 max-w-md mx-auto">
+                          <button 
+                            onClick={() => {
+                              alert(`Selamat! Anda mendapatkan +${selectedArticle.points} poin karena telah membaca artikel ini.`);
+                              setDashboardSubView('edukasi');
+                            }}
+                            className="w-full py-3 bg-emerald-700 hover:bg-emerald-600 text-white font-extrabold text-[12px] rounded-2xl shadow-lg shadow-emerald-700/20 active:scale-95 transition flex items-center justify-center gap-1.5"
+                          >
+                            <Trophy className="w-4 h-4 text-yellow-400" />
+                            <span>Tandai Selesai & Klaim {selectedArticle.points} Poin</span>
+                          </button>
+                        </div>
                       </div>
                     )}
 
@@ -1628,63 +2027,67 @@ export default function CekatApp() {
                           </div>
 
                           {/* Progress bars indicators container */}
-                          <div className="bg-white border border-slate-100 rounded-3xl p-5 shadow-sm space-y-4 text-xs font-semibold text-slate-800">
+                          <div className="bg-[#fcfdfa] border-2 border-purple-500 rounded-3xl p-5 shadow-sm space-y-4 text-xs font-semibold text-slate-800 mx-4">
                             
                             {/* 1. Energi */}
                             <div className="space-y-1">
-                              <div className="flex justify-between font-bold text-[11px]">
+                              <div className="flex justify-between font-bold text-[11.5px]">
                                 <span className="flex items-center gap-1.5 text-slate-700">🔥 Energi</span>
-                                <span className="text-slate-900 font-black">1.450 <span className="text-slate-400 font-normal">/ 2.000 kkal</span></span>
+                                <span className="text-emerald-700 font-extrabold text-[12.5px]">1.450 <span className="text-slate-400 font-normal text-[10px]">/ 2.000 kkal</span></span>
                               </div>
-                              <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
-                                <div className="h-full bg-emerald-500 rounded-full" style={{ width: '72.5%' }}></div>
+                              <div className="w-full h-2 bg-slate-200/80 rounded-full relative overflow-visible">
+                                <div className="h-full bg-gradient-to-r from-emerald-500 to-[#cbd52d] rounded-full" style={{ width: '72.5%' }}></div>
+                                <div className="absolute top-0 w-2 h-2 bg-emerald-700 -mt-0.5 rotate-45" style={{ left: '70.5%' }}></div>
                               </div>
                             </div>
 
                             {/* 2. Serat */}
                             <div className="space-y-1">
-                              <div className="flex justify-between font-bold text-[11px]">
+                              <div className="flex justify-between font-bold text-[11.5px]">
                                 <span className="flex items-center gap-1.5 text-slate-700">🌾 Serat</span>
-                                <span className="text-slate-900 font-black">18 <span className="text-slate-400 font-normal">/ 25 g</span></span>
+                                <span className="text-emerald-700 font-extrabold text-[12.5px]">18 <span className="text-slate-400 font-normal text-[10px]">/ 25 g</span></span>
                               </div>
-                              <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
-                                <div className="h-full bg-emerald-500 rounded-full" style={{ width: '72%' }}></div>
+                              <div className="w-full h-2 bg-slate-200/80 rounded-full relative overflow-visible">
+                                <div className="h-full bg-gradient-to-r from-emerald-500 to-[#cbd52d] rounded-full" style={{ width: '72%' }}></div>
+                                <div className="absolute top-0 w-2 h-2 bg-emerald-700 -mt-0.5 rotate-45" style={{ left: '70%' }}></div>
                               </div>
                             </div>
 
                             {/* 3. Gula */}
                             <div className="space-y-1">
-                              <div className="flex justify-between font-bold text-[11px]">
+                              <div className="flex justify-between font-bold text-[11.5px]">
                                 <span className="flex items-center gap-1.5 text-slate-700">🍬 Gula</span>
-                                <span className="text-slate-900 font-black">42 <span className="text-slate-400 font-normal">/ 50 g</span></span>
+                                <span className="text-emerald-700 font-extrabold text-[12.5px]">42 <span className="text-slate-400 font-normal text-[10px]">/ 50 g</span></span>
                               </div>
-                              <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
-                                <div className="h-full bg-yellow-500 rounded-full" style={{ width: '84%' }}></div>
+                              <div className="w-full h-2 bg-slate-200/80 rounded-full relative overflow-visible">
+                                <div className="h-full bg-gradient-to-r from-emerald-500 to-yellow-500 rounded-full" style={{ width: '84%' }}></div>
+                                <div className="absolute top-0 w-2 h-2 bg-yellow-600 -mt-0.5 rotate-45" style={{ left: '82%' }}></div>
                               </div>
                             </div>
 
                             {/* 4. Hidrasi */}
                             <div className="space-y-1">
-                              <div className="flex justify-between font-bold text-[11px]">
-                                <span className="flex items-center gap-1.5 text-slate-700">🥛 Hidrasi</span>
-                                <span className="text-slate-900 font-black">5 <span className="text-slate-400 font-normal">/ 8 gelas</span></span>
+                              <div className="flex justify-between font-bold text-[11.5px]">
+                                <span className="flex items-center gap-1.5 text-slate-700">🥤 Hidrasi</span>
+                                <span className="text-emerald-700 font-extrabold text-[12.5px]">5 <span className="text-slate-400 font-normal text-[10px]">/ 8 gelas</span></span>
                               </div>
-                              <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
-                                <div className="h-full bg-emerald-500 rounded-full" style={{ width: '62.5%' }}></div>
+                              <div className="w-full h-2 bg-slate-200/80 rounded-full relative overflow-visible">
+                                <div className="h-full bg-gradient-to-r from-emerald-500 to-sky-500 rounded-full" style={{ width: '62.5%' }}></div>
+                                <div className="absolute top-0 w-2 h-2 bg-emerald-700 -mt-0.5 rotate-45" style={{ left: '60.5%' }}></div>
                               </div>
                             </div>
 
                             {/* 5. Aktivitas */}
                             <div className="space-y-1">
-                              <div className="flex justify-between font-bold text-[11px]">
-                                <span className="flex items-center gap-1.5 text-slate-700">🏃 Aktivitas</span>
-                                <span className="text-slate-900 font-black">25 <span className="text-slate-400 font-normal">/ 30 menit</span></span>
+                              <div className="flex justify-between font-bold text-[11.5px]">
+                                <span className="flex items-center gap-1.5 text-slate-700">🚶 Aktivitas</span>
+                                <span className="text-emerald-700 font-extrabold text-[12.5px]">25 <span className="text-slate-400 font-normal text-[10px]">/ 30 menit</span></span>
                               </div>
-                              <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
-                                <div className="h-full bg-emerald-500 rounded-full" style={{ width: '83.3%' }}></div>
+                              <div className="w-full h-2 bg-slate-200/80 rounded-full relative overflow-visible">
+                                <div className="h-full bg-gradient-to-r from-emerald-500 to-[#cbd52d] rounded-full" style={{ width: '83.3%' }}></div>
+                                <div className="absolute top-0 w-2 h-2 bg-emerald-700 -mt-0.5 rotate-45" style={{ left: '81.3%' }}></div>
                               </div>
                             </div>
-
                           </div>
                         </div>
 
@@ -1697,14 +2100,16 @@ export default function CekatApp() {
                               <p className="text-[10px] text-slate-500 font-semibold leading-relaxed">Cek kandungan gizi makananmu dengan cepat</p>
                               <button 
                                 onClick={() => setNutrisiSubView('scan_camera')}
-                                className="px-3.5 py-1.5 bg-emerald-700 hover:bg-emerald-600 text-white text-[9.5px] font-black rounded-lg uppercase tracking-wider transition flex items-center gap-1"
+                                className="px-3.5 py-1.5 bg-emerald-700 hover:bg-emerald-600 text-white text-[9.5px] font-black rounded-lg uppercase tracking-wider transition flex items-center gap-1 relative overflow-visible group"
                               >
                                 <span>Scan Makanan</span>
                                 <Camera className="w-3.5 h-3.5" />
+                                <span className="absolute -bottom-4 -right-3 text-lg animate-bounce pointer-events-none opacity-90 group-hover:opacity-100">👆</span>
                               </button>
                             </div>
-                            <div className="w-16 h-16 shrink-0 bg-white rounded-2xl border border-slate-150 flex items-center justify-center p-2 shadow-sm overflow-hidden">
+                            <div className="w-16 h-16 shrink-0 bg-white rounded-2xl border border-slate-150 flex items-center justify-center p-2 shadow-sm overflow-hidden relative">
                               <img src="https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=100&q=80" alt="Salad" className="w-full h-full object-cover rounded-lg" />
+                              <div className="absolute inset-2 border-2 border-emerald-400 border-dashed rounded-lg opacity-40 pointer-events-none"></div>
                             </div>
                           </div>
 
@@ -1715,14 +2120,16 @@ export default function CekatApp() {
                               <p className="text-[10px] text-slate-500 font-semibold leading-relaxed">Buat menu sehat dari bahan yang ada di rumah</p>
                               <button 
                                 onClick={() => setNutrisiSubView('pantry')}
-                                className="px-3.5 py-1.5 bg-emerald-700 hover:bg-emerald-600 text-white text-[9.5px] font-black rounded-lg uppercase tracking-wider transition flex items-center gap-1"
+                                className="px-3.5 py-1.5 bg-emerald-700 hover:bg-emerald-600 text-white text-[9.5px] font-black rounded-lg uppercase tracking-wider transition flex items-center gap-1 relative overflow-visible group"
                               >
                                 <span>Buka Menu</span>
                                 <Brain className="w-3.5 h-3.5" />
+                                <span className="absolute -bottom-4 -right-3 text-lg animate-bounce pointer-events-none opacity-90 group-hover:opacity-100">👆</span>
                               </button>
                             </div>
-                            <div className="w-16 h-16 shrink-0 bg-white rounded-2xl border border-slate-150 flex items-center justify-center p-2 shadow-sm overflow-hidden">
+                            <div className="w-16 h-16 shrink-0 bg-white rounded-2xl border border-slate-150 flex items-center justify-center p-2 shadow-sm overflow-hidden relative">
                               <img src="https://images.unsplash.com/photo-1590779033100-9f60a05a013d?auto=format&fit=crop&w=100&q=80" alt="Kitchen scale" className="w-full h-full object-cover rounded-lg" />
+                              <div className="absolute -bottom-1 -right-1 bg-emerald-500 text-white text-[8px] px-1 rounded-full border border-white font-black scale-90">🤖</div>
                             </div>
                           </div>
                         </div>
@@ -1897,42 +2304,33 @@ export default function CekatApp() {
                             <div className="bg-white border border-slate-100 rounded-3xl p-5 shadow-sm text-center">
                               <span className="text-[9px] text-slate-400 font-bold block uppercase tracking-wider mb-4">Minggu Ini • Pilihan Gizi Harian</span>
                               
-                              {/* Simple CSS simulated vertical bar chart */}
-                              <div className="flex justify-between items-end h-32 px-2 pb-1 border-b border-slate-100">
-                                <div className="flex flex-col items-center space-y-2 w-7">
-                                  <div className="w-3.5 h-16 bg-[#22c55e] rounded-t-sm" />
-                                  <span className="text-[8px] font-bold text-slate-400">S</span>
-                                </div>
-                                <div className="flex flex-col items-center space-y-2 w-7">
-                                  <div className="w-3.5 h-20 bg-[#22c55e] rounded-t-sm" />
-                                  <span className="text-[8px] font-bold text-slate-400">S</span>
-                                </div>
-                                <div className="flex flex-col items-center space-y-2 w-7">
-                                  <div className="w-3.5 h-24 bg-[#cbd52d] rounded-t-sm" />
-                                  <span className="text-[8px] font-bold text-slate-400">R</span>
-                                </div>
-                                <div className="flex flex-col items-center space-y-2 w-7">
-                                  <div className="w-3.5 h-12 bg-[#22c55e] rounded-t-sm" />
-                                  <span className="text-[8px] font-bold text-slate-400">K</span>
-                                </div>
-                                <div className="flex flex-col items-center space-y-2 w-7">
-                                  <div className="w-3.5 h-20 bg-[#22c55e] rounded-t-sm" />
-                                  <span className="text-[8px] font-bold text-slate-400">J</span>
-                                </div>
-                                <div className="flex flex-col items-center space-y-2 w-7">
-                                  <div className="w-3.5 h-16 bg-[#cbd52d] rounded-t-sm" />
-                                  <span className="text-[8px] font-bold text-slate-400">S</span>
-                                </div>
-                                <div className="flex flex-col items-center space-y-2 w-7">
-                                  <div className="w-3.5 h-14 bg-rose-500 rounded-t-sm" />
-                                  <span className="text-[8px] font-bold text-slate-400">M</span>
-                                </div>
+                              {/* Stacked Pills Chart */}
+                              <div className="flex justify-between items-end h-44 px-2 pb-1 border-b border-slate-100">
+                                {[
+                                  { day: 'S', cal: '1543', carb: '167 C', prot: '57 P', fat: '42 F', color: 'emerald' },
+                                  { day: 'S', cal: '1112', carb: '37 C', prot: '52 P', fat: '46 F', color: 'emerald' },
+                                  { day: 'R', cal: '1478', carb: '68 C', prot: '124 P', fat: '42 F', color: 'emerald' },
+                                  { day: 'K', cal: '1978', carb: '68 C', prot: '112 P', fat: '67 F', color: 'yellow' },
+                                  { day: 'J', cal: '1089', carb: '34 C', prot: '42 P', fat: '32 F', color: 'emerald' },
+                                  { day: 'S', cal: '1267', carb: '88 C', prot: '115 P', fat: '32 F', color: 'yellow' },
+                                  { day: 'M', cal: '1300', carb: '35 C', prot: '134 P', fat: '32 F', color: 'rose' },
+                                ].map((bar, i) => (
+                                  <div key={i} className="flex flex-col items-center w-7 space-y-1">
+                                    <span className="text-[7.5px] font-black text-slate-700 leading-none">{bar.cal}</span>
+                                    <div className="w-[18px] flex flex-col justify-end rounded-full overflow-hidden border border-slate-200 bg-slate-50" style={{ height: bar.color === 'rose' ? '90px' : bar.color === 'yellow' ? '110px' : '80px' }}>
+                                      <div className="bg-sky-400 text-white text-[5px] font-black text-center py-0.5" style={{ height: '35%' }}>{bar.carb}</div>
+                                      <div className="bg-rose-400 text-white text-[5px] font-black text-center py-0.5" style={{ height: '35%' }}>{bar.prot}</div>
+                                      <div className="bg-amber-400 text-white text-[5px] font-black text-center py-0.5" style={{ height: '30%' }}>{bar.fat}</div>
+                                    </div>
+                                    <span className="text-[8px] font-bold text-slate-400">{bar.day}</span>
+                                  </div>
+                                ))}
                               </div>
 
                               <div className="flex justify-center space-x-4 pt-3 text-[8.5px] font-black text-slate-400 uppercase tracking-wider">
-                                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[#22c55e]"></span> Sehat</span>
-                                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-[#cbd52d]"></span> Sedang</span>
-                                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-rose-500"></span> Waspada</span>
+                                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-emerald-500"></span> Karbohidrat</span>
+                                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-rose-450"></span> Protein</span>
+                                <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-400"></span> Lemak</span>
                               </div>
                             </div>
                           </div>
@@ -1940,34 +2338,87 @@ export default function CekatApp() {
                           {/* 2. Hitung IMT Calculator */}
                           <div className="space-y-2">
                             <h4 className="text-sm font-black text-slate-850">Hitung IMT</h4>
-                            <span className="text-[9.5px] text-slate-400 font-semibold block px-1 -mt-1 text-left">Indeks Massa Tubuh / hari</span>
+                            <span className="text-[9.5px] text-slate-400 font-semibold block px-1 -mt-1 text-left">Indeks Massa Tubuh</span>
                             
                             <div className="bg-white border border-slate-100 rounded-3xl p-5 shadow-sm space-y-3.5 text-center">
                               <div className="grid grid-cols-2 gap-3 text-xs font-bold">
-                                <div className="p-3 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-between text-slate-400">
-                                  <span>BB (kg):</span>
-                                  <span className="text-slate-800 font-black">68</span>
+                                <div className="p-2.5 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-between text-slate-400 gap-1.5">
+                                  <span className="shrink-0 text-[10px]">BB (kg):</span>
+                                  <input 
+                                    type="number"
+                                    value={weightInput}
+                                    onChange={(e) => setWeightInput(e.target.value)}
+                                    className="w-12 bg-white border border-slate-200 rounded px-1.5 py-0.5 text-slate-800 text-[10px] font-black focus:outline-none"
+                                  />
                                 </div>
-                                <div className="p-3 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-between text-slate-400">
-                                  <span>TB (m):</span>
-                                  <span className="text-slate-800 font-black">1.60</span>
+                                <div className="p-2.5 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-between text-slate-400 gap-1.5">
+                                  <span className="shrink-0 text-[10px]">TB (m):</span>
+                                  <input 
+                                    type="number"
+                                    step="0.01"
+                                    value={heightInput}
+                                    onChange={(e) => setHeightInput(e.target.value)}
+                                    className="w-12 bg-white border border-slate-200 rounded px-1.5 py-0.5 text-slate-800 text-[10px] font-black focus:outline-none"
+                                  />
                                 </div>
                               </div>
 
-                              <div className="p-3 bg-emerald-50/50 border border-emerald-100 text-emerald-800 text-xs font-black rounded-2xl">
-                                IMT = 26.56 (Kelebihan BB)
+                              <button 
+                                onClick={calculateBmi}
+                                className="w-full py-2 bg-emerald-700 hover:bg-emerald-600 text-white text-[10.5px] font-black rounded-xl uppercase tracking-wider transition active:scale-95 shadow-sm"
+                              >
+                                Hasil IMT
+                              </button>
+
+                              <div className={`p-3 border text-xs font-black rounded-2xl ${
+                                bmiCategory === 'Kurus' 
+                                  ? 'bg-amber-50 border-amber-250 text-amber-800' 
+                                  : bmiCategory === 'Normal' 
+                                  ? 'bg-emerald-50 border-emerald-100 text-emerald-800' 
+                                  : 'bg-rose-50 border-rose-250 text-rose-800'
+                              }`}>
+                                IMT = {bmiValue} ({bmiCategory === 'Kurus' ? 'Kekurangan Berat Badan' : bmiCategory === 'Normal' ? 'Berat Badan Normal' : 'Kelebihan Berat Badan'})
                               </div>
 
                               {/* Slider Kurus, Normal, Gemuk */}
                               <div className="space-y-1.5 pt-2">
-                                <div className="w-full h-2 bg-gradient-to-r from-sky-400 via-emerald-400 to-rose-400 rounded-full relative">
-                                  {/* Slider pointer indicator */}
-                                  <div className="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-white border-2 border-slate-800 rounded-full shadow" style={{ left: '72%' }}></div>
+                                <div className="w-full h-2 bg-gradient-to-r from-sky-400 via-emerald-400 to-rose-450 rounded-full relative">
+                                  <div 
+                                    className="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-white border-2 border-slate-800 rounded-full shadow transition-all duration-300" 
+                                    style={{ 
+                                      left: bmiCategory === 'Kurus' 
+                                        ? '15%' 
+                                        : bmiCategory === 'Normal' 
+                                        ? '50%' 
+                                        : '85%' 
+                                    }}
+                                  ></div>
                                 </div>
                                 <div className="flex justify-between text-[9px] font-black text-slate-400 uppercase tracking-widest px-1">
                                   <span>Kurus</span>
                                   <span>Normal</span>
                                   <span>Gemuk</span>
+                                </div>
+                              </div>
+
+                              {/* Alert IMT */}
+                              <div className={`p-3 border rounded-2xl flex items-start gap-2.5 text-left ${
+                                bmiCategory === 'Kurus' 
+                                  ? 'bg-amber-50 border-amber-200 text-amber-850' 
+                                  : bmiCategory === 'Normal' 
+                                  ? 'bg-emerald-50 border-emerald-100 text-emerald-855' 
+                                  : 'bg-rose-50 border-rose-200 text-rose-850'
+                              }`}>
+                                <AlertTriangle className={`w-4 h-4 shrink-0 mt-0.5 ${
+                                  bmiCategory === 'Kurus' ? 'text-amber-500' : bmiCategory === 'Normal' ? 'text-emerald-500' : 'text-rose-500'
+                                }`} />
+                                <div className="text-[10px] font-semibold leading-relaxed">
+                                  <strong className="text-slate-850 block font-black text-left">
+                                    Massa Tubuhmu memasuki kategori {bmiCategory}
+                                  </strong>
+                                  {bmiCategory === 'Kurus' && 'Yuk, tingkatkan asupan nutrisi agar berat badan naik secara sehat!'}
+                                  {bmiCategory === 'Normal' && 'Luar biasa! Pertahankan pola makan gizi seimbang Anda.'}
+                                  {bmiCategory === 'Gemuk' && 'Batasi asupan lemak/gula harian dan tingkatkan aktivitas fisik Anda.'}
                                 </div>
                               </div>
                             </div>
@@ -2140,6 +2591,707 @@ export default function CekatApp() {
                   </div>
                 )}
 
+                {/* View: Gabung Webinar Kami (Webinar List) */}
+                {dashboardSubView === 'webinar_list' && (
+                  <div className="space-y-0 text-left pb-6 animate-fadeIn bg-white min-h-screen">
+                    {/* Header Banner */}
+                    <div className="bg-gradient-to-br from-emerald-600 via-emerald-700 to-yellow-600/80 text-white px-5 pt-8 pb-5 relative rounded-b-[32px] shadow-md">
+                      <div className="flex items-center justify-between mb-4">
+                        <button onClick={() => setDashboardSubView('edukasi')} className="p-1 bg-white/10 hover:bg-white/20 rounded-full transition">
+                          <ArrowLeft className="w-5 h-5 text-white" />
+                        </button>
+                        <span className="text-xs font-black uppercase tracking-widest text-white/90">Webinar Gizi</span>
+                        <div className="w-7"></div>
+                      </div>
+                      
+                      <div className="flex items-center justify-between gap-4">
+                        <div>
+                          <h2 className="text-[20px] font-black leading-tight tracking-tight">Gabung Webinar Kami</h2>
+                          <p className="text-[10px] text-emerald-100 font-bold mt-1">Dapatkan wawasan medis terpercaya dari para praktisi dan ahli gizi.</p>
+                        </div>
+                        <div className="w-16 h-16 shrink-0 bg-white/15 rounded-2xl flex items-center justify-center text-3xl shadow-inner border border-white/10">
+                          🎙️
+                        </div>
+                      </div>
+
+                      {/* Subtabs Semua / Tersimpan */}
+                      <div className="flex border-b border-white/20 mt-5 text-[11px] font-black text-white/70">
+                        <span className="pb-2 px-3 border-b-2 border-white text-white font-extrabold cursor-pointer">Semua</span>
+                        <span className="pb-2 px-3 cursor-pointer hover:text-white transition">Tersimpan</span>
+                      </div>
+                    </div>
+
+                    {/* List of Webinars */}
+                    <div className="mx-4 mt-5 space-y-3.5">
+                      {[
+                        {
+                          id: 'webinar-1',
+                          date: 'Minggu, 14 Feb 2026',
+                          title: 'Teknologi dan Kearifan Lokal Kunci Tumbuh Kembang Optimal',
+                          platform: 'Zoom Meeting',
+                          image: 'https://images.unsplash.com/photo-1590650516494-0c8e4a4dd67e?auto=format&fit=crop&w=150&q=80'
+                        },
+                        {
+                          id: 'webinar-2',
+                          date: 'Rabu, 7 Maret 2026',
+                          title: 'Memahami Hubungan Antara Makanan dan Kesehatan Mental',
+                          platform: 'Zoom Meeting',
+                          image: 'https://images.unsplash.com/photo-1544027993-37dbfe43562a?auto=format&fit=crop&w=150&q=80'
+                        },
+                        {
+                          id: 'webinar-3',
+                          date: 'Sabtu, 28 April 2026',
+                          title: 'Gizi Optimal, Budget Minimal Tips Belanja Cerdas dan Bergizi',
+                          platform: 'Zoom Meeting',
+                          image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=150&q=80'
+                        },
+                        {
+                          id: 'webinar-4',
+                          date: 'Senin, 11 Mei 2026',
+                          title: 'Mengupas Fakta Ilmiah MSG dan Perannya Dalam Tubuh Manusia',
+                          platform: 'Zoom Meeting',
+                          image: 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=150&q=80'
+                        },
+                        {
+                          id: 'webinar-5',
+                          date: 'Kamis, 22 Juni 2026',
+                          title: 'Menjadi Tenaga Kesehatan Yang Unggul dalam Gizi',
+                          platform: 'Zoom Meeting',
+                          image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=150&q=80'
+                        }
+                      ].map(webinar => (
+                        <div 
+                          key={webinar.id}
+                          onClick={() => alert(`Daftar webinar: ${webinar.title}`)}
+                          className="bg-white border border-slate-150 rounded-2xl p-3 shadow-sm flex gap-3 cursor-pointer hover:shadow active:scale-[0.99] transition"
+                        >
+                          {/* Left poster */}
+                          <div className="w-[84px] h-[96px] rounded-xl overflow-hidden bg-slate-50 shrink-0 border border-slate-100">
+                            <img src={webinar.image} alt={webinar.title} className="w-full h-full object-cover" />
+                          </div>
+                          {/* Right details */}
+                          <div className="flex-1 flex flex-col justify-between min-w-0">
+                            <div className="space-y-1">
+                              <span className="text-[8.5px] font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded-full border border-purple-100 inline-block">
+                                {webinar.date}
+                              </span>
+                              <h4 className="text-[10px] font-black text-slate-900 leading-snug line-clamp-2 text-left">{webinar.title}</h4>
+                            </div>
+                            <div className="flex items-center justify-between text-slate-400">
+                              <div className="flex items-center gap-1">
+                                <Camera className="w-3 h-3 text-slate-400" />
+                                <span className="text-[8.5px] font-bold text-slate-500">{webinar.platform}</span>
+                              </div>
+                              <button onClick={(e) => { e.stopPropagation(); alert('Opsi webinar dibuka'); }} className="p-0.5 hover:bg-slate-50 rounded transition text-slate-450">
+                                <MoreHorizontal className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}                {/* -------------------------------------------------------------
+                    TAB 3: CHALLENGE & GAMES
+                    ------------------------------------------------------------- */}
+                {activeTab === 'challenge' && (
+                  <div className="flex-1 flex flex-col justify-between animate-fadeIn pb-20 bg-slate-50 min-h-screen">
+                    
+                    {/* View 1: Langkah Sehatmu */}
+                    {challengeSubView === 'home' && (
+                      <div className="space-y-5 text-left pb-6 animate-fadeIn">
+                        {/* Header */}
+                        <div className="bg-white border-b border-slate-100 px-5 pt-8 pb-4 flex items-center justify-between">
+                          <button onClick={() => { setActiveTab('dashboard'); setDashboardSubView('home'); }} className="p-1.5 hover:bg-slate-50 rounded-full transition">
+                            <ArrowLeft className="w-5 h-5 text-slate-800" />
+                          </button>
+                          <span className="text-[14px] font-black text-slate-900 tracking-tight">Langkah Sehatmu</span>
+                          <button onClick={() => setChallengeSubView('misi')} className="p-1.5 hover:bg-slate-50 rounded-full text-emerald-600 transition flex items-center gap-0.5">
+                            <span className="text-[10px] font-bold">Misi</span>
+                            <Gamepad2 className="w-4 h-4 text-emerald-600" />
+                          </button>
+                        </div>
+
+                        {/* Risiko Kesehatan Card */}
+                        <div className="mx-4">
+                          <div className="bg-[#f0fdf4] border border-[#dcfce7] rounded-3xl p-4 shadow-sm flex items-center justify-between">
+                            <div className="space-y-2 max-w-[65%]">
+                              <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider">Hasil Cek Risiko Kesehatan</span>
+                              <span className="text-[9.5px] font-semibold text-slate-500 block">30 Agustus 2026</span>
+                              <div className="bg-red-50 border border-red-100 rounded-2xl p-2.5 flex items-center gap-2">
+                                <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center text-red-600 shrink-0">
+                                  <Heart className="w-4 h-4 fill-current" />
+                                </div>
+                                <div className="min-w-0">
+                                  <p className="text-[9.5px] font-black text-slate-800 leading-tight">Risiko Hipertensi</p>
+                                  <p className="text-[9px] font-black text-red-650 leading-tight mt-0.5">Risiko Anda: Tinggi</p>
+                                </div>
+                              </div>
+                            </div>
+                            {/* Graphic Clock/Heart */}
+                            <div className="w-24 h-24 shrink-0 relative">
+                              <svg viewBox="0 0 100 100" className="w-full h-full animate-pulse">
+                                <circle cx="50" cy="50" r="42" fill="white" stroke="#e2e8f0" strokeWidth="3" />
+                                <circle cx="50" cy="50" r="35" fill="none" stroke="#10b981" strokeWidth="2" strokeDasharray="4,4" />
+                                <line x1="50" y1="50" x2="50" y2="28" stroke="#1e293b" strokeWidth="3" strokeLinecap="round" />
+                                <line x1="50" y1="50" x2="68" y2="50" stroke="#1e293b" strokeWidth="2.5" strokeLinecap="round" />
+                                <rect x="36" y="55" width="28" height="28" rx="14" fill="#fee2e2" stroke="#fecdd3" strokeWidth="1" />
+                                <path d="M50 76 C47 72,40 68,40 64 C40 61,42 59,44.5 61 C47 62.5,50 66,50 66 C50 66,53 62.5,55.5 61 C58 59,60 61,60 64 C60 68,53 72,50 76Z" fill="#ef4444" />
+                              </svg>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Fokus Kamu Minggu Ini */}
+                        <div className="mx-4">
+                          <div className="bg-[#fef8e7] border border-[#fef3c7] rounded-3xl p-4 shadow-sm space-y-4">
+                            <div>
+                              <h4 className="text-[12.5px] font-black text-slate-900 leading-snug">Fokus Kamu Minggu Ini</h4>
+                              <p className="text-[9px] font-bold text-amber-700 leading-tight mt-0.5">Pilih 2-3 langkah prioritas dan mulai perubahan kecil hari ini.</p>
+                            </div>
+
+                            <div className="space-y-2.5">
+                              {focusTargets.map(target => (
+                                <div 
+                                  key={target.id}
+                                  onClick={() => toggleFocus(target.id)}
+                                  className="bg-white border border-slate-100 rounded-2xl p-3 flex items-center justify-between cursor-pointer active:scale-[0.99] transition shadow-sm"
+                                >
+                                  <div className="flex items-center gap-3">
+                                    <div className="w-8 h-8 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-lg shrink-0">
+                                      {target.id === 1 && '🥤'}
+                                      {target.id === 2 && '🏃'}
+                                      {target.id === 3 && '🥗'}
+                                    </div>
+                                    <div className="min-w-0">
+                                      <p className="text-[10px] font-black text-slate-800 leading-tight">{target.text}</p>
+                                      <p className="text-[8.5px] font-semibold text-slate-400 leading-tight mt-0.5">
+                                        {target.id === 1 && 'Batasi konsumsi gula tambahan untuk jaga tekanan darah tetap stabil.'}
+                                        {target.id === 2 && 'Contoh: jalan cepat, bersepeda, atau senam ringan.'}
+                                        {target.id === 3 && 'Minimal setengah piring di setiap waktu makan.'}
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <div className={`w-5 h-5 rounded-lg border flex items-center justify-center transition ${
+                                    target.done 
+                                      ? 'bg-emerald-600 border-emerald-600 text-white font-black' 
+                                      : 'border-slate-350 bg-white'
+                                  }`}>
+                                    {target.done && '✓'}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+
+                            <button 
+                              onClick={() => {
+                                setChallengeSubView('misi');
+                              }}
+                              className="w-full py-3 bg-emerald-700 hover:bg-emerald-600 text-white font-extrabold text-[11px] rounded-xl shadow-md shadow-emerald-700/10 active:scale-98 transition flex items-center justify-center gap-1.5"
+                            >
+                              <Activity className="w-4 h-4" />
+                              <span>Mulai Target</span>
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Pantau Perkembanganmu Progress Bar */}
+                        <div className="mx-4">
+                          <div className="bg-[#f0fdf4] border border-[#dcfce7] rounded-3xl p-4 shadow-sm flex items-center justify-between relative overflow-hidden">
+                            <div className="space-y-3 flex-1">
+                              <div>
+                                <h4 className="text-[12.5px] font-black text-slate-900 leading-snug">Pantau Perkembanganmu</h4>
+                                <p className="text-[9px] font-bold text-slate-500 leading-tight mt-0.5">Progres Minggu Ini</p>
+                              </div>
+                              <div className="space-y-1">
+                                <div className="flex justify-between text-[9px] font-black text-slate-650">
+                                  <span>2 dari 3 target tercapai</span>
+                                  <span className="text-emerald-700 font-extrabold">66%</span>
+                                </div>
+                                <div className="w-full h-2 bg-slate-200/80 rounded-full overflow-hidden relative">
+                                  <div className="h-full bg-emerald-600 rounded-full" style={{ width: '66%' }}></div>
+                                  <div className="absolute top-0 w-2 h-2 bg-emerald-700 -mt-0.5 rotate-45" style={{ left: '64%' }}></div>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="flex items-end gap-1 shrink-0 ml-4">
+                              <div className="w-10 h-10 bg-white border border-slate-100 rounded-xl p-1.5 shadow-sm flex items-end justify-between shrink-0">
+                                <div className="w-1.5 h-3 bg-slate-200 rounded-t-sm" />
+                                <div className="w-1.5 h-5 bg-emerald-400 rounded-t-sm" />
+                                <div className="w-1.5 h-7 bg-emerald-600 rounded-t-sm" />
+                              </div>
+                              <div className="w-8 h-8 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center text-lg shadow-sm">
+                                🤖
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* View 2: Challenge kamu / Misi Checklist */}
+                    {challengeSubView === 'misi' && (
+                      <div className="space-y-4 text-left pb-6 animate-fadeIn bg-slate-50 min-h-screen">
+                        {/* Header */}
+                        <div className="bg-white border-b border-slate-100 px-5 pt-8 pb-4 flex items-center justify-between">
+                          <button onClick={() => setChallengeSubView('home')} className="p-1.5 hover:bg-slate-50 rounded-full transition">
+                            <ArrowLeft className="w-5 h-5 text-slate-800" />
+                          </button>
+                          <span className="text-[15px] font-black text-slate-900 tracking-tight">Challenge kamu</span>
+                          <button onClick={() => setChallengeSubView('games')} className="p-1.5 hover:bg-slate-55 rounded-full transition text-slate-700">
+                            <Trophy className="w-5 h-5 text-slate-600 hover:text-yellow-500" />
+                          </button>
+                        </div>
+
+                        {/* 7-Day Healthy Challenge Banner */}
+                        <div className="mx-4">
+                          <div className="bg-gradient-to-br from-[#00875A] via-[#059669] to-[#047857] text-white rounded-3xl p-5 shadow-sm relative overflow-hidden flex items-center justify-between">
+                            <div className="space-y-2.5 z-10 flex-1 pr-4">
+                              <h4 className="text-[14px] font-black tracking-tight leading-tight">7-Day Healthy Challenge</h4>
+                              <p className="text-[22px] font-extrabold text-[#cbd52d] leading-none mt-1">
+                                {misiTargets.filter(t => t.done).length}/7 <span className="text-xs text-emerald-100 font-semibold">hari selesai</span>
+                              </p>
+                              {/* Progress bar */}
+                              <div className="w-full h-2 bg-emerald-950/40 rounded-full overflow-hidden mt-3 relative">
+                                <div className="h-full bg-[#cbd52d] rounded-full transition-all duration-300" style={{ width: `${(misiTargets.filter(t => t.done).length / 7) * 100}%` }}></div>
+                              </div>
+                            </div>
+                            {/* Mascot on Right */}
+                            <div className="w-16 h-16 shrink-0 bg-white/10 rounded-2xl flex items-center justify-center text-4xl shadow-inner border border-white/15 z-10">
+                              🤖
+                            </div>
+                            {/* Decorative background blob */}
+                            <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-emerald-500/10 rounded-full blur-xl pointer-events-none"></div>
+                          </div>
+                        </div>
+
+                        {/* Misi Hari Ini Checklist Container */}
+                        <div className="mx-4 bg-white border border-slate-150 rounded-3xl p-5 shadow-sm space-y-4">
+                          <div className="flex items-center justify-between pb-1 border-b border-slate-50">
+                            <span className="text-[13px] font-black text-slate-900 tracking-tight">Misi Hari Ini</span>
+                            <button onClick={() => alert('Membuka statistik misi...')} className="text-[10px] font-black text-emerald-700 hover:underline">
+                              Lihat Hasil &gt;
+                            </button>
+                          </div>
+
+                          <div className="space-y-3.5">
+                            {misiTargets.map(target => (
+                              <div 
+                                key={target.id}
+                                onClick={() => toggleMisi(target.id)}
+                                className="flex items-center gap-3 cursor-pointer group select-none py-0.5"
+                              >
+                                {/* Check circle icon */}
+                                <div className={`w-5 h-5 rounded-full border flex items-center justify-center transition shrink-0 ${
+                                  target.done 
+                                    ? 'bg-emerald-500 border-emerald-500 text-white text-[10px] font-black shadow-sm shadow-emerald-200' 
+                                    : 'border-slate-350 bg-white group-hover:border-slate-400'
+                                }`}>
+                                  {target.done && '✓'}
+                                </div>
+                                <span className={`text-[11px] font-bold transition-all ${
+                                  target.done 
+                                    ? 'text-slate-400 line-through opacity-85' 
+                                    : 'text-slate-700 font-extrabold'
+                                }`}>
+                                  {target.text}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Streak Kamu Banner */}
+                        <div className="mx-4">
+                          <div className="bg-gradient-to-r from-amber-50 to-[#fef9c3] border border-amber-200 p-5 rounded-3xl flex items-center justify-between shadow-sm relative overflow-hidden">
+                            <div className="space-y-2 max-w-[65%] text-left z-10">
+                              <h4 className="text-[13.5px] font-black text-slate-800 tracking-tight flex items-center gap-1">
+                                <span>🔥</span>
+                                <span>Streak Kamu</span>
+                                <span>🔥</span>
+                              </h4>
+                              <p className="text-[14px] font-extrabold text-amber-700 leading-snug">5 hari berturut-turut</p>
+                              <p className="text-[9px] text-slate-550 font-semibold leading-relaxed">
+                                Pertahankan streakmu dan dapatkan hadiah menarik
+                              </p>
+                            </div>
+                            {/* Gift Box Icon */}
+                            <div className="w-16 h-16 shrink-0 bg-white rounded-2xl border border-slate-150 flex items-center justify-center text-4xl shadow-sm relative z-10">
+                              🎁
+                            </div>
+                            {/* Decorative background blob */}
+                            <div className="absolute right-3 bottom-3 w-5 h-5 rounded-full bg-emerald-55 border border-emerald-100 flex items-center justify-center text-xs shadow-sm z-20">
+                              🤖
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* View 3: Games Grid */}
+                    {challengeSubView === 'games' && (
+                      <div className="space-y-0 text-left pb-6 animate-fadeIn bg-slate-50 min-h-screen">
+                        {/* Header Banner */}
+                        <div className="bg-gradient-to-br from-emerald-600 via-emerald-700 to-yellow-600/80 text-white px-5 pt-8 pb-5 relative rounded-b-[32px] shadow-md">
+                          <div className="flex items-center justify-between mb-4">
+                            <button onClick={() => setChallengeSubView('misi')} className="p-1 bg-white/10 hover:bg-white/20 rounded-full transition">
+                              <ArrowLeft className="w-5 h-5 text-white" />
+                            </button>
+                            <span className="text-xs font-black uppercase tracking-widest text-white/90">Games & Misi</span>
+                            <div className="w-7"></div>
+                          </div>
+                          
+                          <div className="flex items-center justify-between gap-4">
+                            <div>
+                              <h2 className="text-[20px] font-black leading-tight tracking-tight">Games</h2>
+                              <p className="text-[10px] text-emerald-100 font-bold mt-1">Bermain sambil belajar cara menjaga gizi optimal harian.</p>
+                            </div>
+                            <div className="w-16 h-16 shrink-0 bg-white/15 rounded-2xl flex items-center justify-center text-3xl shadow-inner border border-white/10">
+                              🎮
+                            </div>
+                          </div>
+
+                          {/* Subtabs Semua / Tersimpan */}
+                          <div className="flex border-b border-white/20 mt-5 text-[11px] font-black text-white/70">
+                            <span className="pb-2 px-3 border-b-2 border-white text-white font-extrabold cursor-pointer">Semua</span>
+                            <span className="pb-2 px-3 cursor-pointer hover:text-white transition">Tersimpan</span>
+                          </div>
+                        </div>
+
+                        {/* Grid of Games */}
+                        <div className="mx-4 mt-5 space-y-4">
+                          <div className="grid grid-cols-3 gap-3">
+                            {[
+                              { id: 'tebak', name: 'Tebak Gambar', icon: '👩‍💻' },
+                              { id: 'fruity', name: 'Tutty Fruity', icon: '🍉' },
+                              { id: 'uno', name: 'Health Uno', icon: '🃏' },
+                              { id: 'boom', name: 'Healthy Boom', icon: '💣' },
+                              { id: 'sudoku', name: 'Sudoku Fruity', icon: '🧩' },
+                              { id: 'xox', name: 'Health XOX', icon: '🎮' },
+                              { id: 'search', name: 'Search Your Health', icon: '🔍' },
+                              { id: 'puzzle', name: 'Puzzle Nutritone', icon: '🧩' },
+                              { id: 'monopoly', name: 'Monopoli', icon: '🎲' }
+                            ].map(game => (
+                              <div 
+                                key={game.id}
+                                onClick={() => alert(`Membuka game: ${game.name}...`)}
+                                className="bg-white border border-slate-100 rounded-3xl p-3.5 shadow-[0_2px_8px_rgba(15,23,42,0.03)] flex flex-col items-center justify-between text-center gap-3 cursor-pointer hover:shadow active:scale-95 transition"
+                              >
+                                <div className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-100/50 flex items-center justify-center text-2xl shrink-0">
+                                  {game.icon}
+                                </div>
+                                <span className="text-[9.5px] font-black text-slate-800 leading-tight block">{game.name}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* -------------------------------------------------------------
+                    TAB 4: RIWAYAT TIMELINE & WRAPPED
+                    ------------------------------------------------------------- */}
+                {activeTab === 'riwayat' && (
+                  <div className="flex-1 flex flex-col justify-between animate-fadeIn pb-20 bg-slate-50 min-h-screen">
+                    
+                    {/* View 1: Timeline / Riwayat List */}
+                    {riwayatSubView === 'home' && (
+                      <div className="space-y-4 text-left pb-6 animate-fadeIn">
+                        {/* Header */}
+                        <div className="bg-white border-b border-slate-100 px-5 pt-8 pb-4 flex items-center justify-between">
+                          <button onClick={() => { setActiveTab('dashboard'); setDashboardSubView('home'); }} className="p-1.5 hover:bg-slate-55 rounded-full transition">
+                            <ArrowLeft className="w-5 h-5 text-slate-800" />
+                          </button>
+                          <span className="text-[16px] font-black text-slate-900 tracking-tight">Riwayat</span>
+                          <button onClick={() => setRiwayatSubView('wrapped')} className="p-1.5 hover:bg-slate-55 rounded-full text-slate-700 transition">
+                            <Trophy className="w-5 h-5 text-slate-700 hover:text-yellow-500 fill-current" />
+                          </button>
+                        </div>
+
+                        {/* Scrollable category list */}
+                        <div className="flex overflow-x-auto gap-2.5 pb-2 scrollbar-none px-4">
+                          {['Semua', 'CEKAT Station', 'Nutrisi', 'My health progress', 'Riwayat Konsultasi'].map(cat => {
+                            const isSelected = riwayatCategory === cat;
+                            return (
+                              <button
+                                key={cat}
+                                onClick={() => setRiwayatCategory(cat)}
+                                className={`px-4 py-2 rounded-full text-[10.5px] font-black uppercase tracking-wider transition duration-150 shrink-0 border ${
+                                  isSelected
+                                    ? 'bg-[#cbd52d] border-[#cbd52d] text-slate-900 shadow-sm'
+                                    : 'bg-white border-slate-150 text-slate-500 hover:bg-slate-50'
+                                }`}
+                              >
+                                {cat}
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        {/* Cards List filtered by category */}
+                        <div className="mx-4 space-y-4">
+                          
+                          {/* 1. Hasil CEKAT Station Card */}
+                          {(riwayatCategory === 'Semua' || riwayatCategory === 'CEKAT Station') && (
+                            <div className="bg-white border border-slate-150 rounded-[32px] p-4 shadow-sm space-y-3">
+                              <div className="flex items-start justify-between">
+                                <div className="flex items-center gap-3">
+                                  <div className="w-10 h-10 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center text-xl shrink-0">
+                                    🏥
+                                  </div>
+                                  <div className="min-w-0">
+                                    <h4 className="text-[13px] font-black text-slate-900 leading-tight">Hasil CEKAT Station</h4>
+                                    <p className="text-[9.5px] font-semibold text-slate-450 mt-0.5 leading-none">30 Agustus 2026 08.30</p>
+                                    <p className="text-[9px] font-black text-slate-500 mt-1">Puskesmas Pembantu Ds. Ngabab</p>
+                                  </div>
+                                </div>
+                                <div className="text-right space-y-1.5">
+                                  <button onClick={() => alert('Membuka detail hasil station...')} className="text-[9.5px] font-black text-slate-800 hover:underline block">
+                                    Lihat Detail &gt;
+                                  </button>
+                                  <span className="text-[8px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-100 inline-block">
+                                    Perlu Perhatian
+                                  </span>
+                                </div>
+                              </div>
+
+                              {/* Measurement grid 7 columns */}
+                              <div className="border border-slate-200 rounded-xl overflow-hidden shadow-inner">
+                                <table className="w-full text-center text-[8.5px] font-black border-collapse">
+                                  <thead>
+                                    <tr className="bg-emerald-700 text-white border-b border-slate-200">
+                                      <th className="py-2 px-1 border-r border-slate-200/50">TD</th>
+                                      <th className="py-2 px-1 border-r border-slate-200/50">Gula Darah</th>
+                                      <th className="py-2 px-1 border-r border-slate-200/50">HR</th>
+                                      <th className="py-2 px-1 border-r border-slate-200/50">LP</th>
+                                      <th className="py-2 px-1 border-r border-slate-200/50">TB</th>
+                                      <th className="py-2 px-1 border-r border-slate-200/50">BB</th>
+                                      <th className="py-2 px-1">IMT</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr className="bg-white text-slate-800">
+                                      <td className="py-2.5 px-0.5 border-r border-slate-200">140/85 mmHg</td>
+                                      <td className="py-2.5 px-0.5 border-r border-slate-200">85 mg/dL</td>
+                                      <td className="py-2.5 px-0.5 border-r border-slate-200">60 bpm</td>
+                                      <td className="py-2.5 px-0.5 border-r border-slate-200">83 cm</td>
+                                      <td className="py-2.5 px-0.5 border-r border-slate-200">158 cm</td>
+                                      <td className="py-2.5 px-0.5 border-r border-slate-200">60 kg</td>
+                                      <td className="py-2.5 px-0.5 font-extrabold text-amber-700">24,03 kg/m²</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* 2. Nutrisi & Scan Makanan Card */}
+                          {(riwayatCategory === 'Semua' || riwayatCategory === 'Nutrisi') && (
+                            <div className="bg-white border border-slate-150 rounded-[32px] p-4 shadow-sm flex items-center justify-between">
+                              <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-2xl bg-white border border-slate-150 overflow-hidden shrink-0 p-1 flex items-center justify-center">
+                                  <img src="https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=80&q=80" alt="Salad" className="w-full h-full object-cover rounded-lg" />
+                                </div>
+                                <div className="min-w-0">
+                                  <h4 className="text-[13px] font-black text-slate-900 leading-tight">Nutrisi & Scan Makanan</h4>
+                                  <p className="text-[9.5px] font-semibold text-slate-450 mt-0.5 leading-none">30 Agustus 2026 08.30</p>
+                                  <div className="flex items-center gap-2 mt-1.5">
+                                    <span className="text-[10px] font-extrabold text-slate-700">Salad Ayam</span>
+                                    <span className="text-[7.5px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">
+                                      GOOD
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                              <span className="text-xs font-black text-slate-800 pr-2">307 kkal</span>
+                            </div>
+                          )}
+
+                          {/* 3. My Health Progress Card */}
+                          {(riwayatCategory === 'Semua' || riwayatCategory === 'My health progress') && (
+                            <div className="bg-white border border-slate-150 rounded-[32px] p-4 shadow-sm flex items-center justify-between">
+                              <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center text-xl shrink-0">
+                                  📅
+                                </div>
+                                <div className="min-w-0">
+                                  <h4 className="text-[13px] font-black text-slate-900 leading-tight">My Health Progress</h4>
+                                  <p className="text-[9.5px] font-semibold text-slate-450 mt-0.5 leading-none">30 Agustus 2026 08.30</p>
+                                  <p className="text-[9.5px] font-bold text-slate-600 mt-2 leading-relaxed">
+                                    Aktivitas = 1x/minggu &rarr; 4x/minggu <br />
+                                    Healthy Challenge = 21/30 hari
+                                  </p>
+                                </div>
+                              </div>
+                              <button onClick={() => alert('Membuka detail perkembangan gizi...')} className="text-[9.5px] font-black text-slate-800 hover:underline pr-2 shrink-0">
+                                Lihat Detail &gt;
+                              </button>
+                            </div>
+                          )}
+
+                          {/* 4. Riwayat Konsultasi Card */}
+                          {(riwayatCategory === 'Semua' || riwayatCategory === 'Riwayat Konsultasi') && (
+                            <div className="bg-white border border-slate-150 rounded-[32px] p-4 shadow-sm flex items-center justify-between">
+                              <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center text-xl shrink-0">
+                                  🩺
+                                </div>
+                                <div className="min-w-0">
+                                  <h4 className="text-[13px] font-black text-slate-900 leading-tight">Riwayat Konsultasi</h4>
+                                  <p className="text-[9.5px] font-semibold text-slate-450 mt-0.5 leading-none">30 Agustus 2026 08.30</p>
+                                  <div className="flex items-center gap-2 mt-2">
+                                    <span className="text-[10px] font-black text-slate-800">Dr. Nanda Amelia M.Gizi</span>
+                                    <span className="text-red-500 font-extrabold text-[10px] bg-red-50 px-1.5 py-0.5 rounded border border-red-100 flex items-center gap-0.5 select-none scale-90">
+                                      📄 PDF
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                              <button onClick={() => alert('Mengunduh dokumen konsultasi PDF...')} className="text-[9.5px] font-black text-slate-800 hover:underline pr-2 shrink-0">
+                                Lihat Detail &gt;
+                              </button>
+                            </div>
+                          )}
+
+                          {/* Yellow Submit button */}
+                          <button 
+                            onClick={() => alert('Membuka daftar lengkap riwayat kesehatan Anda...')}
+                            className="w-full py-3.5 bg-[#f1c40f] hover:bg-[#cbd52d]/90 text-slate-900 font-black text-[12px] rounded-xl shadow-md transition active:scale-95 flex items-center justify-center"
+                          >
+                            Lihat Semua Riwayat
+                          </button>
+
+                          {/* Cute Mascot footer overlay */}
+                          <div className="flex justify-end pt-2 pr-1">
+                            <div className="w-16 h-16 rounded-full bg-emerald-50 border border-emerald-150 flex items-center justify-center text-3xl shadow-sm relative overflow-visible select-none">
+                              🤖
+                              <div className="absolute -top-3 -left-3 w-5 h-5 bg-yellow-400 text-white rounded-full flex items-center justify-center text-xs font-black shadow border border-white">?</div>
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>
+                    )}
+
+                    {/* View 2: Wrapped */}
+                    {riwayatSubView === 'wrapped' && (
+                      <div className="space-y-4 text-left pb-6 animate-fadeIn bg-slate-50 min-h-screen">
+                        {/* Header Banner Confetti */}
+                        <div className="bg-gradient-to-br from-yellow-500 via-[#10b981] to-emerald-800 text-white px-5 pt-8 pb-6 relative rounded-b-[36px] shadow-lg overflow-hidden">
+                          {/* Sparkles / Confetti graphics */}
+                          <div className="absolute top-2 left-6 text-xl opacity-60">🎉</div>
+                          <div className="absolute top-4 right-10 text-xl opacity-60">✨</div>
+                          <div className="absolute bottom-4 left-1/3 text-lg opacity-40">🌟</div>
+
+                          <div className="flex items-center justify-between mb-4 z-10 relative">
+                            <button onClick={() => setRiwayatSubView('home')} className="p-1 bg-white/10 hover:bg-white/20 rounded-full transition">
+                              <ArrowLeft className="w-5 h-5 text-white" />
+                            </button>
+                            <span className="text-xs font-black uppercase tracking-widest text-[#fef9c3] scale-95">CEKAT Wrapped</span>
+                            <button onClick={() => alert('Menu wrapped dibuka')} className="p-1.5 hover:bg-white/10 rounded-full transition">
+                              <MoreHorizontal className="w-5 h-5 text-white" />
+                            </button>
+                          </div>
+                          
+                          <div className="space-y-1 relative z-10 text-center">
+                            <h2 className="text-[26px] font-black tracking-tight leading-none text-white">CEKAT Wrapped</h2>
+                            <p className="text-[12px] text-yellow-200 font-black tracking-wide mt-2">Your 2026 Nutrition Journey</p>
+                          </div>
+                        </div>
+
+                        {/* List of Wrapped Slide Cards */}
+                        <div className="mx-4 mt-2 space-y-4">
+                          
+                          {/* Card 1: Top Makanan Favorit */}
+                          <div className="bg-white border border-slate-150 rounded-[32px] p-5 shadow-sm space-y-3 text-left relative">
+                            <h4 className="text-[13px] font-black text-slate-900 tracking-tight">Top 5 Makanan Favorit Kamu</h4>
+                            <ol className="space-y-1.5 text-[11px] font-black text-slate-700 list-decimal pl-5">
+                              <li>Salad Sayur</li>
+                              <li>Nasi Campur</li>
+                              <li>Nasi Goreng</li>
+                              <li>Grill Steak</li>
+                              <li>Omlet</li>
+                            </ol>
+                            <button onClick={() => alert('Menu detail makanan favorit...')} className="absolute bottom-4 right-4 text-slate-400 hover:text-slate-650">
+                              <MoreHorizontal className="w-4 h-4" />
+                            </button>
+                          </div>
+
+                          {/* Card 2: Nutriscore Balanced & girl illustration */}
+                          <div className="bg-white border border-slate-150 rounded-[32px] p-5 shadow-sm text-center relative overflow-hidden">
+                            <div className="flex items-center justify-between gap-4">
+                              <div className="flex-1 text-left space-y-2">
+                                <h4 className="text-[11.5px] font-black text-slate-900 leading-tight">Selamat Skor Nutrisi kamu Tahun ini 80/100</h4>
+                                <p className="text-[24px] font-black text-[#00875A] tracking-wider mt-1">BALANCED</p>
+                              </div>
+                              {/* Balance girl SVG illustration */}
+                              <div className="w-24 h-24 shrink-0 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center p-2 overflow-hidden shadow-inner relative">
+                                <svg viewBox="0 0 100 100" className="w-full h-full text-slate-700">
+                                  {/* Beam scale */}
+                                  <line x1="10" y1="80" x2="90" y2="80" stroke="#475569" strokeWidth="4" strokeLinecap="round" />
+                                  <polygon points="50,80 40,95 60,95" fill="#64748b" />
+                                  {/* Balanced bar */}
+                                  <line x1="20" y1="55" x2="80" y2="55" stroke="#10b981" strokeWidth="3" strokeLinecap="round" />
+                                  <circle cx="50" cy="55" r="5" fill="#f59e0b" />
+                                  {/* Girl figure */}
+                                  <circle cx="50" cy="35" r="6" fill="#f87171" />
+                                  <line x1="50" y1="41" x2="50" y2="55" stroke="#f87171" strokeWidth="2.5" />
+                                  {/* Balanced hands arms holding fruits */}
+                                  <line x1="50" y1="44" x2="30" y2="40" stroke="#f87171" strokeWidth="2" strokeLinecap="round" />
+                                  <line x1="50" y1="44" x2="70" y2="40" stroke="#f87171" strokeWidth="2" strokeLinecap="round" />
+                                  {/* Fruit emojis (apple and orange) */}
+                                  <circle cx="30" cy="37" r="3" fill="#ef4444" />
+                                  <circle cx="70" cy="37" r="3" fill="#f97316" />
+                                </svg>
+                              </div>
+                            </div>
+                            <button onClick={() => alert('Menu detail skor nutrisi...')} className="absolute bottom-4 right-4 text-slate-400 hover:text-slate-650">
+                              <MoreHorizontal className="w-4 h-4" />
+                            </button>
+                          </div>
+
+                          {/* Card 3: Gula Turun */}
+                          <div className="bg-white border border-slate-150 rounded-[32px] p-5 shadow-sm flex items-center justify-between text-left relative">
+                            <div className="pr-4">
+                              <p className="text-[12px] font-black text-slate-900 leading-snug">
+                                Konsumsi Gula turun <span className="text-emerald-600 font-extrabold text-[13px]">12%</span> dari Tahun lalu
+                              </p>
+                            </div>
+                            <button onClick={() => alert('Menu detail asupan gula...')} className="text-slate-400 hover:text-slate-650 shrink-0">
+                              <MoreHorizontal className="w-4 h-4" />
+                            </button>
+                          </div>
+
+                          {/* Card 4: Rajin Sarapan */}
+                          <div className="bg-white border border-slate-150 rounded-[32px] p-5 shadow-sm flex items-center justify-between text-left relative">
+                            <div className="pr-4">
+                              <p className="text-[12px] font-black text-slate-900 leading-snug">
+                                Kamu termasuk <span className="text-emerald-600 font-extrabold text-[13px]">5%</span> Pengguna yang paling <span className="text-purple-700">Rajin Sarapan</span>
+                              </p>
+                            </div>
+                            <button onClick={() => alert('Menu detail data sarapan...')} className="text-slate-400 hover:text-slate-650 shrink-0">
+                              <MoreHorizontal className="w-4 h-4" />
+                            </button>
+                          </div>
+
+                          {/* Footer Message */}
+                          <div className="text-center py-4 space-y-2 select-none relative overflow-visible">
+                            <h3 className="text-[14px] font-black text-slate-800 tracking-tight uppercase">Selamat 1 TAHUN bersama CEKAT</h3>
+                            <p className="text-[11px] text-slate-500 font-bold">Kamu Hebat, Tetap Semangat ya!</p>
+                            {/* Mascot in background */}
+                            <div className="w-10 h-10 rounded-full bg-emerald-50 border border-emerald-150 flex items-center justify-center text-xl shadow-sm mx-auto mt-2">
+                              🤖
+                            </div>
+                          </div>
+
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {/* -------------------------------------------------------------
                     TAB 5: PROFIL (User profiles & connection status)
                     ------------------------------------------------------------- */}
@@ -2308,5 +3460,13 @@ export default function CekatApp() {
       </div>
 
     </div>
+  );
+}
+
+export default function CekatApp() {
+  return (
+    <React.Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center text-slate-400 font-semibold">Memuat...</div>}>
+      <CekatAppContent />
+    </React.Suspense>
   );
 }
