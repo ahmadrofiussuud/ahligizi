@@ -1903,7 +1903,7 @@ function CekatAppContent() {
 
                           {/* Article Body */}
                           <div className="text-[11.5px] text-slate-750 font-medium leading-relaxed space-y-4 pt-2">
-                            {selectedArticle.content.split('\n\n').map((para, i) => {
+                            {selectedArticle.content.split('\n\n').map((para: string, i: number) => {
                               const trimmed = para.trim();
                               if (!trimmed) return null;
 
@@ -1920,7 +1920,7 @@ function CekatAppContent() {
                               if (trimmed.startsWith('*') || trimmed.startsWith('-') || /^\d+\./.test(trimmed)) {
                                 return (
                                   <ul key={i} className="list-disc pl-4 space-y-1.5 text-slate-650">
-                                    {trimmed.split('\n').map((li, j) => {
+                                    {trimmed.split('\n').map((li: string, j: number) => {
                                       const cleanLi = li.replace(/^[\*\-\d\.\s]+/, '').trim();
                                       // Bold highlight inside lists e.g. **text**:
                                       const boldMatch = cleanLi.match(/^\*\*(.*?)\*\*(.*)/);
@@ -1941,7 +1941,7 @@ function CekatAppContent() {
                               const boldMatch = trimmed.match(/\*\*(.*?)\*\*/g);
                               if (boldMatch) {
                                 let html = trimmed;
-                                boldMatch.forEach(m => {
+                                boldMatch.forEach((m: string) => {
                                   const text = m.replace(/\*\*/g, '');
                                   html = html.replace(m, `<strong>${text}</strong>`);
                                 });
