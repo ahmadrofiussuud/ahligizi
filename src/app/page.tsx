@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { 
   Camera, 
   Sparkles, 
@@ -95,13 +96,19 @@ export default function LandingPage() {
             CekGizi NutriSnap membantu Anda mendeteksi kalori piring makan secara real-time, 
             menganalisis kandungan nutrisi akurat, dan menghubungkan Anda dengan para praktisi ahli gizi handal.
           </p>
-          <div className="pt-4">
-            <a 
-              href="#login-section"
-              className="px-8 py-3.5 rounded-md bg-white text-[#2d8d81] font-extrabold text-xs shadow hover:bg-slate-50 transition"
+          <div className="pt-4 flex flex-wrap gap-3">
+            <Link 
+              href="/app2"
+              className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-400 text-slate-950 font-black text-xs shadow-lg hover:brightness-105 active:scale-95 transition flex items-center gap-1.5"
             >
-              Mulai Demo
-            </a>
+              <span>📱 Buka CEKAT App 2 (Terbaru)</span>
+            </Link>
+            <Link 
+              href="/app"
+              className="px-6 py-3.5 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 text-white font-extrabold text-xs shadow hover:bg-white/30 transition flex items-center gap-1.5"
+            >
+              <span>⚡ CEKAT App 1</span>
+            </Link>
           </div>
         </div>
 

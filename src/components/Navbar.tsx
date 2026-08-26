@@ -38,7 +38,8 @@ export default function Navbar() {
     window.location.href = '/';
   };
 
-  // Hide top site Navbar on /app2 so App 2 uses its own clean header & layout
+
+  // Hide top site Navbar on /app2 so App 2 uses its own dedicated top header navbar
   if (pathname === '/app2') {
     return null;
   }
@@ -179,26 +180,64 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Navigation Links */}
-      {isLandingPage && !isLoggedIn ? (
-        <div className={`md:hidden flex overflow-x-auto py-2 px-3 space-x-2 border-t text-xs transition-all ${
-          isScrolled 
-            ? 'bg-white/95 border-slate-100 text-slate-600' 
-            : 'bg-[#2d8d81]/90 border-transparent text-teal-50'
+      {/* Mobile Navigation Links / App Switcher Bar */}
+      {isLandingPage ? (
+        <div className={`md:hidden flex items-center overflow-x-auto py-2.5 px-4 space-x-2 text-xs transition-all scrollbar-none ${
+          isScrolled || isLoggedIn
+            ? 'bg-white/95 border-b border-slate-100 text-slate-800 shadow-sm' 
+            : 'bg-slate-950/85 backdrop-blur-md border-b border-white/10 text-white'
         }`}>
-          {landingLinks.map((link) => (
+          <span className="text-[10px] font-black uppercase tracking-wider text-amber-400 shrink-0 mr-1">
+            Pilih App:
+          </span>
+          <Link
+            href="/app2"
+            className="shrink-0 px-3 py-1.5 rounded-full font-black text-xs bg-gradient-to-r from-[#2d8d81] to-[#3fa89b] text-white shadow-md flex items-center gap-1 active:scale-95 transition"
+          >
+            <span>📱 CEKAT App 2 (Baru)</span>
+          </Link>
+          <Link
+            href="/app"
+            className="shrink-0 px-3 py-1.5 rounded-full font-extrabold text-xs bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1 active:scale-95 transition"
+          >
+            <span>⚡ CEKAT App 1</span>
+          </Link>
+          <Link
+            href="/station"
+            className="shrink-0 px-3 py-1.5 rounded-full font-bold text-xs bg-amber-100 text-amber-900 border border-amber-300 flex items-center gap-1"
+          >
+            <span>🏥 Station</span>
+          </Link>
+          {landingLinks.filter(l => !['/app', '/app2', '/station'].includes(l.href)).map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="shrink-0 px-2.5 py-1.5 rounded-lg font-bold"
+              className={`shrink-0 px-2.5 py-1.5 rounded-lg font-semibold ${
+                isScrolled || isLoggedIn ? 'text-slate-600 hover:text-slate-900' : 'text-teal-100 hover:text-white'
+              }`}
             >
               <span>{link.name}</span>
             </Link>
           ))}
         </div>
-      ) : !isLandingPage && isLoggedIn ? (
-        <div className="md:hidden flex overflow-x-auto py-2 px-3 space-x-2 border-t border-slate-100 bg-white/95 text-xs">
-          {loggedInLinks.map((link) => {
+      ) : (
+        <div className="md:hidden flex overflow-x-auto py-2.5 px-4 space-x-2 border-t border-slate-100 bg-white/95 text-xs">
+          <span className="text-[10px] font-black uppercase tracking-wider text-[#2d8d81] shrink-0 mr-1 self-center">
+            App:
+          </span>
+          <Link
+            href="/app2"
+            className="shrink-0 px-3 py-1.5 rounded-full font-black text-xs bg-[#2d8d81] text-white shadow-sm"
+          >
+            <span>CEKAT App 2</span>
+          </Link>
+          <Link
+            href="/app"
+            className="shrink-0 px-3 py-1.5 rounded-full font-extrabold text-xs bg-emerald-50 text-emerald-700 border border-emerald-200"
+          >
+            <span>CEKAT App 1</span>
+          </Link>
+          {loggedInLinks.filter(l => !['/app', '/app2'].includes(l.href)).map((link) => {
             const isActive = pathname === link.href;
             return (
               <Link
@@ -216,13 +255,13 @@ export default function Navbar() {
           <Link
             href="/profile"
             className={`shrink-0 px-2.5 py-1.5 rounded-lg font-bold ${
-              pathname === '/profile' ? 'bg-emerald-50 text-emerald-705 border border-emerald-100' : 'text-slate-600'
+              pathname === '/profile' ? 'bg-emerald-50 text-emerald-705 border border-emerald-100' : 'text-slate-650'
             }`}
           >
             <span>Profil</span>
           </Link>
         </div>
-      ) : null}
+      )}
     </header>
   );
 }
