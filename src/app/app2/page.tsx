@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { 
@@ -38,7 +38,7 @@ import {
   ListFilter
 } from 'lucide-react';
 
-export default function CekatApp2Page() {
+function CekatApp2PageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -2515,5 +2515,20 @@ export default function CekatApp2Page() {
 
       </div>
     </div>
+  );
+}
+
+export default function CekatApp2Page() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-teal-50/50">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-10 h-10 border-4 border-teal-600 border-t-transparent rounded-full animate-spin"></div>
+          <span className="text-xs font-bold text-teal-850">Memuat CEKAT App...</span>
+        </div>
+      </div>
+    }>
+      <CekatApp2PageContent />
+    </Suspense>
   );
 }
