@@ -391,6 +391,11 @@ function CekatAppContent() {
     }
   ]);
 
+  // Handle login form submission → go to OTP verification step
+  const handleLogin = () => {
+    setAppState('otp');
+  };
+
   // Handle adding custom scanned food
   const handleSaveScanResult = () => {
     const newLog = {
@@ -1524,7 +1529,7 @@ function CekatAppContent() {
                               onClick={() => setDashboardSubView('kebutuhanmu')}
                               className="flex flex-col items-center cursor-pointer group"
                             >
-                              <div className={`w-[76px] h-[76px] rounded-full border flex items-center justify-center shadow-xs transition group-hover:scale-105 active:scale-95 shrink-0 overflow-hidden p-0.5 ${dashboardSubView === 'kebutuhanmu' ? 'bg-amber-350 border-amber-500' : 'bg-[#EAEAEA] border-[#CCCCCC]/30'}`}>
+                              <div className={`w-[76px] h-[76px] rounded-full border flex items-center justify-center shadow-xs transition group-hover:scale-105 active:scale-95 shrink-0 overflow-hidden p-0.5 ${(dashboardSubView as string) === 'kebutuhanmu' ? 'bg-amber-350 border-amber-500' : 'bg-[#EAEAEA] border-[#CCCCCC]/30'}`}>
                                 <img src="/images/icon_kebutuhan.jpg" alt="Kebutuhan" className="w-full h-full object-cover rounded-full" />
                               </div>
                               <span className="text-[13.5px] font-black text-slate-800 leading-tight mt-2 text-center">Kebutuhanmu</span>
