@@ -39,11 +39,6 @@ export default function Navbar() {
   };
 
 
-  // Hide top site Navbar on /app2 so App 2 uses its own dedicated top header navbar
-  if (pathname === '/app2') {
-    return null;
-  }
-
   const isLandingPage = pathname === '/';
 
   // Navigation links shown when logged in (Clean professional labels without raw emojis)
@@ -53,9 +48,6 @@ export default function Navbar() {
     { name: 'Scan Gizi', href: '/scan' },
     { name: 'Dashboard', href: '/dashboard' },
     { name: 'CEKAT App', href: '/app' },
-    { name: 'CEKAT App 2', href: '/app2' },
-    { name: 'Gamifikasi', href: '/gamification' },
-    { name: 'Konsultasi', href: '/consultation' },
     { name: 'Artikel', href: '/articles' },
   ];
 
@@ -64,7 +56,6 @@ export default function Navbar() {
     { name: 'Pantry AI', href: '/pantry-ai' },
     { name: 'CEKAT Station', href: '/station' },
     { name: 'CEKAT App', href: '/app' },
-    { name: 'CEKAT App 2', href: '/app2' },
     { name: 'Fitur Utama', href: '#features-section' },
     { name: 'Cara Kerja', href: '#how-it-works-section' },
     { name: 'Tim Medis', href: '#doctors-section' },
@@ -84,15 +75,13 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href={isLoggedIn ? "/dashboard" : "/"} className="flex items-center space-x-2 group shrink-0">
-            <div className={`w-9 h-9 rounded-xl flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform ${
-              isLandingPage && !isLoggedIn && !isScrolled ? 'bg-white text-[#2d8d81]' : 'bg-emerald-600 text-white'
-            }`}>
-              <Leaf className="w-5 h-5 font-bold" />
+            <div className="w-9 h-9 rounded-xl bg-white flex items-center justify-center p-0.5 shadow-sm group-hover:scale-105 transition-transform">
+              <img src="/images/logo C cekat.png" alt="Cekat Logo" className="w-full h-full object-contain" />
             </div>
-            <span className={`text-lg font-extrabold tracking-tight ${
+            <span className={`text-lg font-black tracking-tight ${
               isLandingPage && !isLoggedIn && !isScrolled ? 'text-white' : 'text-slate-800'
             }`}>
-              NutriSnap
+              CEKAT
             </span>
           </Link>
 

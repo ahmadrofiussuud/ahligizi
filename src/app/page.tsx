@@ -66,7 +66,7 @@ export default function LandingPage() {
   const handleSimulateLogin = (user: typeof demoUsers[0]) => {
     localStorage.setItem('nutrisnap_logged_in', 'true');
     localStorage.setItem('nutrisnap_user_profile', JSON.stringify(user.profile));
-    router.push('/dashboard');
+    router.push('/app?state=main');
   };
 
   return (
@@ -89,21 +89,29 @@ export default function LandingPage() {
 
         {/* Hero Text content matched with clean styles */}
         <div className="max-w-2xl space-y-6 pt-36 pb-32 z-20 text-white relative pl-6 sm:pl-12 lg:pl-20 xl:pl-32">
+          <span className="text-[10px] font-black uppercase tracking-widest text-[#cbd52d] block bg-emerald-950/40 px-3 py-1 rounded-full border border-emerald-500/30 w-fit">
+            CEK • KENALI • TINDAKLANJUTI
+          </span>
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight tracking-tight text-white drop-shadow-sm">
             WE PROVIDE BEST<br />HEALTHCARE
           </h1>
           <p className="text-xs sm:text-sm text-teal-50 font-bold leading-relaxed max-w-md opacity-95">
-            CekGizi NutriSnap membantu Anda mendeteksi kalori piring makan secara real-time, 
-            menganalisis kandungan nutrisi akurat, dan menghubungkan Anda dengan para praktisi ahli gizi handal.
+            CEKAT membantu Anda mendeteksi risiko Penyakit Tidak Menular (PTM) secara dini, 
+            melacak log asupan nutrisi harian secara praktis, dan menyinkronkan data klinis Kiosk Station secara langsung.
           </p>
           <div className="pt-4 flex flex-wrap gap-3">
             <Link 
               href="/app"
-              className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-[#2d8d81] text-white font-black text-xs shadow-lg hover:brightness-105 active:scale-95 transition flex items-center gap-1.5"
+              className="px-6 py-3.5 rounded-xl bg-[#cbd52d] hover:bg-[#b0ba24] text-slate-900 font-black text-xs shadow-lg hover:brightness-105 active:scale-95 transition flex items-center gap-1.5"
             >
               <span>📱 Buka CEKAT App</span>
             </Link>
           </div>
+        </div>
+
+        {/* Floating waving mascot next to doctor */}
+        <div className="hidden lg:flex absolute right-24 bottom-16 z-20 w-48 h-64 items-center justify-center animate-bounce" style={{ animationDuration: '6s' }}>
+          <img src="/images/maskot cekat normal.png" alt="Cekat Mascot" className="w-full h-full object-contain drop-shadow-lg" />
         </div>
 
         {/* Curved SVG Wave Bottom overlaying layout background naturally without thin white lines */}
@@ -114,162 +122,94 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* 2. Our Departments / Services Section - Modern Minimalist Card Layout (No raw emojis, rich aesthetics) */}
+      {/* 2. Our Services Section - 6 CEKAT Features Grid */}
       <section id="features-section" className="max-w-5xl mx-auto space-y-12 px-6 scroll-mt-24">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-100 pb-6">
-          <div className="space-y-2">
-            <span className="text-[9px] font-black text-emerald-600 uppercase tracking-widest block">LAYANAN UNGGULAN</span>
-            <h2 className="text-2xl font-black text-slate-800 tracking-tight">Our Services</h2>
+          <div className="space-y-2 text-left">
+            <span className="text-[9px] font-black text-[#2d8d81] uppercase tracking-widest block">LAYANAN UNGGULAN PREVENTIF</span>
+            <h2 className="text-2xl font-black text-slate-800 tracking-tight">6 Layanan Kesehatan CEKAT</h2>
           </div>
-          <p className="text-xs text-slate-500 font-semibold max-w-sm">
-            Platform pemantauan nutrisi mandiri terintegrasi medis untuk menjaga metabolisme tubuh tetap prima.
+          <p className="text-xs text-slate-500 font-semibold max-w-sm text-left md:text-right">
+            Ekosistem terintegrasi Puskesmas dan AI untuk penanganan Penyakit Tidak Menular (PTM) secara komprehensif.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-          {/* Service 1: AI Scanner */}
-          <div className="relative group">
-            {/* Cyberpunk tactical offset backplate - rotates and offsets when selected */}
-            <div className={`absolute -inset-1.5 rounded-2xl rounded-tl-[2.2rem] bg-emerald-500/80 transition-all duration-300 ${
-              selectedService === 0 
-                ? 'translate-x-2 translate-y-3 rotate-1 opacity-100 blur-[2px]' 
-                : 'translate-x-0 translate-y-0 rotate-0 opacity-0 scale-95'
-            }`}></div>
-            
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {[
+            {
+              id: 0,
+              title: "Edukasi Kesehatanmu",
+              desc: "Informasi medis terpercaya, panduan gizi seimbang, dan tips pola asuh sehat preventif PTM.",
+              img: "/images/icon_edukasi.jpg",
+              badge: "EDUKASI"
+            },
+            {
+              id: 1,
+              title: "Cek Risiko Kesehatan",
+              desc: "Kalkulator skrining mandiri terintegrasi untuk mendeteksi risiko Penyakit Tidak Menular (PTM) secara dini.",
+              img: "/images/icon_risiko.jpg",
+              badge: "SKRINING"
+            },
+            {
+              id: 2,
+              title: "Langkah Sehatmu",
+              desc: "Misi harian pencegahan PTM, pelacakan aktivitas fisik, dan target nutrisi terarah.",
+              img: "/images/icon_langkah.jpg",
+              badge: "TARGET"
+            },
+            {
+              id: 3,
+              title: "Kebutuhanmu",
+              desc: "Layanan konsultasi gizi terpadu, rujukan faskes primer, serta resep pangan bergizi klinis.",
+              img: "/images/icon_kebutuhan.jpg",
+              badge: "KONSULTASI"
+            },
+            {
+              id: 4,
+              title: "Pengingat & Jadwal",
+              desc: "Pengingat otomatis minum obat, kontrol rutin ke faskes, serta jadwal aktivitas preventif harian.",
+              img: "/images/icon_pengingat.jpg",
+              badge: "REMINDER"
+            },
+            {
+              id: 5,
+              title: "Tanya Ceko AI",
+              desc: "Asisten kecerdasan buatan (Ceko AI Gizi) yang siap melayani tanya jawab nutrisi & saran PTM 24/7.",
+              img: "/images/maskot cekat tanda tanya.png",
+              badge: "AI ASSISTANT"
+            }
+          ].map((srv) => (
             <div 
-              onClick={() => setSelectedService(0)}
-              className={`relative bg-white border p-8 rounded-2xl rounded-tl-[2.2rem] hover:shadow-xl cursor-pointer transition-all duration-300 ease-out flex flex-col justify-between space-y-6 ${
-                selectedService === 0 
-                  ? 'border-emerald-500 shadow-[0_4px_20px_rgba(16,185,129,0.15)]' 
-                  : 'border-slate-100 hover:border-emerald-200'
+              key={srv.id}
+              onClick={() => setSelectedService(srv.id)}
+              className={`relative bg-white border p-5 rounded-3xl hover:shadow-lg cursor-pointer transition-all duration-300 flex flex-col justify-between space-y-5 text-left group overflow-hidden ${
+                selectedService === srv.id 
+                  ? 'border-emerald-500 shadow-[0_8px_25px_rgba(16,185,129,0.12)]' 
+                  : 'border-slate-150 hover:border-emerald-250'
               }`}
             >
               <div className="space-y-4">
-                <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 transition-transform duration-300 group-hover:scale-105">
-                  <Camera className="w-5 h-5" />
+                {/* Thumbnail image instead of simple icon */}
+                <div className="w-full h-32 rounded-2xl overflow-hidden border border-slate-100 bg-slate-50 relative shrink-0">
+                  <img src={srv.img} alt={srv.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                  <div className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-emerald-600/90 text-white font-mono text-[8px] font-black tracking-wider uppercase">
+                    {srv.badge}
+                  </div>
                 </div>
-                <h3 className="text-sm font-extrabold text-slate-850 tracking-wide flex items-center justify-between">
-                  <span>AI Food Scanner</span>
-                  {selectedService === 0 && <span className="text-[9px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded font-black uppercase tracking-wider scale-90">ACTIVE</span>}
-                </h3>
-                <p className="text-xs text-slate-550 leading-relaxed font-semibold">
-                  Deteksi otomatis kalori, protein, lemak, dan karbohidrat secara instan hanya dengan mengunggah foto makanan Anda sehari-hari.
-                </p>
+                <div className="space-y-1">
+                  <h3 className="text-sm font-black text-slate-800 font-mono tracking-tight group-hover:text-emerald-700 transition">
+                    {srv.title}
+                  </h3>
+                  <p className="text-[11.5px] text-slate-500 leading-relaxed font-semibold">
+                    {srv.desc}
+                  </p>
+                </div>
               </div>
               <a href="#login-section" className="text-[10px] font-black text-emerald-600 flex items-center gap-1 hover:text-emerald-700 transition">
-                <span>Coba Demo</span>
-                <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+                <span>Coba Fitur &gt;</span>
               </a>
             </div>
-          </div>
-
-          {/* Service 2: Gamifikasi */}
-          <div className="relative group">
-            {/* Cyberpunk tactical offset backplate - rotates and offsets when selected */}
-            <div className={`absolute -inset-1.5 rounded-2xl rounded-tl-[2.2rem] bg-emerald-500/80 transition-all duration-300 ${
-              selectedService === 1 
-                ? 'translate-x-2 translate-y-3 rotate-1 opacity-100 blur-[2px]' 
-                : 'translate-x-0 translate-y-0 rotate-0 opacity-0 scale-95'
-            }`}></div>
-
-            <div 
-              onClick={() => setSelectedService(1)}
-              className={`relative bg-white border p-8 rounded-2xl rounded-tl-[2.2rem] hover:shadow-xl cursor-pointer transition-all duration-300 ease-out flex flex-col justify-between space-y-6 ${
-                selectedService === 1 
-                  ? 'border-emerald-500 shadow-[0_4px_20px_rgba(16,185,129,0.15)]' 
-                  : 'border-slate-100 hover:border-emerald-200'
-              }`}
-            >
-              <div className="space-y-4">
-                <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 transition-transform duration-300 group-hover:scale-105">
-                  <TrendingUp className="w-5 h-5" />
-                </div>
-                <h3 className="text-sm font-extrabold text-slate-850 tracking-wide flex items-center justify-between">
-                  <span>Tantangan & Gamifikasi Gizi</span>
-                  {selectedService === 1 && <span className="text-[9px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded font-black uppercase tracking-wider scale-90">ACTIVE</span>}
-                </h3>
-                <p className="text-xs text-slate-550 leading-relaxed font-semibold">
-                  Ikuti misi mingguan dan pertahankan rekor beruntun (streak) makan sehat Anda untuk mengklaim lencana dan poin kesehatan.
-                </p>
-              </div>
-              <a href="#login-section" className="text-[10px] font-black text-emerald-600 flex items-center gap-1 hover:text-emerald-700 transition">
-                <span>Coba Demo</span>
-                <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
-              </a>
-            </div>
-          </div>
-
-          {/* Service 3: Dokter Sesi */}
-          <div className="relative group">
-            {/* Cyberpunk tactical offset backplate - rotates and offsets when selected */}
-            <div className={`absolute -inset-1.5 rounded-2xl rounded-tl-[2.2rem] bg-emerald-500/80 transition-all duration-300 ${
-              selectedService === 2 
-                ? 'translate-x-2 translate-y-3 rotate-1 opacity-100 blur-[2px]' 
-                : 'translate-x-0 translate-y-0 rotate-0 opacity-0 scale-95'
-            }`}></div>
-
-            <div 
-              onClick={() => setSelectedService(2)}
-              className={`relative bg-white border p-8 rounded-2xl rounded-tl-[2.2rem] hover:shadow-xl cursor-pointer transition-all duration-300 ease-out flex flex-col justify-between space-y-6 ${
-                selectedService === 2 
-                  ? 'border-emerald-500 shadow-[0_4px_20px_rgba(16,185,129,0.15)]' 
-                  : 'border-slate-100 hover:border-emerald-200'
-              }`}
-            >
-              <div className="space-y-4">
-                <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 transition-transform duration-300 group-hover:scale-105">
-                  <Stethoscope className="w-5 h-5" />
-                </div>
-                <h3 className="text-sm font-extrabold text-slate-850 tracking-wide flex items-center justify-between">
-                  <span>Konsultasi Dokter & Ahli Gizi</span>
-                  {selectedService === 2 && <span className="text-[9px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded font-black uppercase tracking-wider scale-90">ACTIVE</span>}
-                </h3>
-                <p className="text-xs text-slate-550 leading-relaxed font-semibold">
-                  Konsultasikan pola diet dan hasil tracking nutrisi harian Anda secara privat bersama dokter spesialis gizi klinik tersertifikasi.
-                </p>
-              </div>
-              <a href="#login-section" className="text-[10px] font-black text-emerald-600 flex items-center gap-1 hover:text-emerald-700 transition">
-                <span>Coba Demo</span>
-                <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
-              </a>
-            </div>
-          </div>
-
-          {/* Service 4: Wrapped */}
-          <div className="relative group">
-            {/* Cyberpunk tactical offset backplate - rotates and offsets when selected */}
-            <div className={`absolute -inset-1.5 rounded-2xl rounded-tl-[2.2rem] bg-emerald-500/80 transition-all duration-300 ${
-              selectedService === 3 
-                ? 'translate-x-2 translate-y-3 rotate-1 opacity-100 blur-[2px]' 
-                : 'translate-x-0 translate-y-0 rotate-0 opacity-0 scale-95'
-            }`}></div>
-
-            <div 
-              onClick={() => setSelectedService(3)}
-              className={`relative bg-white border p-8 rounded-2xl rounded-tl-[2.2rem] hover:shadow-lg cursor-pointer transition-all duration-300 ease-out flex flex-col justify-between space-y-6 ${
-                selectedService === 3 
-                  ? 'border-emerald-500 shadow-[0_4px_20px_rgba(16,185,129,0.15)]' 
-                  : 'border-slate-100 hover:border-emerald-200'
-              }`}
-            >
-              <div className="space-y-4">
-                <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 transition-transform duration-300 group-hover:scale-105">
-                  <Activity className="w-5 h-5" />
-                </div>
-                <h3 className="text-sm font-extrabold text-slate-850 tracking-wide flex items-center justify-between">
-                  <span>NutriSnap Wrapped</span>
-                  {selectedService === 3 && <span className="text-[9px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded font-black uppercase tracking-wider scale-90">ACTIVE</span>}
-                </h3>
-                <p className="text-xs text-slate-550 leading-relaxed font-semibold">
-                  Lihat ulasan kilas balik (wrapped) nutrisi dan pola makan harian Anda sepanjang tahun yang divisualisasikan dengan infografik menarik.
-                </p>
-              </div>
-              <a href="#login-section" className="text-[10px] font-black text-emerald-600 flex items-center gap-1 hover:text-emerald-700 transition">
-                <span>Coba Demo</span>
-                <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
-              </a>
-            </div>
-          </div>
+          ))}
         </div>
       </section>
 
@@ -374,10 +314,10 @@ export default function LandingPage() {
           </div>
           <div className="space-y-4">
             <span className="text-[9px] font-black text-emerald-600 uppercase tracking-widest block">TENTANG KAMI</span>
-            <h2 className="text-2xl font-black text-slate-800 leading-tight">Membentuk Kebiasaan Makan Sehat Secara Ilmiah</h2>
+            <h2 className="text-2xl font-black text-slate-800 leading-tight">Membentuk Kebiasaan Hidup Sehat Preventif PTM</h2>
             <p className="text-xs text-slate-505 leading-relaxed font-semibold">
-              NutriSnap dikembangkan bersama praktisi nutrisi Indonesia untuk menghadirkan tracking gizi tanpa repot. 
-              Melalui deteksi Gemini AI Vision, kami membantu Anda mengenali pola makan harian dengan tepat guna menghindari risiko penyakit metabolik.
+              CEKAT dikembangkan bersama praktisi medis dan faskes primer Ngabab untuk menghadirkan sistem penapisan (skrining) Penyakit Tidak Menular (PTM) yang efisien.
+              Melalui integrasi data SatuSehat dan pendampingan asisten AI Ceko, kami mendampingi pola diet, log kalori, dan pencegahan risiko hipertensi Anda secara real-time.
             </p>
             <div className="pt-2">
               <a 
@@ -432,14 +372,14 @@ export default function LandingPage() {
         <div className="text-center space-y-2">
           <h2 className="text-2xl font-black text-slate-800 tracking-tight uppercase">WHAT USERS SAY</h2>
           <p className="text-xs text-slate-400 font-semibold max-w-md mx-auto">
-            Cerita sukses dari mereka yang telah mengubah pola hidup menjadi lebih sehat bersama NutriSnap.
+            Cerita sukses dari mereka yang telah mendeteksi risiko dan menjaga kebugaran bersama CEKAT.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-4">
             <p className="text-xs text-slate-505 leading-relaxed italic font-semibold">
-              &ldquo;Dulu saya malas mencatat makanan karena ribet memasukkan data kalori satu per satu. Dengan NutriSnap, saya tinggal jepret foto piring makan siang saya, dan Gemini langsung menghitung kadar protein & karbohidratnya secara instan!&rdquo;
+              &ldquo;Dulu saya khawatir dengan tensi darah dan gula darah saya yang naik turun. Sejak menggunakan CEKAT, saya bisa memantau tren mingguan secara presisi dan dibantu pengingat kontrol faskes otomatis!&rdquo;
             </p>
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center font-bold text-emerald-700 text-xs">
@@ -475,7 +415,7 @@ export default function LandingPage() {
           <div className="text-center space-y-1.5">
             <h3 className="text-lg font-black text-slate-850">Akses Masuk Cepat</h3>
             <p className="text-xs text-slate-500 font-semibold">
-              Silakan pilih salah satu role akun demo berikut untuk mencoba seluruh fitur NutriSnap.
+              Silakan pilih salah satu role akun demo berikut untuk mencoba seluruh fitur CEKAT.
             </p>
           </div>
 
