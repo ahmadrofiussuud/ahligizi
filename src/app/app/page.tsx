@@ -1669,11 +1669,11 @@ function CekatAppContent() {
                     TAB 1: BERANDA / HOME (Kebutuhanmu, Station, Risiko, Reminders, Cart)
                     ------------------------------------------------------------- */}
                 {activeTab === 'dashboard' && (
-                  <div className="flex-1 flex flex-col justify-between animate-fadeIn pb-20">
+                  <div className="flex-1 flex flex-col justify-between animate-fadeIn">
                     
                     {/* View: Beranda / Kebutuhanmu (Hi Sofia!) */}
                     {dashboardSubView === 'home' && (
-                      <div className="flex-1 flex flex-col space-y-5 overflow-y-auto pb-6 text-left relative">
+                      <div className="flex-1 flex flex-col space-y-5 overflow-y-auto pb-20 text-left relative">
                         {/* Header yellow-to-green gradient with logo, notification, and centered name badge */}
                         <div className="bg-gradient-to-r from-[#f1c40f] to-[#10b981] text-white rounded-b-[40px] px-5 pt-8 pb-7 shadow-md text-left relative shrink-0">
                           <div className="flex items-center justify-between mb-4">
@@ -2514,44 +2514,16 @@ function CekatAppContent() {
                             <div className="grid grid-cols-2 gap-3">
 
                               {/* ── Article 1: Hipertensi ── */}
-                              <div 
+                              <div
                                 onClick={() => {
                                   const art = articlesData.find(a => a.id === 'hipertensi');
-                                  if (art) {
-                                    setSelectedArticle(art);
-                                    setDashboardSubView('article_detail');
-                                  }
+                                  if (art) { setSelectedArticle(art); setDashboardSubView('article_detail'); }
                                 }}
-                                className="bg-white rounded-2xl overflow-hidden shadow-md cursor-pointer hover:shadow-lg active:scale-98 transition duration-200"
+                                className="bg-white rounded-2xl overflow-hidden shadow-md cursor-pointer hover:shadow-lg active:scale-[0.98] transition duration-200"
                               >
-                                <div className="h-[90px] overflow-hidden">
-                                  <svg viewBox="0 0 120 90" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-                                    <defs>
-                                      <radialGradient id="bgHt" cx="50%" cy="50%" r="70%">
-                                        <stop offset="0%" stopColor="#fff1f2"/>
-                                        <stop offset="100%" stopColor="#fecdd3"/>
-                                      </radialGradient>
-                                    </defs>
-                                    <rect width="120" height="90" fill="url(#bgHt)"/>
-                                    {/* Tensimeter device */}
-                                    <rect x="6" y="18" width="42" height="28" rx="7" fill="#1e40af" opacity="0.92"/>
-                                    <rect x="9" y="21" width="36" height="19" rx="4" fill="#dbeafe"/>
-                                    <text x="27" y="31" textAnchor="middle" fontSize="8" fill="#1e3a8a" fontWeight="bold">140</text>
-                                    <text x="27" y="37" textAnchor="middle" fontSize="5.5" fill="#3b82f6">/ 85 mmHg</text>
-                                    <rect x="12" y="43" width="30" height="5" rx="2.5" fill="#ef4444" opacity="0.3"/>
-                                    <rect x="12" y="43" width="22" height="5" rx="2.5" fill="#ef4444"/>
-                                    {/* BP cuff arm */}
-                                    <ellipse cx="27" cy="60" rx="18" ry="8" fill="#fca5a5" stroke="#f87171" strokeWidth="1.2"/>
-                                    <rect x="15" y="55" width="24" height="10" rx="5" fill="#fca5a5" stroke="#f87171" strokeWidth="1"/>
-                                    <line x1="27" y1="46" x2="27" y2="52" stroke="#94a3b8" strokeWidth="1.5" strokeLinecap="round"/>
-                                    {/* Heart beat line */}
-                                    <polyline points="55,45 65,45 68,36 73,56 77,30 81,50 85,40 89,50 95,45 115,45" fill="none" stroke="#ef4444" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                                    {/* Warning badge */}
-                                    <circle cx="100" cy="24" r="12" fill="#f59e0b" stroke="white" strokeWidth="2"/>
-                                    <text x="100" y="29" textAnchor="middle" fontSize="14" fill="white" fontWeight="bold">!</text>
-                                    {/* Heart icon */}
-                                    <path d="M68 76 C63 70,52 65,52 58 C52 54,55 52,58.5 54.5 C62 56.5,68 62,68 62 C68 62,74 56.5,77.5 54.5 C81 52,84 54,84 58 C84 65,73 70,68 76Z" fill="#ef4444" stroke="#b91c1c" strokeWidth="0.8"/>
-                                  </svg>
+                                <div className="h-[90px] overflow-hidden relative">
+                                  <img src="/images/cover_hipertensi.jpg" alt="Hipertensi" className="w-full h-full object-cover" />
+                                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
                                 </div>
                                 <div className="p-3">
                                   <span className="text-[7.5px] font-black bg-red-500 text-white px-2 py-0.5 rounded-full">Hipertensi</span>
@@ -2561,49 +2533,16 @@ function CekatAppContent() {
                               </div>
 
                               {/* ── Article 2: Stunting ── */}
-                              <div 
+                              <div
                                 onClick={() => {
                                   const art = articlesData.find(a => a.id === 'stunting');
-                                  if (art) {
-                                    setSelectedArticle(art);
-                                    setDashboardSubView('article_detail');
-                                  }
+                                  if (art) { setSelectedArticle(art); setDashboardSubView('article_detail'); }
                                 }}
-                                className="bg-white rounded-2xl overflow-hidden shadow-md cursor-pointer hover:shadow-lg active:scale-98 transition duration-200"
+                                className="bg-white rounded-2xl overflow-hidden shadow-md cursor-pointer hover:shadow-lg active:scale-[0.98] transition duration-200"
                               >
-                                <div className="h-[90px] overflow-hidden">
-                                  <svg viewBox="0 0 120 90" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-                                    <defs>
-                                      <radialGradient id="bgSt" cx="50%" cy="50%" r="70%">
-                                        <stop offset="0%" stopColor="#fffbeb"/>
-                                        <stop offset="100%" stopColor="#fef3c7"/>
-                                      </radialGradient>
-                                    </defs>
-                                    <rect width="120" height="90" fill="url(#bgSt)"/>
-                                    {/* Mom figure */}
-                                    <circle cx="38" cy="18" r="10" fill="#fbbf24" stroke="#f59e0b" strokeWidth="1"/>
-                                    <path d="M38 28 Q28 35 26 55 L50 55 Q48 35 38 28Z" fill="#f97316"/>
-                                    <line x1="28" y1="38" x2="18" y2="52" stroke="#f97316" strokeWidth="4" strokeLinecap="round"/>
-                                    <line x1="48" y1="38" x2="58" y2="52" stroke="#f97316" strokeWidth="4" strokeLinecap="round"/>
-                                    <line x1="32" y1="55" x2="30" y2="72" stroke="#f97316" strokeWidth="4" strokeLinecap="round"/>
-                                    <line x1="44" y1="55" x2="46" y2="72" stroke="#f97316" strokeWidth="4" strokeLinecap="round"/>
-                                    {/* Child figure */}
-                                    <circle cx="72" cy="24" r="7.5" fill="#fcd34d" stroke="#fbbf24" strokeWidth="1"/>
-                                    <path d="M72 32 Q65 37 64 50 L80 50 Q79 37 72 32Z" fill="#86efac"/>
-                                    <line x1="65" y1="38" x2="57" y2="50" stroke="#86efac" strokeWidth="3" strokeLinecap="round"/>
-                                    <line x1="79" y1="38" x2="87" y2="50" stroke="#86efac" strokeWidth="3" strokeLinecap="round"/>
-                                    <line x1="67" y1="50" x2="65" y2="65" stroke="#86efac" strokeWidth="3" strokeLinecap="round"/>
-                                    <line x1="77" y1="50" x2="79" y2="65" stroke="#86efac" strokeWidth="3" strokeLinecap="round"/>
-                                    {/* Veggies & fruits */}
-                                    <circle cx="15" cy="74" r="8" fill="#4ade80" stroke="#16a34a" strokeWidth="1"/>
-                                    <path d="M15 66 Q13 60 15 58 Q17 56 15 66Z" fill="#16a34a"/>
-                                    <circle cx="36" cy="76" r="7" fill="#fb923c" stroke="#ea580c" strokeWidth="1"/>
-                                    <circle cx="56" cy="75" r="7" fill="#f87171" stroke="#ef4444" strokeWidth="1"/>
-                                    <ellipse cx="96" cy="74" rx="12" ry="8" fill="#fbbf24" stroke="#f59e0b" strokeWidth="1"/>
-                                    {/* Stars */}
-                                    <text x="105" y="20" fontSize="12" fill="#fbbf24">✦</text>
-                                    <text x="10" y="40" fontSize="8" fill="#34d399">✦</text>
-                                  </svg>
+                                <div className="h-[90px] overflow-hidden relative">
+                                  <img src="/images/cover_stunting.jpg" alt="Stunting" className="w-full h-full object-cover" />
+                                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
                                 </div>
                                 <div className="p-3">
                                   <span className="text-[7.5px] font-black bg-orange-500 text-white px-2 py-0.5 rounded-full">Stunting</span>
@@ -3658,30 +3597,36 @@ function CekatAppContent() {
                     </div>
 
                     {/* Artikel Grid */}
-                    <div className="px-4 pt-2 grid grid-cols-2 gap-3">
+                    <div className="px-4 pt-2 pb-4 grid grid-cols-2 gap-3">
                       {[
-                        ...articlesData,
-                        { id: 'diabetes', title: 'Kendalikan Gula Darah Anda', category: 'Diabetes', description: 'Panduan lengkap mengelola kadar gula darah dengan pola makan dan olahraga.', readTime: '5 menit baca', date: '18 Agustus 2026', author: 'dr. Nina Sari, Sp.PD', points: 10, content: '', svgId: 'diabetes' },
-                        { id: 'kolesterol', title: 'Turunkan Kolesterol Secara Alami', category: 'Kolesterol', description: 'Tips diet dan gaya hidup untuk menurunkan kolesterol LDL tanpa efek samping.', readTime: '4 menit baca', date: '15 Agustus 2026', author: 'Fitri Handayani, M.Gizi', points: 10, content: '', svgId: 'kolesterol' },
-                        { id: 'ptm_prevention', title: 'Cegah PTM dari Sekarang!', category: 'Pencegahan', description: 'Langkah-langkah praktis mencegah 5 Penyakit Tidak Menular paling umum di Indonesia.', readTime: '6 menit baca', date: '10 Agustus 2026', author: 'Tim CEKAT', points: 15, content: '', svgId: 'ptm' },
-                        { id: 'aktivitas', title: 'Olahraga Optimal untuk Usia 30+', category: 'Aktivitas', description: 'Rekomendasi jenis dan durasi olahraga yang efektif sesuai usia dan kondisi tubuh.', readTime: '4 menit baca', date: '5 Agustus 2026', author: 'dr. Bima Pratama', points: 10, content: '', svgId: 'aktivitas' },
-                      ].map((art, i) => {
+                        { id: 'hipertensi', title: 'Kenali Hipertensi, Cegah Komplikasi', category: 'Hipertensi', readTime: '4 menit baca', points: 10, cover: '/images/cover_hipertensi.jpg' },
+                        { id: 'stunting', title: 'Cegah Stunting Sejak Dini', category: 'Stunting', readTime: '5 menit baca', points: 10, cover: '/images/cover_stunting.jpg' },
+                        { id: 'diabetes', title: 'Kendalikan Gula Darah Anda', category: 'Diabetes', readTime: '5 menit baca', points: 10, cover: '/images/cover_diabetes.jpg' },
+                        { id: 'kolesterol', title: 'Turunkan Kolesterol Secara Alami', category: 'Kolesterol', readTime: '4 menit baca', points: 10, cover: '/images/cover_kolesterol.jpg' },
+                        { id: 'ptm_prevention', title: 'Cegah PTM dari Sekarang!', category: 'Pencegahan', readTime: '6 menit baca', points: 15, cover: '/images/cover_ptm.jpg' },
+                        { id: 'aktivitas', title: 'Olahraga Optimal untuk Usia 30+', category: 'Aktivitas', readTime: '4 menit baca', points: 10, cover: '/images/cover_aktivitas.jpg' },
+                      ].map((art) => {
                         const catColors: Record<string,string> = { Hipertensi: 'bg-red-500', Stunting: 'bg-orange-500', Diabetes: 'bg-amber-500', Kolesterol: 'bg-yellow-600', Pencegahan: 'bg-emerald-600', Aktivitas: 'bg-blue-500' };
-                        const bgColors = ['from-red-50 to-rose-100', 'from-amber-50 to-yellow-100', 'from-amber-50 to-orange-100', 'from-yellow-50 to-amber-100', 'from-emerald-50 to-teal-100', 'from-blue-50 to-sky-100'];
                         return (
                           <div
                             key={art.id}
                             onClick={() => {
                               const found = articlesData.find(a => a.id === art.id);
                               if (found) { setSelectedArticle(found); setDashboardSubView('article_detail'); }
-                              else { setSelectedArticle({ ...art, content: `# ${art.title}\n\n${art.description}\n\nArtikel lengkap segera hadir. Pantau terus pembaruan CEKAT!` }); setDashboardSubView('article_detail'); }
+                              else { setSelectedArticle({ id: art.id, title: art.title, category: art.category, description: '', readTime: art.readTime, date: '', author: '', points: art.points, content: `# ${art.title}\n\nArtikel lengkap segera hadir. Pantau terus pembaruan CEKAT!`, svgId: art.id }); setDashboardSubView('article_detail'); }
                             }}
-                            className="bg-white rounded-2xl overflow-hidden shadow-md cursor-pointer hover:shadow-lg active:scale-98 transition duration-200"
+                            className="bg-white rounded-2xl overflow-hidden shadow-md cursor-pointer hover:shadow-lg active:scale-[0.98] transition duration-200"
                           >
-                            <div className={`h-[80px] bg-gradient-to-br ${bgColors[i % bgColors.length]} flex items-center justify-center relative`}>
-                              <img src="/images/maskot cekat normal.png" alt={art.category} className="h-16 object-contain opacity-70 mix-blend-multiply" />
-                              <div className="absolute inset-0 flex items-start p-2">
-                                <span className={`text-[7px] font-black ${catColors[art.category] || 'bg-slate-500'} text-white px-1.5 py-0.5 rounded-full`}>{art.category}</span>
+                            {/* Cover Image */}
+                            <div className="h-[96px] w-full relative overflow-hidden">
+                              <img
+                                src={art.cover}
+                                alt={art.title}
+                                className="w-full h-full object-cover"
+                              />
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                              <div className="absolute top-2 left-2">
+                                <span className={`text-[7px] font-black ${catColors[art.category] || 'bg-slate-500'} text-white px-2 py-0.5 rounded-full shadow`}>{art.category}</span>
                               </div>
                             </div>
                             <div className="p-2.5">
