@@ -1,6 +1,6 @@
-// Prisma Schema for NutriSnap App
+// Prisma Schema for CEKAT App
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -12,6 +12,8 @@ model User {
   id                    String         @id @default(uuid())
   name                  String
   email                 String         @unique
+  nik                   String?        @unique  // Nomor Induk Kependudukan
+  phone                 String?        @unique
   password_hash         String?
   avatar_url            String?
   height_cm             Float?
@@ -20,6 +22,7 @@ model User {
   gender                String?
   activity_level        String?        // sedentary, lightly_active, moderately_active, very_active
   daily_calorie_target  Int            @default(2000)
+  email_verified        Boolean        @default(false)
   created_at            DateTime       @default(now())
 
   food_logs             FoodLog[]
@@ -27,6 +30,23 @@ model User {
   badges                UserBadge[]
   consultations         Consultation[]
   orders                Order[]
+  otp_codes             OtpCode[]
+}
+
+// OTP Kode Verifikasi Email
+model OtpCode {
+  id         String   @id @default(uuid())
+  user_id    String?
+  email      String
+  code       String
+  purpose    String   @default("VERIFY_EMAIL") // VERIFY_EMAIL | LOGIN | RESET_PASSWORD
+  expires_at DateTime
+  used       Boolean  @default(false)
+  created_at DateTime @default(now())
+
+  user User? @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([email, code])
 }
 
 model FoodLog {
