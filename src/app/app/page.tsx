@@ -273,6 +273,21 @@ function CekatAppContent() {
   const [otpTimer, setOtpTimer] = useState<number>(30);
   const [otpError, setOtpError] = useState<string>('');
 
+  // ── Toast Notification System ──
+  type ToastType = 'success' | 'error' | 'info' | 'warning';
+  const [toastMessage, setToastMessage] = useState<string>('');
+  const [toastType, setToastType] = useState<ToastType>('info');
+  const [toastVisible, setToastVisible] = useState<boolean>(false);
+  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const showToast = (msg: string, type: ToastType = 'info') => {
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    setToastMessage(msg);
+    setToastType(type);
+    setToastVisible(true);
+    toastTimerRef.current = setTimeout(() => setToastVisible(false), 3000);
+  };
+
   // Chatbot states
   const [chatMessages, setChatMessages] = useState([
     { sender: 'bot', text: 'Halo Sofia! Saya Ceko, asisten AI gizi Anda. Ada yang ingin Anda tanyakan seputar kandungan kalori makanan, pantangan gizi, atau batas garam/gula hari ini?' }
@@ -776,11 +791,11 @@ function CekatAppContent() {
                     <button 
                       onClick={() => {
                         if (!signUpName || !signUpEmailOrPhone || !signUpNik || !signUpPassword) {
-                          alert('Silakan lengkapi seluruh formulir pendaftaran!');
+                          showToast('Silakan lengkapi seluruh formulir terlebih dahulu.', 'error');
                           return;
                         }
                         if (!agreeTerms) {
-                          alert('Anda harus menyetujui Ketentuan Layanan!');
+                          showToast('Anda harus menyetujui Ketentuan Layanan untuk melanjutkan.', 'warning');
                           return;
                         }
                         setAppState('otp');
@@ -875,7 +890,7 @@ function CekatAppContent() {
                         <button 
                           onClick={() => {
                             setOtpTimer(30);
-                            alert('Kode OTP baru telah dikirimkan.');
+                            showToast('Kode OTP baru telah dikirimkan!', 'success');
                           }} 
                           className="underline text-[#00875A] font-black"
                         >
@@ -1218,8 +1233,31 @@ function CekatAppContent() {
 
           {/* Core Simulator viewport container */}
           <div className="flex-1 flex flex-col justify-between bg-[#f7f9f6] text-slate-800 relative w-full h-full overflow-y-auto md:max-h-[804px] select-none">
-            
-            {/* 1. SPLASH SCREEN */}
+
+            {/* ── Toast Notification Overlay ── */}
+            {toastVisible && (
+              <div
+                className="absolute top-14 left-4 right-4 z-[200] pointer-events-none"
+                style={{ animation: 'slideDown 0.25s ease-out' }}
+              >
+                <div className={`flex items-center gap-3 px-4 py-3 rounded-2xl shadow-lg border text-white text-[11px] font-bold leading-snug
+                  ${toastType === 'success' ? 'bg-emerald-600 border-emerald-500' : ''}
+                  ${toastType === 'error' ? 'bg-red-500 border-red-400' : ''}
+                  ${toastType === 'warning' ? 'bg-amber-500 border-amber-400' : ''}
+                  ${toastType === 'info' ? 'bg-slate-700 border-slate-600' : ''}
+                `}>
+                  <span className="text-base shrink-0">
+                    {toastType === 'success' && '✅'}
+                    {toastType === 'error' && '❌'}
+                    {toastType === 'warning' && '⚠️'}
+                    {toastType === 'info' && 'ℹ️'}
+                  </span>
+                  <span>{toastMessage}</span>
+                </div>
+              </div>
+            )}
+
+
             {appState === 'splash' && (
               <div className="flex-1 min-h-[600px] flex flex-col items-center justify-between py-24 px-8 bg-gradient-to-b from-[#22c55e] via-white to-[#cbd52d]/30 text-center animate-fadeIn">
                 <div />
@@ -1494,11 +1532,11 @@ function CekatAppContent() {
                   <button 
                     onClick={() => {
                       if (!signUpName || !signUpEmailOrPhone || !signUpNik || !signUpPassword) {
-                        alert('Silakan lengkapi seluruh formulir pendaftaran!');
+                        showToast('Silakan lengkapi seluruh formulir terlebih dahulu.', 'error');
                         return;
                       }
                       if (!agreeTerms) {
-                        alert('Anda harus menyetujui Ketentuan Layanan!');
+                        showToast('Anda harus menyetujui Ketentuan Layanan untuk melanjutkan.', 'warning');
                         return;
                       }
                       setAppState('otp');
@@ -1611,7 +1649,7 @@ function CekatAppContent() {
                       <button 
                         onClick={() => {
                           setOtpTimer(30);
-                          alert('Kode OTP baru telah dikirimkan ke ' + (signUpEmailOrPhone || emailOrPhone));
+                          showToast('Kode OTP baru telah dikirimkan ke ' + (signUpEmailOrPhone || emailOrPhone), 'success');
                         }} 
                         className="underline text-[#00875A] font-black hover:text-[#00704a]"
                       >
@@ -1834,7 +1872,7 @@ function CekatAppContent() {
                                   </div>
                                 </div>
                                 <button 
-                                  onClick={() => alert('Menghubungkan ke Ahli Gizi Terverifikasi...')}
+                                  onClick={() => showToast('Menghubungkan ke Ahli Gizi Terverifikasi...', 'info')}
                                   className="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-black rounded-full uppercase transition active:scale-95 shadow-xs"
                                 >
                                   Mulai
@@ -2193,7 +2231,7 @@ function CekatAppContent() {
                             <div className="w-full p-4 bg-emerald-50/50 border border-emerald-100 rounded-3xl flex items-start gap-3 shadow-xs">
                               <div className="w-10 h-10 shrink-0 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 font-bold text-lg animate-bounce">🥗</div>
                               <p className="text-[10px] leading-relaxed text-slate-500 font-semibold text-left">
-                                Ingin mempelajari tentang Resiko Penyakitmu? Jangan khawatir! segera <button onClick={() => alert('Membuka edukasi...')} className="text-blue-500 font-extrabold underline cursor-pointer">kunjungi artikel & Webinar kami</button>, dan semoga dapat membantu
+                                Ingin mempelajari tentang Resiko Penyakitmu? Jangan khawatir! segera <button onClick={() => setDashboardSubView('edukasi')} className="text-blue-500 font-extrabold underline cursor-pointer">kunjungi artikel & Webinar kami</button>, dan semoga dapat membantu
                               </p>
                             </div>
                           </div>
@@ -2696,7 +2734,7 @@ function CekatAppContent() {
                                   url: window.location.href,
                                 }).catch(() => {});
                               } else {
-                                alert('Link berhasil disalin!');
+                                showToast('Link artikel berhasil disalin!', 'success');
                               }
                             }}
                             className="p-1.5 hover:bg-slate-50 rounded-full transition"
@@ -2800,7 +2838,7 @@ function CekatAppContent() {
                         <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur-md border-t border-slate-100 flex justify-center z-20 max-w-md mx-auto">
                           <button 
                             onClick={() => {
-                              alert(`Selamat! Anda mendapatkan +${selectedArticle.points} poin karena telah membaca artikel ini.`);
+                              showToast(`Selamat! Anda mendapatkan +${selectedArticle.points} poin karena telah membaca artikel ini.`, 'success');
                               setDashboardSubView('edukasi');
                             }}
                             className="w-full py-3 bg-emerald-700 hover:bg-emerald-600 text-white font-extrabold text-[12px] rounded-2xl shadow-lg shadow-emerald-700/20 active:scale-95 transition flex items-center justify-center gap-1.5"
@@ -3355,7 +3393,7 @@ function CekatAppContent() {
                                 <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-amber-500" />
                                 <div className="text-[10px] font-semibold leading-relaxed">
                                   <strong className="text-slate-850 block font-black text-left">Zat Besi kamu masih kurang hari ini.</strong>
-                                  Kekurangan zat besi dapat menyebabkan lesu & anemia. <button onClick={() => alert('Membuka tips anemia...')} className="text-blue-600 underline font-black">Cara Mencegah Anemia</button>
+                                  Kekurangan zat besi dapat menyebabkan lesu & anemia. <button onClick={() => showToast('Membuka panduan pencegahan anemia...', 'info')} className="text-blue-600 underline font-black">Cara Mencegah Anemia</button>
                                 </div>
                               </div>
                             </div>
@@ -3472,7 +3510,7 @@ function CekatAppContent() {
                                 <div 
                                   key={index}
                                   onClick={() => {
-                                    alert(`Membuka panduan resep: ${recipe.name}`);
+                                    showToast('Membuka resep ' + recipe.name + '...', 'info');
                                   }}
                                   className="bg-white border border-slate-100 rounded-3xl p-3 shadow-sm flex flex-col justify-between space-y-3 cursor-pointer hover:shadow transition"
                                 >
@@ -3729,7 +3767,7 @@ function CekatAppContent() {
                       ].map(webinar => (
                         <div 
                           key={webinar.id}
-                          onClick={() => alert(`Daftar webinar: ${webinar.title}`)}
+                          onClick={() => showToast('Mendaftar webinar: ' + webinar.title, 'success')}
                           className="bg-white border border-slate-150 rounded-2xl p-3 shadow-sm flex gap-3 cursor-pointer hover:shadow active:scale-[0.99] transition"
                         >
                           {/* Left poster */}
@@ -3749,7 +3787,7 @@ function CekatAppContent() {
                                 <Camera className="w-3 h-3 text-slate-400" />
                                 <span className="text-[8.5px] font-bold text-slate-500">{webinar.platform}</span>
                               </div>
-                              <button onClick={(e) => { e.stopPropagation(); alert('Opsi webinar dibuka'); }} className="p-0.5 hover:bg-slate-50 rounded transition text-slate-450">
+                              <button onClick={(e) => { e.stopPropagation(); showToast('Membuka opsi webinar...', 'info'); }} className="p-0.5 hover:bg-slate-50 rounded transition text-slate-450">
                                 <MoreHorizontal className="w-4 h-4" />
                               </button>
                             </div>
@@ -3934,7 +3972,7 @@ function CekatAppContent() {
                         <div className="mx-4 bg-white border border-slate-150 rounded-3xl p-5 shadow-sm space-y-4">
                           <div className="flex items-center justify-between pb-1 border-b border-slate-50">
                             <span className="text-[13px] font-black text-slate-900 tracking-tight">Misi Hari Ini</span>
-                            <button onClick={() => alert('Membuka statistik misi...')} className="text-[10px] font-black text-emerald-700 hover:underline">
+                            <button onClick={() => showToast('Memuat statistik misi...', 'info')} className="text-[10px] font-black text-emerald-700 hover:underline">
                               Lihat Hasil &gt;
                             </button>
                           </div>
@@ -4055,7 +4093,7 @@ function CekatAppContent() {
                                   </div>
                                 </div>
                                 <div className="text-right space-y-1.5">
-                                  <button onClick={() => alert('Membuka detail hasil station...')} className="text-[9.5px] font-black text-slate-800 hover:underline block">
+                                  <button onClick={() => showToast('Memuat detail hasil station...', 'info')} className="text-[9.5px] font-black text-slate-800 hover:underline block">
                                     Lihat Detail &gt;
                                   </button>
                                   <span className="text-[8px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-100 inline-block">
@@ -4132,7 +4170,7 @@ function CekatAppContent() {
                                   </p>
                                 </div>
                               </div>
-                              <button onClick={() => alert('Membuka detail perkembangan gizi...')} className="text-[9.5px] font-black text-slate-800 hover:underline pr-2 shrink-0">
+                              <button onClick={() => showToast('Memuat detail perkembangan gizi...', 'info')} className="text-[9.5px] font-black text-slate-800 hover:underline pr-2 shrink-0">
                                 Lihat Detail &gt;
                               </button>
                             </div>
@@ -4156,7 +4194,7 @@ function CekatAppContent() {
                                   </div>
                                 </div>
                               </div>
-                              <button onClick={() => alert('Mengunduh dokumen konsultasi PDF...')} className="text-[9.5px] font-black text-slate-800 hover:underline pr-2 shrink-0">
+                              <button onClick={() => showToast('Mengunduh dokumen konsultasi PDF...', 'info')} className="text-[9.5px] font-black text-slate-800 hover:underline pr-2 shrink-0">
                                 Lihat Detail &gt;
                               </button>
                             </div>
@@ -4164,7 +4202,7 @@ function CekatAppContent() {
 
                           {/* Yellow Submit button */}
                           <button 
-                            onClick={() => alert('Membuka daftar lengkap riwayat kesehatan Anda...')}
+                            onClick={() => showToast('Memuat riwayat kesehatan lengkap...', 'info')}
                             className="w-full py-3.5 bg-[#f1c40f] hover:bg-[#cbd52d]/90 text-slate-900 font-black text-[12px] rounded-xl shadow-md transition active:scale-95 flex items-center justify-center"
                           >
                             Lihat Semua Riwayat
@@ -4197,7 +4235,7 @@ function CekatAppContent() {
                               <ArrowLeft className="w-5 h-5 text-white" />
                             </button>
                             <span className="text-xs font-black uppercase tracking-widest text-[#fef9c3] scale-95">CEKAT Wrapped</span>
-                            <button onClick={() => alert('Menu wrapped dibuka')} className="p-1.5 hover:bg-white/10 rounded-full transition">
+                            <button onClick={() => showToast('Fitur Wrapped akan segera hadir!', 'info')} className="p-1.5 hover:bg-white/10 rounded-full transition">
                               <MoreHorizontal className="w-5 h-5 text-white" />
                             </button>
                           </div>
@@ -4221,7 +4259,7 @@ function CekatAppContent() {
                               <li>Grill Steak</li>
                               <li>Omlet</li>
                             </ol>
-                            <button onClick={() => alert('Menu detail makanan favorit...')} className="absolute bottom-4 right-4 text-slate-400 hover:text-slate-650">
+                            <button onClick={() => showToast('Memuat detail makanan favorit...', 'info')} className="absolute bottom-4 right-4 text-slate-400 hover:text-slate-650">
                               <MoreHorizontal className="w-4 h-4" />
                             </button>
                           </div>
@@ -4254,7 +4292,7 @@ function CekatAppContent() {
                                 </svg>
                               </div>
                             </div>
-                            <button onClick={() => alert('Menu detail skor nutrisi...')} className="absolute bottom-4 right-4 text-slate-400 hover:text-slate-650">
+                            <button onClick={() => showToast('Memuat detail skor nutrisi...', 'info')} className="absolute bottom-4 right-4 text-slate-400 hover:text-slate-650">
                               <MoreHorizontal className="w-4 h-4" />
                             </button>
                           </div>
@@ -4266,7 +4304,7 @@ function CekatAppContent() {
                                 Konsumsi Gula turun <span className="text-emerald-600 font-extrabold text-[13px]">12%</span> dari Tahun lalu
                               </p>
                             </div>
-                            <button onClick={() => alert('Menu detail asupan gula...')} className="text-slate-400 hover:text-slate-650 shrink-0">
+                            <button onClick={() => showToast('Memuat detail asupan gula...', 'info')} className="text-slate-400 hover:text-slate-650 shrink-0">
                               <MoreHorizontal className="w-4 h-4" />
                             </button>
                           </div>
@@ -4278,7 +4316,7 @@ function CekatAppContent() {
                                 Kamu termasuk <span className="text-emerald-600 font-extrabold text-[13px]">5%</span> Pengguna yang paling <span className="text-purple-700">Rajin Sarapan</span>
                               </p>
                             </div>
-                            <button onClick={() => alert('Menu detail data sarapan...')} className="text-slate-400 hover:text-slate-650 shrink-0">
+                            <button onClick={() => showToast('Memuat detail data sarapan...', 'info')} className="text-slate-400 hover:text-slate-650 shrink-0">
                               <MoreHorizontal className="w-4 h-4" />
                             </button>
                           </div>
@@ -4355,10 +4393,10 @@ function CekatAppContent() {
                     {/* Settings / Profile actions (Compact style list) */}
                     <div className="bg-white border border-teal-50/50 rounded-3xl p-4 shadow-[0_8px_30px_rgb(0,0,0,0.01)] space-y-1.5">
                       {[
-                        { name: 'Ubah Data Fisik & Profil', icon: User, action: () => alert('Membuka pengaturan profil fisik...') },
+                        { name: 'Ubah Data Fisik & Profil', icon: User, action: () => showToast('Membuka pengaturan profil fisik...', 'info') },
                         { name: 'Riwayat Screening PTM', icon: ClipboardList, action: () => { setActiveTab('riwayat'); setRiwayatSubView('home'); } },
-                        { name: 'Hubungkan Kartu BPJS', icon: Award, action: () => alert('Menghubungkan BPJS Kesehatan...') },
-                        { name: 'Pengaturan Notifikasi', icon: Activity, action: () => alert('Membuka pengaturan notifikasi...') }
+                        { name: 'Hubungkan Kartu BPJS', icon: Award, action: () => showToast('Menghubungkan ke BPJS Kesehatan...', 'info') },
+                        { name: 'Pengaturan Notifikasi', icon: Activity, action: () => showToast('Membuka pengaturan notifikasi...', 'info') }
                       ].map((item, idx) => {
                         const Icon = item.icon;
                         return (
