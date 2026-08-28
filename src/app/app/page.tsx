@@ -821,6 +821,38 @@ function CekatAppContent() {
                     </button>
                   </div>
 
+                  {/* Demo Account Quick Picker – Desktop */}
+                  <div className="space-y-2 pt-2">
+                    <div className="flex items-center gap-2">
+                      <div className="flex-1 h-px bg-slate-100"></div>
+                      <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">Atau masuk cepat dengan akun demo</span>
+                      <div className="flex-1 h-px bg-slate-100"></div>
+                    </div>
+                    {[
+                      { name: 'Rizky Fitrianto', badge: 'PASIEN', badgeColor: 'bg-blue-100 text-blue-700', avatarBg: 'bg-blue-500', initials: 'RF', email: '081234567890', nik: '3174012345670001', desc: 'Pencegahan PTM & Gula Darah' },
+                      { name: 'dr. Sarah Amanda, Sp.GK', badge: 'TENAGA MEDIS', badgeColor: 'bg-emerald-100 text-emerald-700', avatarBg: 'bg-emerald-500', initials: 'SA', email: 'sarah.amanda@puskesmas.id', nik: '3174098765432001', desc: 'Akses data klinis & skrining pasien' },
+                      { name: 'Budi Santoso', badge: 'ADMIN', badgeColor: 'bg-purple-100 text-purple-700', avatarBg: 'bg-purple-500', initials: 'BS', email: 'admin@pkm-ngabab.id', nik: '3174055544433001', desc: 'Manajemen data & laporan faskes' }
+                    ].map((demo) => (
+                      <button
+                        key={demo.email}
+                        onClick={() => { setEmailOrPhone(demo.email); setNik(demo.nik); setTimeout(() => setAppState('main'), 150); }}
+                        className="w-full flex items-center gap-3 p-3 rounded-2xl border border-slate-100 hover:border-emerald-300 hover:bg-emerald-50/20 transition-all duration-200 active:scale-[0.98] text-left group cursor-pointer"
+                      >
+                        <div className={`w-9 h-9 rounded-full ${demo.avatarBg} text-white flex items-center justify-center text-xs font-black shrink-0 shadow-sm`}>{demo.initials}</div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <span className="text-xs font-black text-slate-800 group-hover:text-emerald-700 transition truncate">{demo.name}</span>
+                            <span className={`text-[7px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-full ${demo.badgeColor} shrink-0`}>{demo.badge}</span>
+                          </div>
+                          <span className="text-[10px] text-slate-400 font-semibold block truncate">{demo.desc}</span>
+                        </div>
+                        <div className="w-6 h-6 rounded-full bg-slate-100 group-hover:bg-emerald-100 flex items-center justify-center shrink-0 transition">
+                          <svg className="w-3 h-3 text-slate-400 group-hover:text-emerald-600 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+
                   <div className="text-center pt-2">
                     <div className="text-xs font-semibold text-slate-500">
                       Belum mempunyai akun? <button onClick={() => setAppState('signup')} className="underline text-[#00875A] font-black">Daftar Sekarang</button>
@@ -828,6 +860,7 @@ function CekatAppContent() {
                   </div>
                 </div>
               )}
+
             </div>
           </main>
 
@@ -1126,9 +1159,9 @@ function CekatAppContent() {
 
             {/* 3. LOGIN SCREEN */}
             {appState === 'login' && (
-              <div className="flex-1 min-h-[600px] flex flex-col justify-between bg-white px-8 py-12 animate-fadeIn text-left">
-                <div className="space-y-6">
-                  {/* Brand Header */}
+              <div className="flex-1 min-h-[600px] flex flex-col bg-white animate-fadeIn text-left overflow-y-auto">
+                {/* Brand Header */}
+                <div className="px-8 pt-12 pb-6 space-y-5">
                   <div className="flex items-center space-x-2 pb-2 border-b border-slate-100">
                     <img src="/images/logo C cekat.png" alt="Cekat Logo" className="w-8 h-8 object-contain" />
                     <div>
@@ -1173,12 +1206,90 @@ function CekatAppContent() {
                   </div>
                 </div>
 
-                <div className="text-center">
+                {/* ── Demo Account Quick Picker ── */}
+                <div className="mx-8 mb-6 space-y-3">
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 h-px bg-slate-100"></div>
+                    <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">Atau coba akun demo</span>
+                    <div className="flex-1 h-px bg-slate-100"></div>
+                  </div>
+
+                  {[
+                    {
+                      name: 'Rizky Fitrianto',
+                      role: 'Pengguna Umum',
+                      badge: 'PASIEN',
+                      badgeColor: 'bg-blue-100 text-blue-700',
+                      avatarBg: 'bg-blue-500',
+                      initials: 'RF',
+                      email: '081234567890',
+                      nik: '3174012345670001',
+                      desc: 'Pencegahan PTM & Gula Darah'
+                    },
+                    {
+                      name: 'dr. Sarah Amanda, Sp.GK',
+                      role: 'Spesialis Gizi Klinik',
+                      badge: 'TENAGA MEDIS',
+                      badgeColor: 'bg-emerald-100 text-emerald-700',
+                      avatarBg: 'bg-emerald-500',
+                      initials: 'SA',
+                      email: 'sarah.amanda@puskesmas.id',
+                      nik: '3174098765432001',
+                      desc: 'Akses data klinis & skrining pasien'
+                    },
+                    {
+                      name: 'Budi Santoso',
+                      role: 'Admin Puskesmas',
+                      badge: 'ADMIN',
+                      badgeColor: 'bg-purple-100 text-purple-700',
+                      avatarBg: 'bg-purple-500',
+                      initials: 'BS',
+                      email: 'admin@pkm-ngabab.id',
+                      nik: '3174055544433001',
+                      desc: 'Manajemen data & laporan faskes'
+                    }
+                  ].map((demo) => (
+                    <button
+                      key={demo.email}
+                      onClick={() => {
+                        setEmailOrPhone(demo.email);
+                        setNik(demo.nik);
+                        // Langsung masuk tanpa OTP untuk demo
+                        setTimeout(() => setAppState('main'), 150);
+                      }}
+                      className="w-full flex items-center gap-3 p-3 rounded-2xl border border-slate-100 hover:border-emerald-300 hover:bg-emerald-50/30 transition-all duration-200 active:scale-[0.98] text-left group cursor-pointer"
+                    >
+                      {/* Avatar */}
+                      <div className={`w-10 h-10 rounded-full ${demo.avatarBg} text-white flex items-center justify-center text-xs font-black shrink-0 shadow-sm`}>
+                        {demo.initials}
+                      </div>
+
+                      {/* Info */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className="text-xs font-black text-slate-800 group-hover:text-emerald-700 transition truncate">{demo.name}</span>
+                          <span className={`text-[7px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded-full ${demo.badgeColor} shrink-0`}>{demo.badge}</span>
+                        </div>
+                        <span className="text-[10px] text-slate-400 font-semibold block truncate">{demo.desc}</span>
+                      </div>
+
+                      {/* Arrow */}
+                      <div className="w-6 h-6 rounded-full bg-slate-100 group-hover:bg-emerald-100 flex items-center justify-center shrink-0 transition">
+                        <svg className="w-3 h-3 text-slate-400 group-hover:text-emerald-600 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+
+                <div className="text-center pb-8">
                   <span className="text-xs text-slate-400 font-bold">Belum punya akun? </span>
                   <button onClick={() => setAppState('signup')} className="text-xs text-[#00875A] font-black hover:underline cursor-pointer">Daftar Akun Baru</button>
                 </div>
               </div>
             )}
+
 
             {/* 3B. SIGNUP SCREEN */}
             {appState === 'signup' && (
