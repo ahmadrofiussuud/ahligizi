@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { 
   Home,
   Camera, 
@@ -352,6 +352,92 @@ function CekatAppContent() {
 
   // Scanning animation states
   const [isScanning, setIsScanning] = useState<boolean>(false);
+
+  // ── Camera Scan State ──
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
+  const [capturedImageUrl, setCapturedImageUrl] = useState<string | null>(null);
+  const [cameraError, setCameraError] = useState<string | null>(null);
+  const [flashActive, setFlashActive] = useState<boolean>(false);
+  const [facingMode, setFacingMode] = useState<'environment' | 'user'>('environment');
+
+  const startCamera = useCallback(async (facing: 'environment' | 'user' = 'environment') => {
+    setCameraError(null);
+    setCapturedImageUrl(null);
+    try {
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(t => t.stop());
+      }
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: facing, width: { ideal: 1280 }, height: { ideal: 720 } },
+        audio: false
+      });
+      setCameraStream(stream);
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+    } catch (err: any) {
+      setCameraError('Kamera tidak dapat diakses. Pastikan izin kamera sudah diberikan.');
+    }
+  }, [cameraStream]);
+
+  const stopCamera = useCallback(() => {
+    if (cameraStream) {
+      cameraStream.getTracks().forEach(t => t.stop());
+      setCameraStream(null);
+    }
+  }, [cameraStream]);
+
+  // Start camera when entering scan_camera view
+  useEffect(() => {
+    if (nutrisiSubView === 'scan_camera' && !capturedImageUrl) {
+      startCamera(facingMode);
+    }
+    if (nutrisiSubView !== 'scan_camera') {
+      stopCamera();
+    }
+  }, [nutrisiSubView]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const capturePhoto = useCallback(() => {
+    if (!videoRef.current || !canvasRef.current) return;
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    canvas.width = video.videoWidth || 640;
+    canvas.height = video.videoHeight || 480;
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+      setCapturedImageUrl(dataUrl);
+      stopCamera();
+      // Flash effect
+      setFlashActive(true);
+      setTimeout(() => setFlashActive(false), 200);
+      // Simulate AI scanning
+      setIsScanning(true);
+      setTimeout(() => {
+        setIsScanning(false);
+        setNutrisiSubView('scan_result');
+      }, 1800);
+    }
+  }, [stopCamera]);
+
+  const handleGalleryFile = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    setCapturedImageUrl(url);
+    stopCamera();
+    setIsScanning(true);
+    setTimeout(() => {
+      setIsScanning(false);
+      setNutrisiSubView('scan_result');
+    }, 1800);
+    // Reset input so same file can be picked again
+    e.target.value = '';
+  }, [stopCamera]);
 
   // Misi / Challenge checkbox states
   const [missions, setMissions] = useState([
@@ -2862,66 +2948,125 @@ function CekatAppContent() {
                       </div>
                     )}
 
-                    {/* View: Scan Camera Camera View */}
+                    {/* View: Scan Camera – Live Camera */}
                     {nutrisiSubView === 'scan_camera' && (
                       <div className="flex-1 flex flex-col justify-between bg-slate-900 text-white relative min-h-[600px]">
+                        {/* Hidden canvas for capture */}
+                        <canvas ref={canvasRef} className="hidden" />
+                        {/* Hidden file input for gallery */}
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={handleGalleryFile}
+                        />
+
+                        {/* Flash overlay */}
+                        {flashActive && <div className="absolute inset-0 bg-white z-50 pointer-events-none" />}
+
                         {/* Top bar */}
-                        <div className="absolute top-0 left-0 w-full px-6 py-4 flex items-center justify-between bg-gradient-to-b from-black/80 to-transparent z-20">
-                          <button onClick={() => setNutrisiSubView('main')} className="p-1.5 bg-white/10 hover:bg-white/20 rounded-full transition">
+                        <div className="absolute top-0 left-0 w-full px-5 py-4 flex items-center justify-between bg-gradient-to-b from-black/80 to-transparent z-20">
+                          <button
+                            onClick={() => { stopCamera(); setNutrisiSubView('main'); }}
+                            className="p-1.5 bg-white/10 hover:bg-white/20 rounded-full transition"
+                          >
                             <ArrowLeft className="w-5 h-5 text-white" />
                           </button>
                           <span className="text-xs font-black uppercase tracking-widest text-emerald-400">Scan Makananmu</span>
-                          <div className="w-8"></div>
+                          {/* Flip camera button */}
+                          <button
+                            onClick={() => {
+                              const next = facingMode === 'environment' ? 'user' : 'environment';
+                              setFacingMode(next);
+                              startCamera(next);
+                            }}
+                            className="p-1.5 bg-white/10 hover:bg-white/20 rounded-full transition"
+                          >
+                            <RotateCcw className="w-4 h-4 text-white" />
+                          </button>
                         </div>
 
-                        {/* Scanner Viewfinder / Camera Background */}
+                        {/* Viewfinder: live video OR error state */}
                         <div className="flex-1 w-full relative overflow-hidden flex items-center justify-center bg-black">
-                          <img 
-                            src="https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80" 
-                            alt="Camera viewport salad" 
-                            className="w-full h-full object-cover"
-                          />
-                          
-                          {/* Corner crosshairs viewport */}
-                          <div className="absolute w-64 h-64 border-2 border-white/50 rounded-3xl flex items-center justify-center pointer-events-none">
-                            <div className="absolute top-2 left-2 w-6 h-6 border-t-4 border-l-4 border-emerald-400 rounded-tl-xl"></div>
-                            <div className="absolute top-2 right-2 w-6 h-6 border-t-4 border-r-4 border-emerald-400 rounded-tr-xl"></div>
-                            <div className="absolute bottom-2 left-2 w-6 h-6 border-b-4 border-l-4 border-emerald-400 rounded-bl-xl"></div>
-                            <div className="absolute bottom-2 right-2 w-6 h-6 border-b-4 border-r-4 border-emerald-400 rounded-br-xl"></div>
-                          </div>
+                          {cameraError ? (
+                            <div className="flex flex-col items-center justify-center space-y-4 px-8 text-center">
+                              <div className="w-16 h-16 rounded-full bg-slate-800 flex items-center justify-center">
+                                <Camera className="w-8 h-8 text-slate-500" />
+                              </div>
+                              <p className="text-xs text-slate-400 font-semibold leading-relaxed">{cameraError}</p>
+                              <button
+                                onClick={() => fileInputRef.current?.click()}
+                                className="px-4 py-2 rounded-xl bg-emerald-600 text-white text-xs font-black uppercase tracking-wider"
+                              >
+                                Pilih dari Galeri
+                              </button>
+                            </div>
+                          ) : (
+                            <video
+                              ref={videoRef}
+                              autoPlay
+                              playsInline
+                              muted
+                              className="w-full h-full object-cover"
+                            />
+                          )}
 
+                          {/* Corner crosshairs viewport */}
+                          {!cameraError && (
+                            <div className="absolute w-56 h-56 rounded-3xl flex items-center justify-center pointer-events-none">
+                              <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-emerald-400 rounded-tl-2xl"></div>
+                              <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-emerald-400 rounded-tr-2xl"></div>
+                              <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-emerald-400 rounded-bl-2xl"></div>
+                              <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-emerald-400 rounded-br-2xl"></div>
+                              <span className="text-[9px] font-black text-white/60 uppercase tracking-widest">Arahkan ke makanan</span>
+                            </div>
+                          )}
+
+                          {/* Scanning overlay */}
                           {isScanning && (
-                            <div className="absolute inset-0 bg-emerald-950/70 backdrop-blur-sm flex flex-col items-center justify-center space-y-3 z-30">
-                              <Activity className="w-12 h-12 text-emerald-400 animate-pulse" />
-                              <span className="text-xs font-black text-emerald-400 uppercase tracking-widest animate-pulse">Menghitung kalori...</span>
+                            <div className="absolute inset-0 bg-emerald-950/80 backdrop-blur-sm flex flex-col items-center justify-center space-y-4 z-30">
+                              <div className="relative">
+                                <Activity className="w-14 h-14 text-emerald-400 animate-pulse" />
+                                <div className="absolute inset-0 rounded-full border-2 border-emerald-400/30 animate-ping" />
+                              </div>
+                              <span className="text-xs font-black text-emerald-300 uppercase tracking-widest animate-pulse">AI sedang menganalisis...</span>
+                              <span className="text-[9px] text-emerald-500 font-semibold">Menghitung kalori, protein & nutrisi</span>
                             </div>
                           )}
                         </div>
 
-                        {/* Camera Shutter Area */}
-                        <div className="px-6 py-10 bg-gradient-to-t from-slate-950 via-slate-900 to-black/85 flex items-center justify-center gap-12 z-20 border-t border-slate-800">
-                          {/* Gallery button */}
-                          <button className="w-10 h-10 rounded-full border border-white/20 bg-white/10 flex items-center justify-center hover:bg-white/20 transition">
+                        {/* Shutter bar */}
+                        <div className="px-6 py-8 bg-gradient-to-t from-slate-950 via-slate-900/95 to-transparent flex items-center justify-center gap-10 z-20">
+                          {/* Gallery */}
+                          <button
+                            onClick={() => fileInputRef.current?.click()}
+                            className="w-12 h-12 rounded-2xl border border-white/20 bg-white/10 flex flex-col items-center justify-center hover:bg-white/20 transition gap-0.5"
+                          >
                             <Compass className="w-5 h-5 text-white" />
+                            <span className="text-[7px] text-white/60 font-bold uppercase">Galeri</span>
                           </button>
 
-                          {/* Shutter */}
-                          <button 
-                            onClick={() => {
-                              setIsScanning(true);
-                              setTimeout(() => {
-                                setIsScanning(false);
-                                setNutrisiSubView('scan_result');
-                              }, 1500);
-                            }}
-                            className="w-16 h-16 rounded-full bg-emerald-500 hover:bg-emerald-400 flex items-center justify-center shadow-lg border-4 border-slate-850 scale-105 active:scale-95 transition cursor-pointer"
+                          {/* Shutter button */}
+                          <button
+                            onClick={capturePhoto}
+                            disabled={!!cameraError || isScanning}
+                            className="w-18 h-18 w-[72px] h-[72px] rounded-full bg-white border-4 border-emerald-500 flex items-center justify-center shadow-2xl active:scale-90 transition disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                           >
-                            <Camera className="w-7 h-7 text-white" />
+                            <div className="w-14 h-14 rounded-full bg-emerald-500 hover:bg-emerald-400 flex items-center justify-center transition">
+                              <Camera className="w-7 h-7 text-white" />
+                            </div>
                           </button>
 
                           {/* Flash toggle */}
-                          <button className="w-10 h-10 rounded-full border border-white/20 bg-white/10 flex items-center justify-center hover:bg-white/20 transition">
-                            <Zap className="w-5 h-5 text-white" />
+                          <button
+                            onClick={() => setFlashActive(f => !f)}
+                            className={`w-12 h-12 rounded-2xl border flex flex-col items-center justify-center transition gap-0.5 ${
+                              flashActive ? 'border-yellow-400 bg-yellow-400/20' : 'border-white/20 bg-white/10 hover:bg-white/20'
+                            }`}
+                          >
+                            <Zap className={`w-5 h-5 ${flashActive ? 'text-yellow-400' : 'text-white'}`} />
+                            <span className="text-[7px] text-white/60 font-bold uppercase">Flash</span>
                           </button>
                         </div>
                       </div>
