@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   Home,
   Camera, 
@@ -206,7 +206,7 @@ function CekatAppContent() {
   
   // Sub-views for detailed pages
   // - For 'dashboard': 'home' (Kebutuhanmu), 'station_summary' (Hasil Station), 'cek_risiko' (Risiko Kesehatan), 'reminders' (Pengingat & Jadwal), 'marketplace' (Keranjangmu)
-  const [dashboardSubView, setDashboardSubView] = useState<'home' | 'station_summary' | 'cek_risiko' | 'reminders' | 'marketplace' | 'edukasi' | 'article_detail' | 'webinar_list' | 'kebutuhanmu' | 'tanya_ai'>('home');
+  const [dashboardSubView, setDashboardSubView] = useState<'home' | 'station_summary' | 'cek_risiko' | 'reminders' | 'marketplace' | 'edukasi' | 'article_detail' | 'webinar_list' | 'kebutuhanmu' | 'tanya_ai' | 'mitos_fakta' | 'artikel_list'>('home');
   const [selectedArticle, setSelectedArticle] = useState<any | null>(null);
 
   // BMI State Variables
@@ -357,50 +357,80 @@ function CekatAppContent() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
+  // Use ref (NOT state) for stream → avoids stale closure in callbacks
+  const streamRef = useRef<MediaStream | null>(null);
   const [capturedImageUrl, setCapturedImageUrl] = useState<string | null>(null);
   const [cameraError, setCameraError] = useState<string | null>(null);
   const [flashActive, setFlashActive] = useState<boolean>(false);
   const [facingMode, setFacingMode] = useState<'environment' | 'user'>('environment');
+  // Track whether camera is live for UI purposes
+  const [isCameraLive, setIsCameraLive] = useState<boolean>(false);
 
-  const startCamera = useCallback(async (facing: 'environment' | 'user' = 'environment') => {
+  /** Stop all tracks on the current stream immediately (synchronous, no closure issue) */
+  const stopCameraImmediate = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(t => t.stop());
+      streamRef.current = null;
+    }
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+    setIsCameraLive(false);
+  };
+
+  /** Start camera with given facing mode. Stops existing stream first. */
+  const startCamera = async (facing: 'environment' | 'user' = 'environment') => {
     setCameraError(null);
     setCapturedImageUrl(null);
+    // Stop any existing stream SYNCHRONOUSLY before requesting new one
+    stopCameraImmediate();
     try {
-      if (cameraStream) {
-        cameraStream.getTracks().forEach(t => t.stop());
-      }
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: facing, width: { ideal: 1280 }, height: { ideal: 720 } },
+      const constraints: MediaStreamConstraints = {
+        video: {
+          facingMode: { ideal: facing },
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        },
         audio: false
-      });
-      setCameraStream(stream);
+      };
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      streamRef.current = stream;
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
+        // Wait for metadata to load before marking live
+        videoRef.current.onloadedmetadata = () => {
+          videoRef.current?.play().catch(() => {});
+          setIsCameraLive(true);
+        };
       }
-    } catch (err: any) {
-      setCameraError('Kamera tidak dapat diakses. Pastikan izin kamera sudah diberikan.');
+    } catch (err) {
+      setCameraError('Kamera tidak dapat diakses. Pastikan izin kamera sudah diberikan, atau gunakan galeri.');
+      setIsCameraLive(false);
     }
-  }, [cameraStream]);
+  };
 
-  const stopCamera = useCallback(() => {
-    if (cameraStream) {
-      cameraStream.getTracks().forEach(t => t.stop());
-      setCameraStream(null);
-    }
-  }, [cameraStream]);
+  /** Flip between front and rear camera */
+  const flipCamera = async () => {
+    const next = facingMode === 'environment' ? 'user' : 'environment';
+    setFacingMode(next);
+    // startCamera will stop old stream first, then start new one
+    await startCamera(next);
+  };
 
-  // Start camera when entering scan_camera view
+  // Start/stop camera based on active sub-view
   useEffect(() => {
-    if (nutrisiSubView === 'scan_camera' && !capturedImageUrl) {
+    if (nutrisiSubView === 'scan_camera') {
       startCamera(facingMode);
+    } else {
+      stopCameraImmediate();
     }
-    if (nutrisiSubView !== 'scan_camera') {
-      stopCamera();
-    }
+    // Cleanup on unmount or view change
+    return () => {
+      stopCameraImmediate();
+    };
   }, [nutrisiSubView]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const capturePhoto = useCallback(() => {
+  const capturePhoto = () => {
     if (!videoRef.current || !canvasRef.current) return;
     const video = videoRef.current;
     const canvas = canvasRef.current;
@@ -408,36 +438,41 @@ function CekatAppContent() {
     canvas.height = video.videoHeight || 480;
     const ctx = canvas.getContext('2d');
     if (ctx) {
+      // Mirror the image if using front camera
+      if (facingMode === 'user') {
+        ctx.translate(canvas.width, 0);
+        ctx.scale(-1, 1);
+      }
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
       setCapturedImageUrl(dataUrl);
-      stopCamera();
+      stopCameraImmediate();
       // Flash effect
       setFlashActive(true);
-      setTimeout(() => setFlashActive(false), 200);
-      // Simulate AI scanning
+      setTimeout(() => setFlashActive(false), 180);
+      // Simulate AI scanning delay
       setIsScanning(true);
       setTimeout(() => {
         setIsScanning(false);
         setNutrisiSubView('scan_result');
       }, 1800);
     }
-  }, [stopCamera]);
+  };
 
-  const handleGalleryFile = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleGalleryFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     const url = URL.createObjectURL(file);
     setCapturedImageUrl(url);
-    stopCamera();
+    stopCameraImmediate();
     setIsScanning(true);
     setTimeout(() => {
       setIsScanning(false);
       setNutrisiSubView('scan_result');
     }, 1800);
-    // Reset input so same file can be picked again
+    // Reset input so same file can be re-selected
     e.target.value = '';
-  }, [stopCamera]);
+  };
 
   // Misi / Challenge checkbox states
   const [missions, setMissions] = useState([
@@ -2433,7 +2468,10 @@ function CekatAppContent() {
                           <div className="bg-[#f0fdf4] border border-[#86efac] rounded-3xl p-4 shadow-sm">
                             <div className="flex items-center justify-between mb-3">
                               <span className="text-[13px] font-black text-slate-900">Artikel Pilihan</span>
-                              <button className="text-[10.5px] font-black text-emerald-700 flex items-center gap-0.5">Lihat Semua <ChevronRight className="w-3.5 h-3.5" /></button>
+                              <button
+                                onClick={() => setDashboardSubView('artikel_list')}
+                                className="text-[10.5px] font-black text-emerald-700 flex items-center gap-0.5 hover:underline"
+                              >Lihat Semua <ChevronRight className="w-3.5 h-3.5" /></button>
                             </div>
                             <div className="grid grid-cols-2 gap-3">
 
@@ -2603,44 +2641,35 @@ function CekatAppContent() {
 
                         {/* ── Mitos Vs Fakta ── */}
                         <div className="mx-4 mt-4 mb-6">
-                          <div className="bg-white border border-slate-200 rounded-3xl p-4 shadow-sm">
+                          <div className="bg-[#f0fdf4] border border-[#86efac] rounded-3xl p-4 shadow-sm">
                             <div className="flex items-center justify-between mb-3">
-                              <span className="text-[13px] font-black text-slate-900">Mitos Vs Fakta</span>
-                              <button className="text-[10.5px] font-black text-emerald-700 flex items-center gap-0.5">Lihat Semua <ChevronRight className="w-3.5 h-3.5" /></button>
+                              <div className="flex items-center gap-1.5">
+                                <div className="w-1.5 h-3.5 bg-emerald-600 rounded-full"></div>
+                                <span className="text-[13px] font-black text-slate-900">Mitos Vs Fakta</span>
+                              </div>
+                              <button
+                                onClick={() => setDashboardSubView('mitos_fakta')}
+                                className="text-[10.5px] font-black text-emerald-700 flex items-center gap-0.5 hover:underline"
+                              >Lihat Semua <ChevronRight className="w-3.5 h-3.5" /></button>
                             </div>
                             <div className="flex items-start gap-3">
                               <div className="flex-1 space-y-2.5">
                                 <div className="flex items-start gap-2">
                                   <span className="text-[9px] font-black bg-red-500 text-white px-3 py-1 rounded-lg shrink-0 mt-0.5">MITOS</span>
-                                  <p className="text-[10px] font-bold text-slate-800 leading-snug">Mitos: "Orang kurus tidak bisa kena hipertensi"</p>
+                                  <p className="text-[10px] font-bold text-slate-800 leading-snug">"Orang kurus tidak bisa kena hipertensi"</p>
                                 </div>
                                 <div className="flex items-start gap-2">
                                   <span className="text-[9px] font-black bg-emerald-500 text-white px-2.5 py-1 rounded-lg shrink-0 mt-0.5">FAKTA</span>
                                   <p className="text-[10px] font-bold text-slate-800 leading-snug">Hipertensi bisa terjadi pada siapa pun, termasuk orang kurus.</p>
                                 </div>
                               </div>
-                              {/* Fun illustration for mitos vs fakta */}
-                              <div className="shrink-0 w-14 h-14">
-                                <svg viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-                                  <rect width="56" height="56" rx="12" fill="#fef2f2"/>
-                                  {/* tensimeter cartoon */}
-                                  <rect x="8" y="14" width="24" height="16" rx="5" fill="#3b82f6"/>
-                                  <rect x="10" y="16" width="20" height="10" rx="3" fill="#dbeafe"/>
-                                  <text x="20" y="23" textAnchor="middle" fontSize="5" fill="#1e40af" fontWeight="bold">38</text>
-                                  <path d="M20 30 Q14 36 14 40 A6 6 0 0 0 26 40 Q26 36 20 30Z" fill="#fca5a5" stroke="#f87171" strokeWidth="1"/>
-                                  <path d="M30 24 C26 18,20 18,18 24" fill="none" stroke="#ef4444" strokeWidth="2" strokeLinecap="round"/>
-                                  {/* Robot/tech character */}
-                                  <rect x="34" y="22" width="14" height="12" rx="3" fill="#10b981" stroke="#059669" strokeWidth="1"/>
-                                  <circle cx="38" cy="27" r="2" fill="white"/>
-                                  <circle cx="44" cy="27" r="2" fill="white"/>
-                                  <circle cx="38" cy="27" r="1" fill="#1e293b"/>
-                                  <circle cx="44" cy="27" r="1" fill="#1e293b"/>
-                                  <rect x="37" y="30" width="7" height="2" rx="1" fill="#6ee7b7"/>
-                                  <rect x="36" y="34" width="16" height="10" rx="3" fill="#10b981" stroke="#059669" strokeWidth="1"/>
-                                  <line x1="34" y1="37" x2="30" y2="42" stroke="#10b981" strokeWidth="2" strokeLinecap="round"/>
-                                  <line x1="50" y1="37" x2="54" y2="42" stroke="#10b981" strokeWidth="2" strokeLinecap="round"/>
-                                  <text x="41" y="42" textAnchor="middle" fontSize="6" fill="white" fontWeight="bold">AI</text>
-                                </svg>
+                              {/* Maskot CEKAT */}
+                              <div className="shrink-0 w-14 h-16">
+                                <img
+                                  src="/images/maskot cekat tanda tanya.png"
+                                  alt="Ceko Maskot"
+                                  className="w-full h-full object-contain"
+                                />
                               </div>
                             </div>
                           </div>
@@ -2968,20 +2997,23 @@ function CekatAppContent() {
                         {/* Top bar */}
                         <div className="absolute top-0 left-0 w-full px-5 py-4 flex items-center justify-between bg-gradient-to-b from-black/80 to-transparent z-20">
                           <button
-                            onClick={() => { stopCamera(); setNutrisiSubView('main'); }}
+                            onClick={() => { stopCameraImmediate(); setNutrisiSubView('main'); }}
                             className="p-1.5 bg-white/10 hover:bg-white/20 rounded-full transition"
                           >
                             <ArrowLeft className="w-5 h-5 text-white" />
                           </button>
-                          <span className="text-xs font-black uppercase tracking-widest text-emerald-400">Scan Makananmu</span>
+                          {/* Camera label with facing indicator */}
+                          <div className="flex flex-col items-center">
+                            <span className="text-xs font-black uppercase tracking-widest text-emerald-400">Scan Makananmu</span>
+                            <span className="text-[8px] text-white/50 font-semibold">
+                              {facingMode === 'user' ? '📷 Kamera Depan' : '📷 Kamera Belakang'}
+                            </span>
+                          </div>
                           {/* Flip camera button */}
                           <button
-                            onClick={() => {
-                              const next = facingMode === 'environment' ? 'user' : 'environment';
-                              setFacingMode(next);
-                              startCamera(next);
-                            }}
-                            className="p-1.5 bg-white/10 hover:bg-white/20 rounded-full transition"
+                            onClick={flipCamera}
+                            className="p-1.5 bg-white/10 hover:bg-white/20 active:scale-90 rounded-full transition"
+                            title="Ganti Kamera"
                           >
                             <RotateCcw className="w-4 h-4 text-white" />
                           </button>
@@ -3008,6 +3040,8 @@ function CekatAppContent() {
                               autoPlay
                               playsInline
                               muted
+                              // Mirror horizontally when using front camera (selfie mode)
+                              style={facingMode === 'user' ? { transform: 'scaleX(-1)' } : {}}
                               className="w-full h-full object-cover"
                             />
                           )}
@@ -3462,8 +3496,170 @@ function CekatAppContent() {
                   </div>
                 )}
 
+                {/* ════════════════════════════════════════
+                    View: Mitos Vs Fakta
+                ════════════════════════════════════════ */}
+                {dashboardSubView === 'mitos_fakta' && (
+                  <div className="space-y-0 text-left pb-24 animate-fadeIn bg-white min-h-screen">
+                    {/* Header Banner */}
+                    <div className="bg-gradient-to-br from-emerald-600 via-emerald-700 to-yellow-500/80 text-white px-5 pt-8 pb-8 relative rounded-b-[32px] shadow-md overflow-hidden">
+                      <div className="flex items-center justify-between mb-4">
+                        <button onClick={() => setDashboardSubView('edukasi')} className="p-1 bg-white/10 hover:bg-white/20 rounded-full transition">
+                          <ArrowLeft className="w-5 h-5 text-white" />
+                        </button>
+                        <span className="text-xs font-black uppercase tracking-widest text-white/90">Edukasi Kesehatan</span>
+                        <div className="w-7"></div>
+                      </div>
+                      <div className="flex items-end justify-between gap-3">
+                        <div className="flex-1">
+                          <h1 className="text-[20px] font-black leading-tight tracking-tight mb-1">Mitos vs Fakta</h1>
+                          <p className="text-[10px] text-white/80 font-semibold leading-relaxed">Jangan tertipu! Kenali mana yang benar tentang kesehatan PTM.</p>
+                        </div>
+                        <img src="/images/maskot cekat tanda tanya.png" alt="Ceko Maskot" className="w-20 h-24 object-contain shrink-0" />
+                      </div>
+                      {/* Decorative blobs */}
+                      <div className="absolute -top-8 -right-8 w-36 h-36 bg-white/5 rounded-full" />
+                      <div className="absolute bottom-0 left-0 w-24 h-24 bg-yellow-400/10 rounded-full" />
+                    </div>
+
+                    {/* Mitos Fakta Cards */}
+                    <div className="px-4 pt-5 space-y-4">
+                      {[
+                        {
+                          mitos: '"Orang kurus tidak bisa kena hipertensi"',
+                          fakta: 'Hipertensi bisa terjadi pada siapa pun, termasuk orang kurus. Faktor genetik, stres, dan pola makan lebih menentukan.',
+                          tag: 'Hipertensi', tagColor: 'bg-red-500'
+                        },
+                        {
+                          mitos: '"Gula darah tinggi hanya terjadi pada orang tua"',
+                          fakta: 'Diabetes tipe 2 kini juga menyerang usia muda akibat pola makan tinggi gula dan kurang aktivitas fisik.',
+                          tag: 'Diabetes', tagColor: 'bg-orange-500'
+                        },
+                        {
+                          mitos: '"Minum air dingin bikin gemuk"',
+                          fakta: 'Air tidak mengandung kalori sama sekali. Suhu air tidak mempengaruhi berat badan. Minum cukup air justru membantu metabolisme.',
+                          tag: 'Nutrisi', tagColor: 'bg-blue-500'
+                        },
+                        {
+                          mitos: '"Kolesterol tinggi hanya dari makanan berminyak"',
+                          fakta: 'Kolesterol juga diproduksi oleh hati. Stres kronis, kurang tidur, dan faktor genetik turut meningkatkan kadar kolesterol.',
+                          tag: 'Kolesterol', tagColor: 'bg-yellow-600'
+                        },
+                        {
+                          mitos: '"Penyakit jantung hanya menyerang pria"',
+                          fakta: 'Penyakit jantung adalah penyebab kematian no. 1 pada wanita. Perempuan justru sering salah diagnosis karena gejalanya berbeda.',
+                          tag: 'Jantung', tagColor: 'bg-rose-500'
+                        },
+                        {
+                          mitos: '"Olahraga berat sekali seminggu lebih efektif"',
+                          fakta: 'WHO merekomendasikan 150 menit aktivitas sedang per minggu (dibagi beberapa sesi). Olahraga jarang tapi berat justru berisiko cedera.',
+                          tag: 'Aktivitas', tagColor: 'bg-emerald-600'
+                        },
+                      ].map((item, i) => (
+                        <div key={i} className="bg-[#f0fdf4] border border-[#86efac] rounded-2xl p-4 shadow-sm">
+                          <span className={`text-[8px] font-black ${item.tagColor} text-white px-2 py-0.5 rounded-full`}>{item.tag}</span>
+                          <div className="mt-3 space-y-2.5">
+                            <div className="flex items-start gap-2.5">
+                              <div className="shrink-0 mt-0.5">
+                                <span className="text-[8.5px] font-black bg-red-500 text-white px-2.5 py-1 rounded-lg block">MITOS</span>
+                              </div>
+                              <p className="text-[11px] font-bold text-slate-700 leading-snug italic">{item.mitos}</p>
+                            </div>
+                            <div className="h-px bg-emerald-200" />
+                            <div className="flex items-start gap-2.5">
+                              <div className="shrink-0 mt-0.5">
+                                <span className="text-[8.5px] font-black bg-emerald-500 text-white px-2.5 py-1 rounded-lg block">FAKTA</span>
+                              </div>
+                              <p className="text-[11px] font-semibold text-slate-800 leading-snug">{item.fakta}</p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Bottom Mascot CTA */}
+                    <div className="mx-4 mt-5 bg-gradient-to-r from-emerald-50 to-yellow-50 border border-emerald-200 rounded-2xl p-4 flex items-center gap-3">
+                      <img src="/images/maskot cekat normal.png" alt="Ceko" className="w-12 h-14 object-contain shrink-0" />
+                      <div>
+                        <p className="text-[10.5px] font-black text-emerald-800 leading-snug">Mau tanya lebih lanjut?</p>
+                        <p className="text-[9px] text-slate-500 font-semibold mt-0.5">Tanyakan ke Ceko AI, asisten kesehatan CEKAT!</p>
+                        <button
+                          onClick={() => setDashboardSubView('tanya_ai')}
+                          className="mt-2 px-3 py-1.5 bg-emerald-600 text-white text-[9px] font-black rounded-lg"
+                        >Tanya Ceko →</button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* ════════════════════════════════════════
+                    View: Semua Artikel
+                ════════════════════════════════════════ */}
+                {dashboardSubView === 'artikel_list' && (
+                  <div className="space-y-0 text-left pb-24 animate-fadeIn bg-white min-h-screen">
+                    {/* Header Banner */}
+                    <div className="bg-gradient-to-br from-emerald-600 via-emerald-700 to-teal-600 text-white px-5 pt-8 pb-6 relative rounded-b-[32px] shadow-md overflow-hidden">
+                      <div className="flex items-center justify-between mb-3">
+                        <button onClick={() => setDashboardSubView('edukasi')} className="p-1 bg-white/10 hover:bg-white/20 rounded-full transition">
+                          <ArrowLeft className="w-5 h-5 text-white" />
+                        </button>
+                        <span className="text-xs font-black uppercase tracking-widest text-white/90">Artikel Pilihan</span>
+                        <div className="w-7"></div>
+                      </div>
+                      <h1 className="text-[18px] font-black leading-tight tracking-tight mb-1">Artikel Kesehatan PTM</h1>
+                      <p className="text-[10px] text-white/80 font-semibold">Bacaan terpercaya untuk hidup lebih sehat</p>
+                      <div className="absolute -top-6 -right-6 w-32 h-32 bg-white/5 rounded-full" />
+                    </div>
+
+                    {/* Search */}
+                    <div className="px-4 pt-4 pb-2">
+                      <div className="flex bg-slate-100 rounded-full items-center px-4 py-2.5 gap-2">
+                        <Search className="w-4 h-4 text-slate-400 shrink-0" />
+                        <input type="text" placeholder="Cari artikel..." className="bg-transparent focus:outline-none flex-1 text-[12px] font-semibold text-slate-700 placeholder:text-slate-400" />
+                      </div>
+                    </div>
+
+                    {/* Artikel Grid */}
+                    <div className="px-4 pt-2 grid grid-cols-2 gap-3">
+                      {[
+                        ...articlesData,
+                        { id: 'diabetes', title: 'Kendalikan Gula Darah Anda', category: 'Diabetes', description: 'Panduan lengkap mengelola kadar gula darah dengan pola makan dan olahraga.', readTime: '5 menit baca', date: '18 Agustus 2026', author: 'dr. Nina Sari, Sp.PD', points: 10, content: '', svgId: 'diabetes' },
+                        { id: 'kolesterol', title: 'Turunkan Kolesterol Secara Alami', category: 'Kolesterol', description: 'Tips diet dan gaya hidup untuk menurunkan kolesterol LDL tanpa efek samping.', readTime: '4 menit baca', date: '15 Agustus 2026', author: 'Fitri Handayani, M.Gizi', points: 10, content: '', svgId: 'kolesterol' },
+                        { id: 'ptm_prevention', title: 'Cegah PTM dari Sekarang!', category: 'Pencegahan', description: 'Langkah-langkah praktis mencegah 5 Penyakit Tidak Menular paling umum di Indonesia.', readTime: '6 menit baca', date: '10 Agustus 2026', author: 'Tim CEKAT', points: 15, content: '', svgId: 'ptm' },
+                        { id: 'aktivitas', title: 'Olahraga Optimal untuk Usia 30+', category: 'Aktivitas', description: 'Rekomendasi jenis dan durasi olahraga yang efektif sesuai usia dan kondisi tubuh.', readTime: '4 menit baca', date: '5 Agustus 2026', author: 'dr. Bima Pratama', points: 10, content: '', svgId: 'aktivitas' },
+                      ].map((art, i) => {
+                        const catColors: Record<string,string> = { Hipertensi: 'bg-red-500', Stunting: 'bg-orange-500', Diabetes: 'bg-amber-500', Kolesterol: 'bg-yellow-600', Pencegahan: 'bg-emerald-600', Aktivitas: 'bg-blue-500' };
+                        const bgColors = ['from-red-50 to-rose-100', 'from-amber-50 to-yellow-100', 'from-amber-50 to-orange-100', 'from-yellow-50 to-amber-100', 'from-emerald-50 to-teal-100', 'from-blue-50 to-sky-100'];
+                        return (
+                          <div
+                            key={art.id}
+                            onClick={() => {
+                              const found = articlesData.find(a => a.id === art.id);
+                              if (found) { setSelectedArticle(found); setDashboardSubView('article_detail'); }
+                              else { setSelectedArticle({ ...art, content: `# ${art.title}\n\n${art.description}\n\nArtikel lengkap segera hadir. Pantau terus pembaruan CEKAT!` }); setDashboardSubView('article_detail'); }
+                            }}
+                            className="bg-white rounded-2xl overflow-hidden shadow-md cursor-pointer hover:shadow-lg active:scale-98 transition duration-200"
+                          >
+                            <div className={`h-[80px] bg-gradient-to-br ${bgColors[i % bgColors.length]} flex items-center justify-center relative`}>
+                              <img src="/images/maskot cekat normal.png" alt={art.category} className="h-16 object-contain opacity-70 mix-blend-multiply" />
+                              <div className="absolute inset-0 flex items-start p-2">
+                                <span className={`text-[7px] font-black ${catColors[art.category] || 'bg-slate-500'} text-white px-1.5 py-0.5 rounded-full`}>{art.category}</span>
+                              </div>
+                            </div>
+                            <div className="p-2.5">
+                              <h4 className="text-[10px] font-black text-slate-900 leading-snug">{art.title}</h4>
+                              <p className="text-[8px] text-slate-500 font-semibold mt-0.5">{art.readTime} • {art.points} poin</p>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
                 {/* View: Gabung Webinar Kami (Webinar List) */}
                 {dashboardSubView === 'webinar_list' && (
+
                   <div className="space-y-0 text-left pb-6 animate-fadeIn bg-white min-h-screen">
                     {/* Header Banner */}
                     <div className="bg-gradient-to-br from-emerald-600 via-emerald-700 to-yellow-600/80 text-white px-5 pt-8 pb-5 relative rounded-b-[32px] shadow-md">
