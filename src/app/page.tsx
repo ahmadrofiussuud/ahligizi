@@ -98,16 +98,10 @@ export default function LandingPage() {
           </p>
           <div className="pt-4 flex flex-wrap gap-3">
             <Link 
-              href="/app2"
-              className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-400 text-slate-950 font-black text-xs shadow-lg hover:brightness-105 active:scale-95 transition flex items-center gap-1.5"
-            >
-              <span>📱 Buka CEKAT App 2 (Terbaru)</span>
-            </Link>
-            <Link 
               href="/app"
-              className="px-6 py-3.5 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 text-white font-extrabold text-xs shadow hover:bg-white/30 transition flex items-center gap-1.5"
+              className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-[#2d8d81] text-white font-black text-xs shadow-lg hover:brightness-105 active:scale-95 transition flex items-center gap-1.5"
             >
-              <span>⚡ CEKAT App 1</span>
+              <span>📱 Buka CEKAT App</span>
             </Link>
           </div>
         </div>

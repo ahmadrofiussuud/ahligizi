@@ -41,15 +41,15 @@ export default function RootLayout({
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const isCekatRoute = pathname === '/app' || pathname === '/station' || pathname === '/app2';
+  const isCekatRoute = pathname === '/app' || pathname === '/station';
 
   return (
     <html lang="id" className="scroll-smooth">
       <body className={`${inter.className} bg-emerald-50/40 text-slate-800 min-h-screen flex flex-col`}>
         {(!isCekatRoute || !isClient) && <Navbar />}
-        {/* Dynamic Layout Wrapper: Landing page and App 2 take true 100% full-width */}
+        {/* Dynamic Layout Wrapper: Landing page takes true 100% full-width */}
         <main className={`flex-1 w-full ${
-          isLandingPage || pathname === '/app2'
+          isLandingPage
             ? 'px-0 py-0' 
             : isCekatRoute
             ? 'p-0 max-w-full'
