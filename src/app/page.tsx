@@ -1,19 +1,11 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { 
-  Camera, 
-  Sparkles, 
-  Heart, 
   ChevronRight, 
-  ShieldCheck, 
-  CheckCircle,
-  TrendingUp,
-  Activity,
-  Stethoscope,
-  ArrowRight
+  ShieldCheck
 } from 'lucide-react';
 
 export default function LandingPage() {
