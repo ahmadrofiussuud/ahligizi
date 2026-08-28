@@ -51,6 +51,7 @@ import {
   Sparkle,
   Phone,
   LogOut,
+  ShieldCheck,
   Sparkles as SparklesIcon
 } from 'lucide-react';
 import Link from 'next/link';
@@ -200,12 +201,12 @@ function CekatAppContent() {
   }, []);
 
   // Simulator navigation states
-  const [appState, setAppState] = useState<'splash' | 'welcome' | 'login' | 'main'>('main');
+  const [appState, setAppState] = useState<'splash' | 'welcome' | 'login' | 'signup' | 'otp' | 'main'>('welcome');
   const [activeTab, setActiveTab] = useState<'dashboard' | 'nutrisi' | 'challenge' | 'riwayat' | 'profil'>('dashboard');
   
   // Sub-views for detailed pages
   // - For 'dashboard': 'home' (Kebutuhanmu), 'station_summary' (Hasil Station), 'cek_risiko' (Risiko Kesehatan), 'reminders' (Pengingat & Jadwal), 'marketplace' (Keranjangmu)
-  const [dashboardSubView, setDashboardSubView] = useState<'home' | 'station_summary' | 'cek_risiko' | 'reminders' | 'marketplace' | 'edukasi' | 'article_detail' | 'webinar_list'>('home');
+  const [dashboardSubView, setDashboardSubView] = useState<'home' | 'station_summary' | 'cek_risiko' | 'reminders' | 'marketplace' | 'edukasi' | 'article_detail' | 'webinar_list' | 'kebutuhanmu' | 'tanya_ai'>('home');
   const [selectedArticle, setSelectedArticle] = useState<any | null>(null);
 
   // BMI State Variables
@@ -259,6 +260,25 @@ function CekatAppContent() {
   const [emailOrPhone, setEmailOrPhone] = useState<string>('812345678');
   const [nik, setNik] = useState<string>('3174XXXXXXXX0002');
   const [password, setPassword] = useState<string>('password123');
+
+  // Sign Up states
+  const [signUpName, setSignUpName] = useState<string>('');
+  const [signUpEmailOrPhone, setSignUpEmailOrPhone] = useState<string>('');
+  const [signUpNik, setSignUpNik] = useState<string>('');
+  const [signUpPassword, setSignUpPassword] = useState<string>('');
+  const [agreeTerms, setAgreeTerms] = useState<boolean>(false);
+
+  // OTP states
+  const [otpDigits, setOtpDigits] = useState<string[]>(['', '', '', '']);
+  const [otpTimer, setOtpTimer] = useState<number>(30);
+  const [otpError, setOtpError] = useState<string>('');
+
+  // Chatbot states
+  const [chatMessages, setChatMessages] = useState([
+    { sender: 'bot', text: 'Halo Sofia! Saya Ceko, asisten AI gizi Anda. Ada yang ingin Anda tanyakan seputar kandungan kalori makanan, pantangan gizi, atau batas garam/gula hari ini?' }
+  ]);
+  const [chatInput, setChatInput] = useState('');
+  const [isBotTyping, setIsBotTyping] = useState(false);
 
   // Pantry AI selected ingredients
   const [selectedPantryTags, setSelectedPantryTags] = useState<string[]>(['Telur', 'Ayam', 'Sayur']);
@@ -387,6 +407,31 @@ function CekatAppContent() {
     setRiwayatSubView('home');
   };
 
+  const handleSendChatMessage = () => {
+    if (!chatInput.trim()) return;
+    const userMsg = { sender: 'user', text: chatInput };
+    setChatMessages(prev => [...prev, userMsg]);
+    setChatInput('');
+    setIsBotTyping(true);
+
+    // Simulate Bot response based on user inputs
+    setTimeout(() => {
+      let reply = '';
+      const text = chatInput.toLowerCase();
+      if (text.includes('kalori') || text.includes('makan') || text.includes('salad')) {
+        reply = 'Salad Ayam dengan sedikit dressing olive oil biasanya mengandung sekitar 320-350 kkal. Pilihan yang sangat bagus untuk menjaga target kalori harian Anda!';
+      } else if (text.includes('hipertensi') || text.includes('darah') || text.includes('tensi') || text.includes('garam')) {
+        reply = 'Untuk mencegah risiko hipertensi, batasi konsumsi garam maksimal 1 sendok teh (5 gram) per hari. Hindari makanan kaleng, mie instan, dan perbanyak konsumsi makanan kaya kalium seperti pisang dan bayam.';
+      } else if (text.includes('gula') || text.includes('manis') || text.includes('diabetes')) {
+        reply = 'Batas konsumsi gula harian yang disarankan Kemkes adalah maksimal 4 sendok makan (50 gram). Cobalah mengganti camilan manis dengan buah segar seperti apel atau pir untuk pelepasan energi yang lebih stabil.';
+      } else {
+        reply = 'Tentu, pola makan bergizi seimbang adalah kunci metabolisme prima! Pastikan piring makan Anda memenuhi prinsip "Isi Piringku": 50% sayur & buah, dan 50% karbohidrat & lauk pauk.';
+      }
+      setChatMessages(prev => [...prev, { sender: 'bot', text: reply }]);
+      setIsBotTyping(false);
+    }, 1500);
+  };
+
   // Auto transition for splash screen if set to splash
   useEffect(() => {
     if (appState === 'splash') {
@@ -396,6 +441,16 @@ function CekatAppContent() {
       return () => clearTimeout(timer);
     }
   }, [appState]);
+
+  // Countdown timer for OTP
+  useEffect(() => {
+    if (appState === 'otp' && otpTimer > 0) {
+      const timer = setTimeout(() => {
+        setOtpTimer(prev => prev - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [appState, otpTimer]);
 
   // Helper function to easily switch sub-views from external panel
   const jumpToScreen = (tab: any, subview: any) => {
@@ -471,7 +526,314 @@ function CekatAppContent() {
   }
 
   if (!isMobile) {
-    return <DashboardPage />;
+    if (appState !== 'main') {
+      return (
+        <div className="min-h-screen bg-[#f5faf9] text-slate-800 flex flex-col justify-between font-sans relative overflow-hidden">
+          {/* Background blobs */}
+          <div className="absolute top-0 right-1/4 w-96 h-96 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-yellow-500/5 rounded-full blur-3xl pointer-events-none" />
+
+          {/* Desktop Onboarding Header */}
+          <header className="px-8 py-5 flex items-center justify-between border-b border-teal-150/40 bg-white/70 backdrop-blur z-20 relative shadow-xs">
+            <div className="flex items-center space-x-3">
+              <div className="h-10 flex items-center p-0.5">
+                <img src="/images/logo full cekat station.png" alt="Cekat Logo" className="h-full object-contain" />
+              </div>
+            </div>
+            <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">Portal Kesehatan Preventif Mandiri</span>
+          </header>
+
+          <main className="flex-1 flex items-center justify-center p-8 z-10 relative">
+            <div className="w-full max-w-lg bg-white border border-teal-100/70 rounded-[32px] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.015)] text-left">
+              {appState === 'welcome' && (
+                <div className="space-y-6 text-center">
+                  <div className="h-20 flex items-center justify-center mx-auto mb-2">
+                    <img src="/images/logo full cekat station.png" alt="Cekat Logo" className="h-full object-contain animate-pulse" />
+                  </div>
+                  <div className="space-y-2">
+                    <h2 className="text-2xl font-black text-slate-800 tracking-tight">Selamat Datang di CEKAT</h2>
+                    <p className="text-xs text-slate-500 font-semibold leading-relaxed max-w-md mx-auto">
+                      Ketahui profil risiko Penyakit Tidak Menular (PTM) Anda secara dini dan ikuti program preventif pola makan gizi seimbang yang terintegrasi BPJS Kesehatan.
+                    </p>
+                  </div>
+                  <div className="space-y-3 max-w-xs mx-auto">
+                    <button 
+                      onClick={() => setAppState('signup')}
+                      className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-full shadow-md text-xs transition active:scale-98 uppercase tracking-wider"
+                    >
+                      Mulai Pendaftaran Akun
+                    </button>
+                    <button 
+                      onClick={() => setAppState('login')}
+                      className="w-full py-3 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-black rounded-full text-xs transition active:scale-98 uppercase tracking-wider"
+                    >
+                      Masuk ke Akun Terdaftar
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {appState === 'signup' && (
+                <div className="space-y-6">
+                  <div className="space-y-1">
+                    <h2 className="text-2xl font-black tracking-tight text-slate-800">Daftar Akun Baru</h2>
+                    <p className="text-xs text-slate-400 font-bold leading-normal">Lengkapi data Anda untuk integrasi data rekam gizi dan BPJS Kesehatan.</p>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-1">
+                        <label className="text-[9px] text-slate-400 font-extrabold uppercase tracking-wider block">Nama Lengkap</label>
+                        <input 
+                          type="text" 
+                          value={signUpName}
+                          onChange={(e) => setSignUpName(e.target.value)}
+                          placeholder="Sofia Kusuma"
+                          className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2.5 text-xs focus:outline-none focus:border-emerald-500 text-slate-800"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[9px] text-slate-400 font-extrabold uppercase tracking-wider block">Email / Nomor HP</label>
+                        <input 
+                          type="text" 
+                          value={signUpEmailOrPhone}
+                          onChange={(e) => setSignUpEmailOrPhone(e.target.value)}
+                          placeholder="sofia@gmail.com"
+                          className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2.5 text-xs focus:outline-none focus:border-emerald-500 text-slate-800"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-1">
+                        <label className="text-[9px] text-slate-400 font-extrabold uppercase tracking-wider block">NIK (Sesuai KTP)</label>
+                        <input 
+                          type="text" 
+                          value={signUpNik}
+                          onChange={(e) => setSignUpNik(e.target.value)}
+                          placeholder="3174XXXXXXXX0002"
+                          className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2.5 text-xs focus:outline-none focus:border-emerald-500 text-slate-800"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[9px] text-slate-400 font-extrabold uppercase tracking-wider block">Kata Sandi</label>
+                        <input 
+                          type="password" 
+                          value={signUpPassword}
+                          onChange={(e) => setSignUpPassword(e.target.value)}
+                          placeholder="••••••••"
+                          className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2.5 text-xs focus:outline-none focus:border-emerald-500 text-slate-800"
+                        />
+                      </div>
+                    </div>
+
+                    <label className="flex items-start gap-2.5 pt-1.5 cursor-pointer">
+                      <input 
+                        type="checkbox" 
+                        checked={agreeTerms}
+                        onChange={(e) => setAgreeTerms(e.target.checked)}
+                        className="w-4 h-4 rounded text-emerald-600 border-slate-300 focus:ring-emerald-500 focus:ring-1 mt-0.5"
+                      />
+                      <span className="text-[9.5px] font-bold text-slate-500 leading-normal">
+                        Saya menyetujui Ketentuan Layanan & Kebijakan Privasi data medis terintegrasi Kemkes RI.
+                      </span>
+                    </label>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-4 pt-2">
+                    <button 
+                      onClick={() => setAppState('welcome')}
+                      className="px-6 py-3 border border-slate-200 hover:bg-slate-50 text-slate-700 font-black rounded-full text-xs uppercase tracking-wider transition active:scale-98"
+                    >
+                      Kembali
+                    </button>
+                    <button 
+                      onClick={() => {
+                        if (!signUpName || !signUpEmailOrPhone || !signUpNik || !signUpPassword) {
+                          alert('Silakan lengkapi seluruh formulir pendaftaran!');
+                          return;
+                        }
+                        if (!agreeTerms) {
+                          alert('Anda harus menyetujui Ketentuan Layanan!');
+                          return;
+                        }
+                        setAppState('otp');
+                        setOtpTimer(30);
+                      }}
+                      className="flex-1 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-full text-xs uppercase tracking-wider transition active:scale-98 shadow-md"
+                    >
+                      Daftar Akun
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {appState === 'otp' && (
+                <div className="space-y-6">
+                  <div className="space-y-1">
+                    <h2 className="text-2xl font-black tracking-tight text-slate-800">Verifikasi OTP</h2>
+                    <p className="text-xs text-slate-450 font-bold leading-relaxed">
+                      Kode verifikasi 4-digit telah dikirimkan ke <span className="font-extrabold text-slate-700">{signUpEmailOrPhone || emailOrPhone || 'nomor Anda'}</span>.
+                    </p>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="flex justify-center gap-3 px-6">
+                      {otpDigits.map((digit, idx) => (
+                        <input 
+                          key={idx}
+                          id={`desktop-otp-input-${idx}`}
+                          type="text" 
+                          maxLength={1}
+                          value={digit}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            if (/^[0-9]?$/.test(val)) {
+                              const newDigits = [...otpDigits];
+                              newDigits[idx] = val;
+                              setOtpDigits(newDigits);
+                              
+                              if (val && idx < 3) {
+                                document.getElementById(`desktop-otp-input-${idx + 1}`)?.focus();
+                              }
+                            }
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Backspace' && !otpDigits[idx] && idx > 0) {
+                              document.getElementById(`desktop-otp-input-${idx - 1}`)?.focus();
+                            }
+                          }}
+                          placeholder="-Input-"
+                          className="w-12 h-12 bg-slate-50 border border-slate-200 rounded-2xl text-center text-lg font-black focus:outline-none focus:border-emerald-500 text-slate-800 placeholder-slate-350"
+                        />
+                      ))}
+                    </div>
+
+                    <div className="p-3.5 bg-emerald-50/50 border border-emerald-100/50 rounded-2xl text-emerald-700 text-[10px] font-semibold leading-relaxed">
+                      💡 **Petunjuk Simulasi**: Masukkan kode verifikasi **1234** untuk memverifikasi secara langsung.
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-4">
+                    <button 
+                      onClick={() => setAppState('signup')}
+                      className="px-6 py-3 border border-slate-200 hover:bg-slate-50 text-slate-700 font-black rounded-full text-xs uppercase tracking-wider transition active:scale-98"
+                    >
+                      Kembali
+                    </button>
+                    <button 
+                      onClick={() => {
+                        const code = otpDigits.join('');
+                        if (code.length < 4) {
+                          setOtpError('Silakan lengkapi 4 digit kode OTP!');
+                          return;
+                        }
+                        setOtpError('');
+                        setAppState('main');
+                      }}
+                      className="flex-1 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-full text-xs uppercase tracking-wider transition active:scale-98 shadow-md"
+                    >
+                      Verifikasi OTP
+                    </button>
+                  </div>
+
+                  {otpError && (
+                    <p className="text-[10px] font-bold text-red-500 text-center">{otpError}</p>
+                  )}
+
+                  <div className="text-center pt-2">
+                    <div className="text-xs font-semibold text-slate-550">
+                      {otpTimer > 0 ? (
+                        <span>Kirim ulang OTP dalam <span className="font-black text-slate-800">{otpTimer} detik</span></span>
+                      ) : (
+                        <button 
+                          onClick={() => {
+                            setOtpTimer(30);
+                            alert('Kode OTP baru telah dikirimkan.');
+                          }} 
+                          className="underline text-[#00875A] font-black"
+                        >
+                          Kirim Ulang OTP
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {appState === 'login' && (
+                <div className="space-y-6">
+                  <div className="space-y-1">
+                    <h2 className="text-2xl font-black tracking-tight text-slate-800">Masuk ke CEKAT</h2>
+                    <p className="text-xs text-slate-450 font-bold leading-relaxed">Gunakan NIK dan kata sandi terdaftar Anda.</p>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="space-y-1">
+                      <label className="text-[9px] text-slate-400 font-extrabold uppercase tracking-wider block">Email / Nomor HP</label>
+                      <input 
+                        type="text" 
+                        value={emailOrPhone}
+                        onChange={(e) => setEmailOrPhone(e.target.value)}
+                        placeholder="sofia@gmail.com"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2.5 text-xs focus:outline-none focus:border-emerald-500 text-slate-800"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[9px] text-slate-400 font-extrabold uppercase tracking-wider block">NIK (16 Digit)</label>
+                      <input 
+                        type="text" 
+                        value={nik}
+                        onChange={(e) => setNik(e.target.value)}
+                        placeholder="3174XXXXXXXX0002"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2.5 text-xs focus:outline-none focus:border-emerald-500 text-slate-800"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[9px] text-slate-400 font-extrabold uppercase tracking-wider block">Kata Sandi</label>
+                      <input 
+                        type="password" 
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="••••••••"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2.5 text-xs focus:outline-none focus:border-emerald-500 text-slate-800"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-4 pt-2">
+                    <button 
+                      onClick={() => setAppState('welcome')}
+                      className="px-6 py-3 border border-slate-200 hover:bg-slate-50 text-slate-700 font-black rounded-full text-xs uppercase tracking-wider transition active:scale-98"
+                    >
+                      Kembali
+                    </button>
+                    <button 
+                      onClick={() => setAppState('main')}
+                      className="flex-1 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-full text-xs uppercase tracking-wider transition active:scale-98 shadow-md"
+                    >
+                      Masuk
+                    </button>
+                  </div>
+
+                  <div className="text-center pt-2">
+                    <div className="text-xs font-semibold text-slate-500">
+                      Belum mempunyai akun? <button onClick={() => setAppState('signup')} className="underline text-[#00875A] font-black">Daftar Sekarang</button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </main>
+
+          <footer className="py-5 text-center text-[10px] text-slate-400 font-bold uppercase tracking-widest border-t border-teal-150/40 bg-white/70">
+            Kementerian Kesehatan RI • Integrated Secure Portal
+          </footer>
+        </div>
+      );
+    }
+
+    return <DashboardPage onLogout={() => setAppState('welcome')} />;
   }
 
   return (
@@ -490,7 +852,7 @@ function CekatAppContent() {
           {/* Cekat Brand header */}
           <div className="flex items-center space-x-3">
             <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center p-2 shadow-md">
-              <img src="/landing/cekat_logo.png" alt="Cekat Logo" className="w-full h-full object-contain" />
+              <img src="/images/logo C cekat.png" alt="Cekat Logo" className="w-full h-full object-contain" />
             </div>
             <div>
               <h1 className="text-xl font-black text-white tracking-tight flex items-center gap-1.5">
@@ -703,12 +1065,12 @@ function CekatAppContent() {
               <div className="flex-1 min-h-[600px] flex flex-col items-center justify-between py-24 px-8 bg-gradient-to-b from-[#22c55e] via-white to-[#cbd52d]/30 text-center animate-fadeIn">
                 <div />
                 <div className="space-y-4 flex flex-col items-center">
-                  <div className="w-24 h-24 rounded-full bg-white shadow-xl flex items-center justify-center border border-emerald-100 p-4">
-                    <img src="/landing/cekat_logo.png" alt="Cekat Logo" className="w-full h-full object-contain" />
+                  <div className="w-24 h-24 rounded-full bg-white shadow-xl flex items-center justify-center border border-emerald-100 p-2">
+                    <img src="/images/logo C cekat.png" alt="Cekat Logo" className="w-full h-full object-contain" />
                   </div>
                   <div className="space-y-1">
                     <h1 className="text-4xl font-extrabold tracking-tight text-emerald-800">Cekat</h1>
-                    <p className="text-xs font-black text-slate-500 uppercase tracking-widest">Cek. Kenali. Tindaklanjuti</p>
+                    <p className="text-xs font-black text-slate-500 uppercase tracking-widest">Cek • Kenali • Tindaklanjuti</p>
                   </div>
                 </div>
                 <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
@@ -725,8 +1087,8 @@ function CekatAppContent() {
 
                 <div className="relative z-10 flex-1 flex flex-col justify-between py-16 px-8 text-center text-white">
                   <div className="space-y-2 flex flex-col items-center">
-                    <div className="w-14 h-14 rounded-full bg-white shadow-lg flex items-center justify-center border border-emerald-100 p-2">
-                      <img src="/landing/cekat_logo.png" alt="Cekat Logo" className="w-full h-full object-contain animate-pulse" />
+                    <div className="w-14 h-14 rounded-full bg-white shadow-lg flex items-center justify-center border border-emerald-100 p-1.5">
+                      <img src="/images/logo C cekat.png" alt="Cekat Logo" className="w-full h-full object-contain" />
                     </div>
                     <span className="text-[10px] font-black uppercase tracking-widest text-emerald-250">Kesehatan Preventif Mandiri</span>
                   </div>
@@ -742,7 +1104,7 @@ function CekatAppContent() {
 
                     <div className="space-y-3">
                       <button 
-                        onClick={() => setAppState('login')}
+                        onClick={() => setAppState('signup')}
                         className="w-full py-3 bg-white text-emerald-800 font-extrabold rounded-full shadow-md text-sm hover:bg-slate-50 transition active:scale-98"
                       >
                         Mulai dengan Email / No HP
@@ -759,58 +1121,267 @@ function CekatAppContent() {
 
             {/* 3. LOGIN SCREEN */}
             {appState === 'login' && (
-              <div className="flex-1 min-h-[600px] flex flex-col justify-between bg-white px-8 py-12 animate-fadeIn">
-                <div className="space-y-6 text-left">
+              <div className="flex-1 min-h-[600px] flex flex-col justify-between bg-white px-8 py-12 animate-fadeIn text-left">
+                <div className="space-y-6">
+                  {/* Brand Header */}
+                  <div className="flex items-center space-x-2 pb-2 border-b border-slate-100">
+                    <img src="/images/logo C cekat.png" alt="Cekat Logo" className="w-8 h-8 object-contain" />
+                    <div>
+                      <span className="text-sm font-black text-slate-800 block">CEKAT</span>
+                      <span className="text-[6.5px] font-black text-emerald-600 uppercase tracking-wider block">Cek • Kenali • Tindaklanjuti</span>
+                    </div>
+                  </div>
+
                   <div className="space-y-1">
-                    <h2 className="text-2xl font-black tracking-tight text-slate-800">Masuk ke CEKAT</h2>
-                    <p className="text-xs text-slate-500 font-semibold">Gunakan akun terdaftar Anda untuk memantau rekam gizi fisik.</p>
+                    <h2 className="text-xl font-black tracking-tight text-slate-800">Masuk ke Akun Anda</h2>
+                    <p className="text-xs text-slate-400 font-bold leading-relaxed">Masukkan Email/No HP dan NIK Anda yang terdaftar.</p>
                   </div>
 
                   <div className="space-y-4">
                     <div className="space-y-1">
-                      <label className="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider block">Email / Nomor HP</label>
+                      <label className="text-[9px] text-slate-400 font-extrabold uppercase tracking-wider block">Email / Nomor HP</label>
                       <input 
                         type="text" 
                         value={emailOrPhone}
                         onChange={(e) => setEmailOrPhone(e.target.value)}
-                        placeholder="812345678"
-                        className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3 text-sm focus:outline-none text-slate-850"
+                        placeholder="contoh@email.com / 0812..."
+                        className="w-full px-4 py-3 rounded-xl border border-slate-200 text-xs font-semibold focus:outline-none focus:border-[#00875A]"
                       />
                     </div>
-
                     <div className="space-y-1">
-                      <label className="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider block">NIK (Nomor Induk Kependudukan)</label>
-                      <input 
-                        type="text" 
-                        value={nik}
-                        onChange={(e) => setNik(e.target.value)}
-                        placeholder="3174XXXXXXXX0002"
-                        className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3 text-sm focus:outline-none text-slate-850"
-                      />
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider block">Kata Sandi</label>
+                      <label className="text-[9px] text-slate-400 font-extrabold uppercase tracking-wider block">Nomor Induk Kependudukan (NIK)</label>
                       <input 
                         type="password" 
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="••••••••"
-                        className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-4 py-3 text-sm focus:outline-none text-slate-850"
+                        value={nik}
+                        onChange={(e) => setNik(e.target.value)}
+                        placeholder="16-digit nomor NIK KTP Anda"
+                        className="w-full px-4 py-3 rounded-xl border border-slate-200 text-xs font-semibold focus:outline-none focus:border-[#00875A]"
                       />
+                    </div>
+
+                    <button 
+                      onClick={handleLogin}
+                      className="w-full py-3.5 rounded-xl bg-[#00875A] hover:bg-[#00704a] text-white text-xs font-black uppercase tracking-wider shadow-md transition active:scale-95 cursor-pointer text-center"
+                    >
+                      Masuk Aplikasi
+                    </button>
+                  </div>
+                </div>
+
+                <div className="text-center">
+                  <span className="text-xs text-slate-400 font-bold">Belum punya akun? </span>
+                  <button onClick={() => setAppState('signup')} className="text-xs text-[#00875A] font-black hover:underline cursor-pointer">Daftar Akun Baru</button>
+                </div>
+              </div>
+            )}
+
+            {/* 3B. SIGNUP SCREEN */}
+            {appState === 'signup' && (
+              <div className="flex-1 min-h-[600px] flex flex-col justify-between bg-white px-8 py-10 animate-fadeIn text-left">
+                <div className="space-y-6">
+                  {/* Header */}
+                  <div className="flex items-center space-x-2 pb-2 border-b border-slate-100">
+                    <button onClick={() => setAppState('welcome')} className="p-1 hover:bg-slate-100 rounded-full transition -ml-1 mr-1">
+                      <ArrowLeft className="w-4 h-4 text-slate-700" />
+                    </button>
+                    <img src="/images/logo C cekat.png" alt="Cekat Logo" className="w-7 h-7 object-contain" />
+                    <div>
+                      <span className="text-xs font-black text-slate-800 block">CEKAT</span>
+                      <span className="text-[6.5px] font-black text-emerald-600 uppercase tracking-wider block">Daftar Akun Baru</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1">
+                    <h2 className="text-xl font-black tracking-tight text-slate-800">Daftar Akun Baru</h2>
+                    <p className="text-xs text-slate-400 font-bold leading-normal">Lengkapi data di bawah ini untuk integrasi data rekam gizi Anda.</p>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="space-y-1">
+                      <label className="text-[9px] text-slate-400 font-extrabold uppercase tracking-wider block">Nama Lengkap Sesuai KTP</label>
+                      <input 
+                        type="text" 
+                        value={signUpName}
+                        onChange={(e) => setSignUpName(e.target.value)}
+                        placeholder="contoh: Sofia Kusuma"
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold focus:outline-none focus:border-[#00875A]"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-[9px] text-slate-400 font-extrabold uppercase tracking-wider block">Email / Nomor HP Aktif</label>
+                      <input 
+                        type="text" 
+                        value={signUpEmailOrPhone}
+                        onChange={(e) => setSignUpEmailOrPhone(e.target.value)}
+                        placeholder="contoh: sofia@email.com / 0812..."
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold focus:outline-none focus:border-[#00875A]"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-[9px] text-slate-400 font-extrabold uppercase tracking-wider block">Nomor Induk Kependudukan (NIK)</label>
+                      <input 
+                        type="text" 
+                        value={signUpNik}
+                        onChange={(e) => setSignUpNik(e.target.value)}
+                        className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2.5 text-xs focus:outline-none focus:border-emerald-500 text-slate-855"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-[9px] text-slate-400 font-extrabold uppercase tracking-wider block">Kata Sandi</label>
+                      <input 
+                        type="password" 
+                        value={signUpPassword}
+                        onChange={(e) => setSignUpPassword(e.target.value)}
+                        placeholder="••••••••"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2.5 text-xs focus:outline-none focus:border-emerald-500 text-slate-855"
+                      />
+                    </div>
+
+                    {/* Agree terms */}
+                    <label className="flex items-start gap-2.5 pt-1.5 cursor-pointer">
+                      <input 
+                        type="checkbox" 
+                        checked={agreeTerms}
+                        onChange={(e) => setAgreeTerms(e.target.checked)}
+                        className="w-4 h-4 rounded text-emerald-600 border-slate-300 focus:ring-emerald-500 focus:ring-1 mt-0.5"
+                      />
+                      <span className="text-[9.5px] font-bold text-slate-500 leading-normal">
+                        Saya menyetujui Ketentuan Layanan & Kebijakan Privasi data medis terintegrasi.
+                      </span>
+                    </label>
+                  </div>
+
+                  <button 
+                    onClick={() => {
+                      if (!signUpName || !signUpEmailOrPhone || !signUpNik || !signUpPassword) {
+                        alert('Silakan lengkapi seluruh formulir pendaftaran!');
+                        return;
+                      }
+                      if (!agreeTerms) {
+                        alert('Anda harus menyetujui Ketentuan Layanan!');
+                        return;
+                      }
+                      setAppState('otp');
+                      setOtpTimer(30);
+                    }}
+                    className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-full text-xs shadow-md transition active:scale-98 uppercase tracking-wider"
+                  >
+                    Daftar Akun
+                  </button>
+                </div>
+                
+                <div className="text-center pt-4">
+                  <div className="text-xs font-semibold text-slate-500">
+                    Sudah mempunyai akun? <button onClick={() => setAppState('login')} className="underline text-[#00875A] font-black hover:text-[#00704a]">Masuk</button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* 3C. OTP SCREEN */}
+            {appState === 'otp' && (
+              <div className="flex-1 min-h-[600px] flex flex-col justify-between bg-white px-8 py-12 animate-fadeIn text-left">
+                <div className="space-y-6">
+                  {/* Header */}
+                  <div className="flex items-center space-x-2 pb-2 border-b border-slate-100">
+                    <button onClick={() => setAppState('signup')} className="p-1 hover:bg-slate-100 rounded-full transition -ml-1 mr-1">
+                      <ArrowLeft className="w-4 h-4 text-slate-700" />
+                    </button>
+                    <img src="/images/logo C cekat.png" alt="Cekat Logo" className="w-7 h-7 object-contain" />
+                    <div>
+                      <span className="text-xs font-black text-slate-800 block">CEKAT</span>
+                      <span className="text-[6.5px] font-black text-emerald-600 uppercase tracking-wider block">Verifikasi Keamanan</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1">
+                    <h2 className="text-xl font-black tracking-tight text-slate-800">Verifikasi OTP</h2>
+                    <p className="text-xs text-slate-400 font-bold leading-relaxed">
+                      Kode verifikasi 4-digit telah dikirimkan ke nomor / email <span className="font-extrabold text-slate-700">{signUpEmailOrPhone || emailOrPhone || 'Anda'}</span>.
+                    </p>
+                  </div>
+
+                  {/* OTP inputs container */}
+                  <div className="space-y-4">
+                    <div className="flex justify-between gap-3 px-6">
+                      {otpDigits.map((digit, idx) => (
+                        <input 
+                          key={idx}
+                          id={`otp-input-${idx}`}
+                          type="text" 
+                          maxLength={1}
+                          value={digit}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            if (/^[0-9]?$/.test(val)) {
+                              const newDigits = [...otpDigits];
+                              newDigits[idx] = val;
+                              setOtpDigits(newDigits);
+                              
+                              // Auto focus next input
+                              if (val && idx < 3) {
+                                document.getElementById(`otp-input-${idx + 1}`)?.focus();
+                              }
+                            }
+                          }}
+                          onKeyDown={(e) => {
+                            // Focus previous input on backspace
+                            if (e.key === 'Backspace' && !otpDigits[idx] && idx > 0) {
+                              document.getElementById(`otp-input-${idx - 1}`)?.focus();
+                            }
+                          }}
+                          placeholder="-Input-"
+                          className="w-12 h-12 bg-slate-50 border border-slate-200 rounded-2xl text-center text-lg font-black focus:outline-none focus:border-emerald-500 text-slate-800 placeholder-slate-300"
+                        />
+                      ))}
+                    </div>
+
+                    {/* Simulation Help Box */}
+                    <div className="p-3.5 bg-emerald-50/50 border border-emerald-100/50 rounded-2xl text-emerald-700 text-[10px] font-semibold leading-relaxed">
+                      💡 **Petunjuk Simulasi**: Masukkan kode verifikasi **1234** (atau 4 digit apa saja) untuk memverifikasi secara langsung.
                     </div>
                   </div>
 
                   <button 
-                    onClick={() => setAppState('main')}
-                    className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-full text-sm shadow-md transition active:scale-98"
+                    onClick={() => {
+                      const code = otpDigits.join('');
+                      if (code.length < 4) {
+                        setOtpError('Silakan lengkapi 4 digit kode OTP!');
+                        return;
+                      }
+                      setOtpError('');
+                      // Success transition
+                      setAppState('main');
+                    }}
+                    className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-full text-xs shadow-md transition active:scale-98 uppercase tracking-wider"
                   >
-                    Masuk
+                    Verifikasi Kode
                   </button>
+
+                  {otpError && (
+                    <p className="text-[10px] font-bold text-red-500 text-center">{otpError}</p>
+                  )}
                 </div>
-                
-                <div className="text-center text-xs font-semibold text-slate-450">
-                  Kemkes RI Integrated Secure Verification
+
+                <div className="text-center pt-4 space-y-3">
+                  <div className="text-xs font-semibold text-slate-550">
+                    {otpTimer > 0 ? (
+                      <span>Kirim ulang OTP dalam <span className="font-black text-slate-800">{otpTimer} detik</span></span>
+                    ) : (
+                      <button 
+                        onClick={() => {
+                          setOtpTimer(30);
+                          alert('Kode OTP baru telah dikirimkan ke ' + (signUpEmailOrPhone || emailOrPhone));
+                        }} 
+                        className="underline text-[#00875A] font-black hover:text-[#00704a]"
+                      >
+                        Kirim Ulang OTP
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             )}
@@ -832,8 +1403,8 @@ function CekatAppContent() {
                         <div className="bg-gradient-to-r from-[#f1c40f] to-[#10b981] text-white rounded-b-[40px] px-5 pt-8 pb-7 shadow-md text-left relative shrink-0">
                           <div className="flex items-center justify-between mb-4">
                             <div className="flex items-center space-x-1.5">
-                              <div className="w-6 h-6 rounded-full bg-white flex items-center justify-center p-0.5">
-                                <span className="text-[10.5px] font-black text-[#10b981] leading-none">C</span>
+                              <div className="w-6 h-6 rounded-full bg-white flex items-center justify-center p-0.5 shadow-sm">
+                                <img src="/images/logo C cekat.png" alt="Cekat Logo" className="w-full h-full object-contain" />
                               </div>
                               <div className="flex flex-col">
                                 <span className="text-xs font-black tracking-tight text-white uppercase leading-none">Cekat</span>
@@ -876,60 +1447,9 @@ function CekatAppContent() {
                             {/* Absolute green patterns */}
                             <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-8 -mt-8"></div>
                             
-                            {/* Left side: Premium Sloped Kiosk Station SVG */}
-                            <div className="w-20 h-32 shrink-0 relative flex items-center justify-center select-none hover:scale-105 transition transform duration-300 -mt-1">
-                              <svg width="80" height="120" viewBox="0 14 80 102" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full drop-shadow-md">
-                                {/* Base Stand (3D skewed trapezoid) */}
-                                <path d="M 22 100 L 58 100 L 66 108 L 14 108 Z" fill="url(#baseGrad)" stroke="#B2BABB" strokeWidth="1"/>
-                                {/* Base shadow */}
-                                <ellipse cx="40" cy="111" rx="26" ry="3" fill="black" fillOpacity="0.25" filter="blur(2px)"/>
-                                
-                                {/* Vertical Column Body */}
-                                <path d="M 26 58 L 54 58 L 54 100 L 26 100 Z" fill="url(#bodyGrad)" stroke="#BDC3C7" strokeWidth="0.5"/>
-                                <path d="M 26 58 L 30 58 L 30 100 L 26 100 Z" fill="#FFFFFF" opacity="0.6"/> {/* Highlight line */}
-
-                                {/* Sloped Head connector */}
-                                <path d="M 22 58 L 58 58 L 54 62 L 26 62 Z" fill="#7F8C8D" />
-
-                                {/* Sloped Screen Head (3D perspective sloped trapezoid) */}
-                                <path d="M 18 28 L 62 28 L 54 58 L 26 58 Z" fill="url(#headGrad)" stroke="#BDC3C7" strokeWidth="0.5"/>
-                                <path d="M 18 28 L 22 28 L 29 58 L 26 58 Z" fill="#FFFFFF" opacity="0.4"/> {/* Highlight line */}
-                                
-                                {/* Screen Glass Panel (Sloped) */}
-                                <path d="M 21 32 L 59 32 L 52 54 L 28 54 Z" fill="url(#screenGrad)" stroke="#2C3E50" strokeWidth="1.5"/>
-                                
-                                {/* Screen Header */}
-                                <path d="M 22 34 L 58 34 L 56 38 L 24 38 Z" fill="#1B5E20" opacity="0.9"/>
-                                <text x="40" y="37.5" fontFamily="sans-serif" fontSize="2.8" fontWeight="bold" fill="#FFFFFF" textAnchor="middle">CEKAT STATION</text>
-                                
-                                {/* Glowing Scan Line */}
-                                <path d="M 25 43 L 55 43" stroke="#00FFCC" strokeWidth="0.8" strokeLinecap="round" opacity="0.8">
-                                  <animate attributeName="opacity" values="0.3;1;0.3" dur="1.5s" repeatCount="indefinite"/>
-                                </path>
-
-                                {/* Ready Status Text */}
-                                <text x="40" y="49" fontFamily="sans-serif" fontSize="4.5" fontWeight="900" fill="#00FFCC" textAnchor="middle" filter="drop-shadow(0px 1px 1px rgba(0,0,0,0.5))">READY</text>
-
-                                {/* Gradients definitions */}
-                                <defs>
-                                  <linearGradient id="baseGrad" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stopColor="#EAEDED"/>
-                                    <stop offset="100%" stopColor="#95A5A6"/>
-                                  </linearGradient>
-                                  <linearGradient id="bodyGrad" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stopColor="#FFFFFF"/>
-                                    <stop offset="100%" stopColor="#D5D8DC"/>
-                                  </linearGradient>
-                                  <linearGradient id="headGrad" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stopColor="#FFFFFF"/>
-                                    <stop offset="100%" stopColor="#BDC3C7"/>
-                                  </linearGradient>
-                                  <linearGradient id="screenGrad" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stopColor="#1B5E20"/>
-                                    <stop offset="100%" stopColor="#10B981"/>
-                                  </linearGradient>
-                                </defs>
-                              </svg>
+                            {/* Left side: Premium Kiosk Station Device Image */}
+                            <div className="w-16 h-28 shrink-0 relative flex items-center justify-center select-none">
+                              <img src="/images/cekat station.png" alt="Cekat Station Kiosk" className="w-full h-full object-contain drop-shadow-md hover:scale-105 transition transform duration-300" />
                             </div>
 
                             {/* Right side: Information */}
@@ -957,8 +1477,8 @@ function CekatAppContent() {
                           </div>
                         </div>
 
-                        {/* Flexible spacer to push grid menu closer to bottom nav */}
-                        <div className="flex-1 min-h-[12px] md:min-h-0" />
+                        {/* Fixed spacing above grid menu */}
+                        <div className="h-3 shrink-0" />
 
                         {/* Circular 6-item Grid Menu */}
                         <div className="mx-4 mt-2 shrink-0">
@@ -1001,10 +1521,10 @@ function CekatAppContent() {
 
                             {/* Item 4: Kebutuhanmu */}
                             <div 
-                              onClick={() => setShowKebutuhanmu(prev => !prev)}
+                              onClick={() => setDashboardSubView('kebutuhanmu')}
                               className="flex flex-col items-center cursor-pointer group"
                             >
-                              <div className={`w-[76px] h-[76px] rounded-full border flex items-center justify-center shadow-xs transition group-hover:scale-105 active:scale-95 shrink-0 overflow-hidden p-0.5 ${showKebutuhanmu ? 'bg-amber-350 border-amber-500' : 'bg-[#EAEAEA] border-[#CCCCCC]/30'}`}>
+                              <div className={`w-[76px] h-[76px] rounded-full border flex items-center justify-center shadow-xs transition group-hover:scale-105 active:scale-95 shrink-0 overflow-hidden p-0.5 ${dashboardSubView === 'kebutuhanmu' ? 'bg-amber-350 border-amber-500' : 'bg-[#EAEAEA] border-[#CCCCCC]/30'}`}>
                                 <img src="/images/icon_kebutuhan.jpg" alt="Kebutuhan" className="w-full h-full object-cover rounded-full" />
                               </div>
                               <span className="text-[13.5px] font-black text-slate-800 leading-tight mt-2 text-center">Kebutuhanmu</span>
@@ -1021,96 +1541,186 @@ function CekatAppContent() {
                               <span className="text-[13.5px] font-black text-slate-800 leading-tight mt-2 text-center">Pengingat & Jadwal</span>
                             </div>
 
-                            {/* Item 6: Games */}
+                            {/* Item 6: Tanya Ceko AI */}
                             <div 
-                              onClick={() => alert('Membuka Mini Games Sehat...')}
+                              onClick={() => setDashboardSubView('tanya_ai')}
                               className="flex flex-col items-center cursor-pointer group"
                             >
-                              <div className="w-[76px] h-[76px] rounded-full bg-[#EAEAEA] border border-[#CCCCCC]/30 flex items-center justify-center shadow-xs transition group-hover:scale-105 active:scale-95 shrink-0 overflow-hidden p-0.5">
-                                <img src="/images/icon_games.jpg" alt="Games" className="w-full h-full object-cover rounded-full" />
+                              <div className="w-[76px] h-[76px] rounded-full bg-gradient-to-br from-emerald-400 to-[#2d8d81] border border-emerald-300 flex items-center justify-center shadow-md transition group-hover:scale-105 active:scale-95 shrink-0 overflow-hidden p-0.5 relative">
+                                <img src="/images/maskot cekat tanda tanya.png" alt="Ceko Mascot" className="w-full h-full object-cover rounded-full" />
+                                <div className="absolute top-1 right-1 w-2.5 h-2.5 rounded-full bg-yellow-400 border border-white animate-pulse"></div>
                               </div>
-                              <span className="text-[13.5px] font-black text-slate-800 leading-tight mt-2 text-center">Games</span>
+                              <span className="text-[13.5px] font-black text-slate-800 leading-tight mt-2 text-center">Tanya Ceko AI</span>
                             </div>
                           </div>
                         </div>
 
-                        {/* Slide-down Kebutuhanmu list (visible when clicked) */}
-                        {showKebutuhanmu && (
-                          <div className="mx-4 p-4 bg-slate-50 border border-slate-200 rounded-3xl text-left space-y-3 animate-fadeIn shrink-0">
-                            <div className="flex items-center justify-between border-b border-slate-200 pb-1.5 px-1">
-                              <span className="text-xs font-black text-slate-800 uppercase tracking-wider">Layanan Kebutuhanmu</span>
-                              <button 
-                                onClick={() => setShowKebutuhanmu(false)}
-                                className="text-[10px] font-black text-slate-400 hover:text-slate-650 bg-white border border-slate-200 px-2.5 py-0.5 rounded-full shadow-xs"
-                              >
-                                Tutup
-                              </button>
+                        {/* Floating help bot inline */}
+                        <div className="hidden absolute bottom-[80px] right-3 z-30 flex-col items-end pointer-events-none">
+                          <div className="bg-amber-400 text-slate-900 font-black text-[9px] rounded-full px-2 py-0.5 border border-white shadow-md animate-pulse mb-1">💡</div>
+                          <div className="w-10 h-10 rounded-full bg-[#10b981] border-2 border-white shadow-lg flex items-center justify-center text-xl animate-bounce">🤖</div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* View: Kebutuhanmu Page */}
+                    {dashboardSubView === 'kebutuhanmu' && (
+                      <div className="flex-1 flex flex-col justify-between pb-20 animate-fadeIn bg-slate-50 min-h-screen text-left">
+                        <div>
+                          {/* Header */}
+                          <div className="bg-white border-b border-slate-100 px-5 pt-8 pb-4 flex items-center justify-between shadow-xs">
+                            <button onClick={() => setDashboardSubView('home')} className="p-1.5 hover:bg-slate-100 rounded-full transition">
+                              <ArrowLeft className="w-5 h-5 text-slate-800" />
+                            </button>
+                            <span className="text-[14px] font-black text-slate-900 tracking-tight">Kebutuhanmu</span>
+                            <div className="w-8" />
+                          </div>
+
+                          <div className="p-5 space-y-4">
+                            <div className="space-y-1">
+                              <h3 className="text-lg font-black text-slate-800">Layanan Kebutuhanmu</h3>
+                              <p className="text-xs text-slate-500 font-semibold leading-relaxed">
+                                Temukan layanan kesehatan personal, konsultasi medis terpadu, serta pemenuhan kebutuhan obat dan nutrisi harian Anda.
+                              </p>
                             </div>
-                            <div className="space-y-3">
-                              {/* 1. Konsultasi */}
-                              <div className="bg-white border border-slate-100 p-4 rounded-2xl flex items-center justify-between shadow-xs">
-                                <div className="flex items-center space-x-3 text-left">
-                                  <div className="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 shrink-0 animate-pulse">
-                                    <Stethoscope className="w-5 h-5" />
+
+                            <div className="space-y-3.5 pt-2">
+                              {/* Card 1: Konsultasi */}
+                              <div className="bg-white border border-slate-150 p-5 rounded-3xl flex items-center justify-between shadow-xs hover:border-emerald-300 transition group">
+                                <div className="flex items-center space-x-4">
+                                  <div className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 shrink-0 group-hover:scale-105 transition-transform duration-300">
+                                    <Stethoscope className="w-6 h-6" />
                                   </div>
                                   <div>
-                                    <h4 className="text-[10.5px] font-black text-slate-800 leading-none">Konsultasi</h4>
-                                    <p className="text-[8px] text-slate-400 font-semibold leading-tight mt-1">Tanya dokter/ahli gizi</p>
+                                    <h4 className="text-xs font-black text-slate-850">Konsultasi Ahli</h4>
+                                    <p className="text-[10px] text-slate-400 font-bold leading-snug mt-0.5">Tanya dokter spesialis & ahli gizi klinis</p>
                                   </div>
                                 </div>
                                 <button 
                                   onClick={() => alert('Menghubungkan ke Ahli Gizi Terverifikasi...')}
-                                  className="px-3 py-1 bg-emerald-600 text-white text-[8px] font-black rounded-full uppercase transition"
+                                  className="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-black rounded-full uppercase transition active:scale-95 shadow-xs"
                                 >
                                   Mulai
                                 </button>
                               </div>
 
-                              {/* 2. Keranjangmu */}
-                              <div className="bg-white border border-slate-100 p-4 rounded-2xl flex items-center justify-between shadow-xs">
-                                <div className="flex items-center space-x-3 text-left">
-                                  <div className="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
-                                    <ShoppingCart className="w-5 h-5" />
+                              {/* Card 2: Keranjangmu */}
+                              <div className="bg-white border border-slate-150 p-5 rounded-3xl flex items-center justify-between shadow-xs hover:border-emerald-300 transition group">
+                                <div className="flex items-center space-x-4">
+                                  <div className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 shrink-0 group-hover:scale-105 transition-transform duration-300">
+                                    <ShoppingCart className="w-6 h-6" />
                                   </div>
                                   <div>
-                                    <h4 className="text-[10.5px] font-black text-slate-800 leading-none">Keranjangmu</h4>
-                                    <p className="text-[8px] text-slate-400 font-semibold leading-tight mt-1">Beli obat & vitamin</p>
+                                    <h4 className="text-xs font-black text-slate-850">Keranjang Suplemen</h4>
+                                    <p className="text-[10px] text-slate-400 font-bold leading-snug mt-0.5">Beli multivitamin, obat, & pangan organik</p>
                                   </div>
                                 </div>
                                 <button 
                                   onClick={() => setDashboardSubView('marketplace')}
-                                  className="px-3 py-1 bg-emerald-600 text-white text-[8px] font-black rounded-full uppercase transition"
+                                  className="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-black rounded-full uppercase transition active:scale-95 shadow-xs"
                                 >
                                   Beli
                                 </button>
                               </div>
 
-                              {/* 3. Obat Saya */}
-                              <div className="bg-white border border-slate-100 p-4 rounded-2xl flex items-center justify-between shadow-xs">
-                                <div className="flex items-center space-x-3 text-left">
-                                  <div className="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
-                                    <Pill className="w-5 h-5" />
+                              {/* Card 3: Obat Saya */}
+                              <div className="bg-white border border-slate-150 p-5 rounded-3xl flex items-center justify-between shadow-xs hover:border-emerald-300 transition group">
+                                <div className="flex items-center space-x-4">
+                                  <div className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center text-emerald-600 shrink-0 group-hover:scale-105 transition-transform duration-300">
+                                    <Pill className="w-6 h-6" />
                                   </div>
                                   <div>
-                                    <h4 className="text-[10.5px] font-black text-slate-800 leading-none">Obat Saya</h4>
-                                    <p className="text-[8px] text-slate-400 font-semibold leading-tight mt-1">Jadwal & Riwayat obat</p>
+                                    <h4 className="text-xs font-black text-slate-850">Obat & Jadwal Saya</h4>
+                                    <p className="text-[10px] text-slate-400 font-bold leading-snug mt-0.5">Pengingat rutin minum obat, air, & vitamin</p>
                                   </div>
                                 </div>
                                 <button 
                                   onClick={() => setDashboardSubView('reminders')}
-                                  className="px-3 py-1 bg-emerald-600 text-white text-[8px] font-black rounded-full uppercase transition"
+                                  className="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-black rounded-full uppercase transition active:scale-95 shadow-xs"
                                 >
                                   Jadwal
                                 </button>
                               </div>
                             </div>
                           </div>
-                        )}
+                        </div>
+                      </div>
+                    )}
 
-                        {/* Floating help bot inline */}
-                        <div className="hidden absolute bottom-[80px] right-3 z-30 flex-col items-end pointer-events-none">
-                          <div className="bg-amber-400 text-slate-900 font-black text-[9px] rounded-full px-2 py-0.5 border border-white shadow-md animate-pulse mb-1">💡</div>
-                          <div className="w-10 h-10 rounded-full bg-[#10b981] border-2 border-white shadow-lg flex items-center justify-center text-xl animate-bounce">🤖</div>
+                    {/* View: Tanya Ceko AI Chat Page */}
+                    {dashboardSubView === 'tanya_ai' && (
+                      <div className="flex-1 flex flex-col justify-between pb-20 animate-fadeIn bg-slate-50 min-h-screen text-left">
+                        {/* Header */}
+                        <div className="bg-white border-b border-slate-100 px-4 pt-8 pb-3 flex items-center justify-between shadow-xs shrink-0">
+                          <button onClick={() => setDashboardSubView('home')} className="p-1 hover:bg-slate-55 rounded-full transition">
+                            <ArrowLeft className="w-5 h-5 text-slate-700" />
+                          </button>
+                          <div className="flex items-center space-x-2">
+                            <div className="w-9 h-9 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center overflow-hidden shadow-xs shrink-0 p-0.5">
+                              <img src="/images/maskot cekat normal.png" alt="Ceko Mascot" className="w-full h-full object-cover" />
+                            </div>
+                            <div className="text-left">
+                              <h4 className="text-xs font-black text-slate-800 leading-none">Ceko AI</h4>
+                              <span className="text-[8px] font-bold text-emerald-600 block mt-0.5">Asisten Gizi • Online</span>
+                            </div>
+                          </div>
+                          <div className="w-8" />
+                        </div>
+
+                        {/* Chat Messages */}
+                        <div className="flex-1 p-4 overflow-y-auto space-y-3 flex flex-col justify-end">
+                          <div className="space-y-3 overflow-y-auto max-h-[360px] pr-1 w-full">
+                            {/* Cute Mascot Greeting Card */}
+                            <div className="p-4 bg-[#f0faf7] border border-teal-150/40 rounded-2xl flex items-center space-x-4 shadow-xs mb-3 text-left">
+                              <img src="/images/maskot cekat tanda tanya.png" alt="Ceko Mascot" className="w-12 h-16 object-contain shrink-0" />
+                              <div className="space-y-1">
+                                <h5 className="text-[12.5px] font-black text-slate-800 leading-tight">Konsultasi AI Ceko</h5>
+                                <p className="text-[10px] text-slate-500 font-semibold leading-relaxed">Ceko siap membantu mencarikan informasi kandungan gizi makanan Anda secara praktis & cepat!</p>
+                              </div>
+                            </div>
+                            {chatMessages.map((msg, idx) => (
+                              <div key={idx} className={`flex w-full ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+                                <div className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-xs shadow-xs leading-relaxed ${
+                                  msg.sender === 'user' 
+                                    ? 'bg-[#00875A] text-white rounded-br-none' 
+                                    : 'bg-white border border-slate-100 text-slate-850 rounded-bl-none'
+                                }`}>
+                                  {msg.text}
+                                </div>
+                              </div>
+                            ))}
+                            {isBotTyping && (
+                              <div className="flex justify-start">
+                                <div className="bg-white border border-slate-100 rounded-2xl rounded-bl-none px-4 py-2.5 text-xs text-slate-400 shadow-xs flex items-center space-x-1">
+                                  <span className="animate-bounce">●</span>
+                                  <span className="animate-bounce delay-150">●</span>
+                                  <span className="animate-bounce delay-300">●</span>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Input Area */}
+                        <div className="p-3 bg-white border-t border-slate-100 shrink-0">
+                          <div className="flex items-center bg-slate-50 border border-slate-200 rounded-full px-3 py-1.5">
+                            <input 
+                              type="text" 
+                              value={chatInput}
+                              onChange={(e) => setChatInput(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter') handleSendChatMessage();
+                              }}
+                              placeholder="Tanya kalori, tensi darah, dll..."
+                              className="flex-1 bg-transparent border-none text-xs text-slate-855 focus:outline-none placeholder-slate-400 px-1"
+                            />
+                            <button 
+                              onClick={handleSendChatMessage}
+                              className="w-7 h-7 rounded-full bg-[#00875A] hover:bg-[#00704a] text-white flex items-center justify-center transition active:scale-95 shrink-0"
+                            >
+                              <ArrowRight className="w-4 h-4" />
+                            </button>
+                          </div>
                         </div>
                       </div>
                     )}
@@ -1988,7 +2598,7 @@ function CekatAppContent() {
                           <div className="flex items-center justify-between">
                             <div className="flex items-center space-x-1.5">
                               <div className="w-6 h-6 rounded-full bg-white flex items-center justify-center p-1 shadow-sm">
-                                <img src="/landing/cekat_logo.png" alt="Cekat Logo" className="w-full h-full object-contain" />
+                                <img src="/images/logo C cekat.png" alt="Cekat Logo" className="w-full h-full object-contain" />
                               </div>
                               <span className="text-xs font-black text-emerald-800 uppercase tracking-wider block">Cekat</span>
                             </div>
@@ -2708,7 +3318,7 @@ function CekatAppContent() {
                           <span className="text-[14px] font-black text-slate-900 tracking-tight">Langkah Sehatmu</span>
                           <button onClick={() => setChallengeSubView('misi')} className="p-1.5 hover:bg-slate-50 rounded-full text-emerald-600 transition flex items-center gap-0.5">
                             <span className="text-[10px] font-bold">Misi</span>
-                            <Gamepad2 className="w-4 h-4 text-emerald-600" />
+                            <ListTodo className="w-4 h-4 text-emerald-600" />
                           </button>
                         </div>
 
@@ -2838,9 +3448,7 @@ function CekatAppContent() {
                             <ArrowLeft className="w-5 h-5 text-slate-800" />
                           </button>
                           <span className="text-[15px] font-black text-slate-900 tracking-tight">Challenge kamu</span>
-                          <button onClick={() => setChallengeSubView('games')} className="p-1.5 hover:bg-slate-55 rounded-full transition text-slate-700">
-                            <Trophy className="w-5 h-5 text-slate-600 hover:text-yellow-500" />
-                          </button>
+                          <div className="w-8" />
                         </div>
 
                         {/* 7-Day Healthy Challenge Banner */}
@@ -2928,65 +3536,7 @@ function CekatAppContent() {
                       </div>
                     )}
 
-                    {/* View 3: Games Grid */}
-                    {challengeSubView === 'games' && (
-                      <div className="space-y-0 text-left pb-6 animate-fadeIn bg-slate-50 min-h-screen">
-                        {/* Header Banner */}
-                        <div className="bg-gradient-to-br from-emerald-600 via-emerald-700 to-yellow-600/80 text-white px-5 pt-8 pb-5 relative rounded-b-[32px] shadow-md">
-                          <div className="flex items-center justify-between mb-4">
-                            <button onClick={() => setChallengeSubView('misi')} className="p-1 bg-white/10 hover:bg-white/20 rounded-full transition">
-                              <ArrowLeft className="w-5 h-5 text-white" />
-                            </button>
-                            <span className="text-xs font-black uppercase tracking-widest text-white/90">Games & Misi</span>
-                            <div className="w-7"></div>
-                          </div>
-                          
-                          <div className="flex items-center justify-between gap-4">
-                            <div>
-                              <h2 className="text-[20px] font-black leading-tight tracking-tight">Games</h2>
-                              <p className="text-[10px] text-emerald-100 font-bold mt-1">Bermain sambil belajar cara menjaga gizi optimal harian.</p>
-                            </div>
-                            <div className="w-16 h-16 shrink-0 bg-white/15 rounded-2xl flex items-center justify-center text-3xl shadow-inner border border-white/10">
-                              🎮
-                            </div>
-                          </div>
 
-                          {/* Subtabs Semua / Tersimpan */}
-                          <div className="flex border-b border-white/20 mt-5 text-[11px] font-black text-white/70">
-                            <span className="pb-2 px-3 border-b-2 border-white text-white font-extrabold cursor-pointer">Semua</span>
-                            <span className="pb-2 px-3 cursor-pointer hover:text-white transition">Tersimpan</span>
-                          </div>
-                        </div>
-
-                        {/* Grid of Games */}
-                        <div className="mx-4 mt-5 space-y-4">
-                          <div className="grid grid-cols-3 gap-3">
-                            {[
-                              { id: 'tebak', name: 'Tebak Gambar', icon: '👩‍💻' },
-                              { id: 'fruity', name: 'Tutty Fruity', icon: '🍉' },
-                              { id: 'uno', name: 'Health Uno', icon: '🃏' },
-                              { id: 'boom', name: 'Healthy Boom', icon: '💣' },
-                              { id: 'sudoku', name: 'Sudoku Fruity', icon: '🧩' },
-                              { id: 'xox', name: 'Health XOX', icon: '🎮' },
-                              { id: 'search', name: 'Search Your Health', icon: '🔍' },
-                              { id: 'puzzle', name: 'Puzzle Nutritone', icon: '🧩' },
-                              { id: 'monopoly', name: 'Monopoli', icon: '🎲' }
-                            ].map(game => (
-                              <div 
-                                key={game.id}
-                                onClick={() => alert(`Membuka game: ${game.name}...`)}
-                                className="bg-white border border-slate-100 rounded-3xl p-3.5 shadow-[0_2px_8px_rgba(15,23,42,0.03)] flex flex-col items-center justify-between text-center gap-3 cursor-pointer hover:shadow active:scale-95 transition"
-                              >
-                                <div className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-100/50 flex items-center justify-center text-2xl shrink-0">
-                                  {game.icon}
-                                </div>
-                                <span className="text-[9.5px] font-black text-slate-800 leading-tight block">{game.name}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    )}
                   </div>
                 )}
 
@@ -3296,46 +3846,96 @@ function CekatAppContent() {
                     TAB 5: PROFIL (User profiles & connection status)
                     ------------------------------------------------------------- */}
                 {activeTab === 'profil' && (
-                  <div className="flex-1 bg-white p-6 space-y-6 animate-fadeIn pb-20">
-                    <div className="text-center space-y-4 flex flex-col items-center">
-                      <div className="w-20 h-20 rounded-full border-4 border-emerald-500 bg-slate-200 overflow-hidden shadow-md">
-                        <img 
-                          src="/landing/doctor_elina_photo.jpg" 
-                          alt="Sofia Profile" 
-                          className="w-full h-full object-cover" 
-                        />
+                  <div className="flex-1 bg-slate-50 px-4 py-4 space-y-3 animate-fadeIn pb-20 text-left">
+                    
+                    {/* Profile Card */}
+                    <div className="bg-white border border-teal-50/50 rounded-3xl p-4 shadow-[0_8px_30px_rgb(0,0,0,0.01)] text-center space-y-3">
+                      <div className="w-18 h-18 rounded-full border-4 border-[#2d8d81] mx-auto overflow-hidden shadow-xs">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" alt="Sofia Profile" className="w-full h-full object-cover" />
                       </div>
-                      <div>
-                        <h2 className="text-xl font-black text-slate-800 tracking-tight">Sofia Kusuma</h2>
-                        <span className="text-xs text-slate-400 font-semibold">Profil Terintegrasi BPJS</span>
+                      <div className="space-y-0.5">
+                        <h3 className="text-base font-black text-slate-900 leading-tight">Sofia Kusuma</h3>
+                        <span className="text-[10px] text-slate-450 font-bold block">NIK: 3174XXXXXXXX0002</span>
+                        
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[9px] font-black uppercase tracking-wider border border-emerald-100 mt-1.5 shadow-xs">
+                          <ShieldCheck className="w-3 h-3 fill-emerald-100" />
+                          <span>Terintegrasi BPJS Kes</span>
+                        </span>
+                      </div>
+
+                      {/* Profile physical metrics chips (Compact style) */}
+                      <div className="grid grid-cols-3 gap-2 pt-1">
+                        <div className="p-2 bg-teal-50/50 border border-teal-100 rounded-xl text-center">
+                          <span className="text-[8.5px] font-extrabold text-[#2d8d81] uppercase block">Usia</span>
+                          <span className="text-xs font-black text-slate-800 block">28 Thn</span>
+                        </div>
+                        <div className="p-2 bg-amber-50/50 border border-amber-100 rounded-xl text-center">
+                          <span className="text-[8.5px] font-extrabold text-amber-700 uppercase block">Berat</span>
+                          <span className="text-xs font-black text-slate-800 block">60 kg</span>
+                        </div>
+                        <div className="p-2 bg-rose-50/50 border border-rose-100 rounded-xl text-center">
+                          <span className="text-[8.5px] font-extrabold text-rose-700 uppercase block">Tinggi</span>
+                          <span className="text-xs font-black text-slate-800 block">158 cm</span>
+                        </div>
                       </div>
                     </div>
 
-                    <div className="border border-slate-100 p-5 rounded-3xl space-y-4 shadow-sm bg-white text-left">
-                      <span className="text-[10px] text-slate-400 font-black tracking-widest uppercase block">Informasi Umum</span>
-                      <div className="space-y-2 text-xs font-semibold text-slate-605">
-                        <div className="flex justify-between border-b pb-2">
-                          <span>NIK</span>
-                          <span className="text-slate-800">3174XXXXXXXX0002</span>
+                    {/* Faskes Details Card */}
+                    <div className="bg-white border border-teal-50/50 rounded-3xl p-4 shadow-[0_8px_30px_rgb(0,0,0,0.01)] space-y-2">
+                      <h4 className="text-[10px] font-black text-slate-900 uppercase tracking-wider pb-1 border-b border-slate-50">Informasi Faskes & Program</h4>
+                      <div className="space-y-1.5 text-[11px] text-slate-700 font-bold leading-tight">
+                        <div className="flex items-start gap-2">
+                          <div className="w-4.5 h-4.5 rounded-full bg-teal-50 text-[#2d8d81] flex items-center justify-center shrink-0 text-[9px] font-black">✓</div>
+                          <p>Fasilitas Kesehatan: <span className="font-black text-slate-900">Puskesmas Pembantu Ngabab</span></p>
                         </div>
-                        <div className="flex justify-between border-b pb-2">
-                          <span>Usia</span>
-                          <span className="text-slate-800">42 Tahun</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Status BPJS</span>
-                          <span className="text-emerald-600 font-bold">Aktif / Terdaftar</span>
+                        <div className="flex items-start gap-2">
+                          <div className="w-4.5 h-4.5 rounded-full bg-teal-50 text-[#2d8d81] flex items-center justify-center shrink-0 text-[9px] font-black">✓</div>
+                          <p>Program: <span className="font-black text-slate-900">Pencegahan Hipertensi & Stunting</span></p>
                         </div>
                       </div>
                     </div>
 
-                    <button 
-                      onClick={() => setAppState('welcome')}
-                      className="w-full py-3 rounded-xl border border-slate-200 text-slate-500 hover:text-slate-700 hover:bg-slate-50 text-xs font-black uppercase transition active:scale-98 flex items-center justify-center gap-1.5"
-                    >
-                      <LogOut className="w-4 h-4" />
-                      <span>Keluar dari Aplikasi</span>
-                    </button>
+                    {/* Settings / Profile actions (Compact style list) */}
+                    <div className="bg-white border border-teal-50/50 rounded-3xl p-4 shadow-[0_8px_30px_rgb(0,0,0,0.01)] space-y-1.5">
+                      {[
+                        { name: 'Ubah Data Fisik & Profil', icon: User, action: () => alert('Membuka pengaturan profil fisik...') },
+                        { name: 'Riwayat Screening PTM', icon: ClipboardList, action: () => { setActiveTab('riwayat'); setRiwayatSubView('home'); } },
+                        { name: 'Hubungkan Kartu BPJS', icon: Award, action: () => alert('Menghubungkan BPJS Kesehatan...') },
+                        { name: 'Pengaturan Notifikasi', icon: Activity, action: () => alert('Membuka pengaturan notifikasi...') }
+                      ].map((item, idx) => {
+                        const Icon = item.icon;
+                        return (
+                          <div 
+                            key={idx} 
+                            onClick={item.action}
+                            className="flex items-center justify-between p-2 rounded-xl hover:bg-slate-50 active:scale-98 transition cursor-pointer border border-transparent hover:border-slate-100"
+                          >
+                            <div className="flex items-center gap-2.5">
+                              <div className="w-7 h-7 rounded-lg bg-slate-50 text-slate-650 flex items-center justify-center shrink-0">
+                                <Icon className="w-3.5 h-3.5" />
+                              </div>
+                              <span className="text-xs font-bold text-slate-850">{item.name}</span>
+                            </div>
+                            <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+                          </div>
+                        );
+                      })}
+
+                      {/* Logout Button */}
+                      <div 
+                        onClick={() => setAppState('welcome')}
+                        className="flex items-center justify-between p-2 rounded-xl hover:bg-red-50 active:scale-98 transition cursor-pointer border border-transparent text-red-650 font-extrabold hover:border-red-100"
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-7 h-7 rounded-lg bg-red-50 text-red-600 flex items-center justify-center shrink-0">
+                            <LogOut className="w-3.5 h-3.5" />
+                          </div>
+                          <span className="text-xs font-bold text-red-600">Keluar dari Aplikasi</span>
+                        </div>
+                        <ChevronRight className="w-3.5 h-3.5 text-red-400" />
+                      </div>
+                    </div>
+
                   </div>
                 )}
 
@@ -3397,12 +3997,12 @@ function CekatAppContent() {
                   >
                     {activeTab === 'challenge' ? (
                       <div className="w-12 h-12 rounded-full bg-[#cbd52d] flex flex-col items-center justify-center text-slate-800 shadow-md">
-                        <Gamepad2 className="w-5 h-5 shrink-0 fill-slate-800 text-slate-800" />
+                        <Award className="w-5 h-5 shrink-0 fill-slate-800 text-slate-800" />
                         <span className="text-[7.5px] font-black tracking-tight mt-0.5 leading-none">Challenge</span>
                       </div>
                     ) : (
                       <>
-                        <Gamepad2 className="w-5 h-5 shrink-0 text-white/95" />
+                        <Award className="w-5 h-5 shrink-0 text-white/95" />
                         <span className="text-[7.5px] font-bold text-white/90 mt-1 leading-none">Challenge</span>
                       </>
                     )}

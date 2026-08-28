@@ -41,7 +41,7 @@ export default function RootLayout({
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const isCekatRoute = (pathname === '/app' && isMobile) || pathname === '/station' || pathname === '/app2';
+  const isCekatRoute = pathname === '/app' || pathname === '/station' || pathname === '/app2';
 
   return (
     <html lang="id" className="scroll-smooth">
