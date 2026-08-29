@@ -2,9 +2,9 @@ import { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'CekGizi NutriSnap',
-    short_name: 'CekGizi',
-    description: 'CekGizi NutriSnap membantu Anda mendeteksi kalori piring makan secara real-time, menganalisis kandungan nutrisi, dan konsultasi ahli gizi.',
+    name: 'CEKAT Kemenkes RI',
+    short_name: 'CEKAT',
+    description: 'CEKAT (Cek, Kenali, Tindaklanjuti) membantu Anda mendeteksi risiko PTM secara dini, menganalisis kandungan nutrisi, dan konsultasi gizi.',
     start_url: '/app',
     display: 'standalone',
     background_color: '#f7f9f6',

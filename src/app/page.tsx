@@ -211,7 +211,7 @@ export default function LandingPage() {
           <div className="text-center space-y-2">
             <h2 className="text-2xl font-black text-slate-800 tracking-tight uppercase">HOW IT WORKS</h2>
             <p className="text-xs text-slate-400 font-semibold max-w-md mx-auto">
-              3 langkah mudah memulai perjalanan hidup sehat Anda bersama NutriSnap.
+              3 langkah mudah memulai perjalanan hidup sehat Anda bersama CEKAT.
             </p>
           </div>
 
