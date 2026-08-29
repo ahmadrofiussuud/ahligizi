@@ -584,8 +584,8 @@ export default function DashboardPage({ onLogout }: { onLogout?: () => void }) {
                   onClick={() => alert('Asisten AI Ceko Gizi dapat diakses via chat di pojok kanan bawah / menu mobile!')}
                   className="bg-white border border-teal-50 hover:border-emerald-250 rounded-3xl p-5 shadow-xs transition hover:-translate-y-1 duration-200 cursor-pointer flex gap-4 text-left group"
                 >
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-400 to-[#2d8d81] border border-emerald-300 flex items-center justify-center shrink-0 overflow-hidden p-0.5 relative">
-                    <img src="/images/maskot cekat tanda tanya.png" alt="Ceko Mascot" className="w-full h-full object-cover rounded-2xl" />
+                  <div className="w-14 h-14 rounded-2xl bg-[#EAEAEA] border border-[#CCCCCC]/30 flex items-center justify-center shrink-0 overflow-hidden p-1">
+                    <img src="/images/maskot cekat normal.png" alt="Ceko Mascot" className="w-full h-full object-contain rounded-2xl bg-white p-0.5" />
                   </div>
                   <div className="space-y-1">
                     <h3 className="text-sm font-black text-slate-850 font-mono group-hover:text-emerald-700">Tanya Ceko AI</h3>

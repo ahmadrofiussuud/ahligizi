@@ -1881,9 +1881,8 @@ function CekatAppContent() {
                               onClick={() => setDashboardSubView('tanya_ai')}
                               className="flex flex-col items-center cursor-pointer group"
                             >
-                              <div className="w-[76px] h-[76px] rounded-full bg-gradient-to-br from-emerald-400 to-[#2d8d81] border border-emerald-300 flex items-center justify-center shadow-md transition group-hover:scale-105 active:scale-95 shrink-0 overflow-hidden p-0.5 relative">
-                                <img src="/images/maskot cekat tanda tanya.png" alt="Ceko Mascot" className="w-full h-full object-cover rounded-full" />
-                                <div className="absolute top-1 right-1 w-2.5 h-2.5 rounded-full bg-yellow-400 border border-white animate-pulse"></div>
+                              <div className="w-[76px] h-[76px] rounded-full bg-[#EAEAEA] border border-[#CCCCCC]/30 flex items-center justify-center shadow-xs transition group-hover:scale-105 active:scale-95 shrink-0 overflow-hidden p-1">
+                                <img src="/images/maskot cekat normal.png" alt="Ceko Mascot" className="w-full h-full object-contain rounded-full bg-white p-0.5" />
                               </div>
                               <span className="text-[13.5px] font-black text-slate-800 leading-tight mt-2 text-center">Tanya Ceko AI</span>
                             </div>
