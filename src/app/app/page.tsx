@@ -236,8 +236,19 @@ function CekatAppContent() {
   // - For 'riwayat': 'home' (Riwayat List), 'wrapped' (Cekat Wrapped)
   const [riwayatSubView, setRiwayatSubView] = useState<'home' | 'wrapped'>('home');
   
-  // Riwayat scroll category
   const [riwayatCategory, setRiwayatCategory] = useState<string>('Semua');
+
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+
+  // Auto-reset scroll position to top (top: 0) on tab/subview switch for ultra-smooth UI/UX
+  useEffect(() => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTop = 0;
+    }
+    if (typeof window !== 'undefined') {
+      window.scrollTo(0, 0);
+    }
+  }, [activeTab, dashboardSubView, nutrisiSubView, challengeSubView, riwayatSubView]);
 
   // Misi / Challenge checklist targets
   const [misiTargets, setMisiTargets] = useState([
@@ -1723,7 +1734,7 @@ function CekatAppContent() {
 
             {/* 4. MAIN CORE APPLICATION */}
             {appState === 'main' && (
-              <div className="flex-1 flex flex-col justify-between overflow-y-auto">
+              <div ref={scrollContainerRef} className="flex-1 flex flex-col justify-between overflow-y-auto scroll-smooth">
                 
                 {/* -------------------------------------------------------------
                     TAB 1: BERANDA / HOME (Kebutuhanmu, Station, Risiko, Reminders, Cart)
