@@ -2964,18 +2964,17 @@ function CekatAppContent() {
 
                         {/* Bottom Feature Banners */}
                         <div className="px-5 space-y-4 text-left">
-                          {/* Banner 1: AI Food Scanner */}
+                          {/* Banner 1: AI Food Scanner Score */}
                           <div className="bg-gradient-to-r from-emerald-50 to-emerald-100/50 border border-emerald-200/40 p-5 rounded-3xl flex items-center justify-between shadow-sm relative overflow-hidden">
                             <div className="space-y-2.5 max-w-[65%] text-left">
-                              <h4 className="text-[13px] font-black text-slate-800 leading-snug">AI Food Scanner</h4>
-                              <p className="text-[10px] text-slate-500 font-semibold leading-relaxed">Cek kandungan gizi makananmu dengan cepat</p>
+                              <h4 className="text-[13px] font-black text-slate-800 leading-snug">Hasil Scan Gizi & Skor AI</h4>
+                              <p className="text-[10px] text-slate-500 font-semibold leading-relaxed">Lihat analisa skor GOOD, protein, karbo, & 307 Cal</p>
                               <button 
-                                onClick={() => setNutrisiSubView('scan_camera')}
-                                className="px-3.5 py-1.5 bg-emerald-700 hover:bg-emerald-600 text-white text-[9.5px] font-black rounded-lg uppercase tracking-wider transition flex items-center gap-1 relative overflow-visible group"
+                                onClick={() => setNutrisiSubView('scan_result')}
+                                className="px-3.5 py-1.5 bg-emerald-700 hover:bg-emerald-600 text-white text-[9.5px] font-black rounded-lg uppercase tracking-wider transition flex items-center gap-1 relative overflow-visible group cursor-pointer"
                               >
-                                <span>Scan Makanan</span>
+                                <span>Lihat Skor Scan</span>
                                 <Camera className="w-3.5 h-3.5" />
-                                <span className="absolute -bottom-4 -right-3 text-lg animate-bounce pointer-events-none opacity-90 group-hover:opacity-100">👆</span>
                               </button>
                             </div>
                             <div className="w-16 h-16 shrink-0 bg-white rounded-2xl border border-slate-150 flex items-center justify-center p-2 shadow-sm overflow-hidden relative">
@@ -2984,16 +2983,16 @@ function CekatAppContent() {
                             </div>
                           </div>
 
-                          {/* Banner 2: Ceko AI Consultation */}
+                          {/* Banner 2: Pantry AI & Menu Sehat */}
                           <div className="bg-gradient-to-r from-emerald-50 to-emerald-100/50 border border-emerald-200/40 p-5 rounded-3xl flex items-center justify-between shadow-sm relative overflow-hidden">
                             <div className="space-y-2.5 max-w-[65%] text-left">
-                              <h4 className="text-[13px] font-black text-slate-800 leading-snug">Konsultasi Ceko AI</h4>
-                              <p className="text-[10px] text-slate-500 font-semibold leading-relaxed">Tanya gizi, batas gula/garam, & pencegahan PTM</p>
+                              <h4 className="text-[13px] font-black text-slate-800 leading-snug">Pantry AI & Menu Sehat</h4>
+                              <p className="text-[10px] text-slate-500 font-semibold leading-relaxed">Racik menu sehat dari stok bahan di kulkasmu</p>
                               <button 
-                                onClick={() => setDashboardSubView('tanya_ai')}
-                                className="px-3.5 py-1.5 bg-emerald-700 hover:bg-emerald-600 text-white text-[9.5px] font-black rounded-lg uppercase tracking-wider transition flex items-center gap-1 relative overflow-visible group"
+                                onClick={() => setNutrisiSubView('pantry')}
+                                className="px-3.5 py-1.5 bg-emerald-700 hover:bg-emerald-600 text-white text-[9.5px] font-black rounded-lg uppercase tracking-wider transition flex items-center gap-1 relative overflow-visible group cursor-pointer"
                               >
-                                <span>Tanya Ceko</span>
+                                <span>Buka Pantry AI</span>
                                 <Brain className="w-3.5 h-3.5" />
                               </button>
                             </div>
@@ -3431,23 +3430,142 @@ function CekatAppContent() {
                       </div>
                     )}
 
-                    {/* View: Pantry AI Recipe search & grid */}
-                    {nutrisiSubView === 'pantry' && (
-                      <div className="space-y-6 animate-fadeIn">
-                        <div className="bg-white border-b border-slate-100 px-6 pt-8 pb-4 flex items-center justify-between">
-                          <button onClick={() => setNutrisiSubView('main')} className="p-1 hover:bg-slate-100 rounded-full transition">
-                            <ArrowLeft className="w-5 h-5 text-slate-800" />
-                          </button>
-                          <span className="text-sm font-black text-slate-800 uppercase tracking-wider">Rekomendasi Menu Sehat PTM</span>
-                          <div className="w-7"></div>
+                    {/* ════════════════════════════════════════
+                        View: Scan Result View (Score GOOD & Analysis 307 Cal)
+                    ════════════════════════════════════════ */}
+                    {nutrisiSubView === 'scan_result' && (
+                      <div className="space-y-4 animate-fadeIn pb-24 bg-slate-100 min-h-screen">
+                        {/* Top Photo Header Container */}
+                        <div className="relative w-full aspect-[4/3] bg-slate-900 overflow-hidden">
+                          <img 
+                            src="https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80" 
+                            alt="Salad Bowl" 
+                            className="w-full h-full object-cover" 
+                          />
+                          {/* Overlay Controls */}
+                          <div className="absolute top-4 left-4 right-4 flex items-center justify-between z-10">
+                            <button 
+                              onClick={() => setNutrisiSubView('main')} 
+                              className="w-9 h-9 rounded-full bg-slate-900/50 backdrop-blur-md text-white flex items-center justify-center font-bold"
+                            >
+                              <ArrowLeft className="w-5 h-5" />
+                            </button>
+                            <img 
+                              src="/images/logo full cekat station.png" 
+                              alt="CEKAT Logo" 
+                              className="h-8 object-contain drop-shadow-md" 
+                            />
+                            <div className="w-9 h-9 rounded-full bg-slate-900/50 backdrop-blur-md text-white flex items-center justify-center font-bold text-xs">
+                              •••
+                            </div>
+                          </div>
                         </div>
 
-                        <div className="px-5 space-y-5 text-left">
+                        {/* White Sheet Modal Container */}
+                        <div className="bg-white -mt-6 rounded-t-[32px] p-6 shadow-xl space-y-5 text-center relative z-20 max-w-lg mx-auto border-t border-slate-200">
+                          {/* Drag handle */}
+                          <div className="w-10 h-1 bg-slate-300 rounded-full mx-auto -mt-2 mb-2" />
+
+                          {/* SCORE BADGE CIRCLE */}
+                          <div className="w-28 h-28 rounded-full bg-[#86EFAC] border-4 border-emerald-300 flex flex-col items-center justify-center mx-auto shadow-md">
+                            <span className="text-[10px] font-black tracking-widest text-slate-800 uppercase">SCORE:</span>
+                            <span className="text-xl font-black text-slate-950 tracking-tight uppercase">GOOD</span>
+                          </div>
+
+                          {/* STAR RATING */}
+                          <div className="flex justify-center space-x-1 text-amber-400 text-lg">
+                            <span>★</span><span>★</span><span>★</span><span>★</span><span className="text-slate-300">☆</span>
+                          </div>
+
+                          {/* RECOMMENDATION TEXT */}
+                          <p className="text-xs font-semibold text-slate-700 max-w-xs mx-auto leading-relaxed">
+                            Saladnya sudah sehat! bisa ditambahkan telur atau alpukat supaya gizinya makin seimbang.
+                          </p>
+
+                          {/* DASHED SEPARATOR */}
+                          <div className="border-t-2 border-dashed border-slate-300 pt-4">
+                            <h4 className="text-xs font-black text-slate-900 tracking-widest uppercase mb-4">ANALYSIS:</h4>
+
+                            {/* 3 ANALYSIS CIRCLES */}
+                            <div className="grid grid-cols-3 gap-3 max-w-xs mx-auto">
+                              {/* Circle 1: Protein */}
+                              <div className="w-20 h-20 sm:w-22 sm:h-22 rounded-full border-2 border-slate-800 flex flex-col items-center justify-center mx-auto p-1 text-center bg-white shadow-xs">
+                                <span className="text-lg leading-none">🍗</span>
+                                <span className="text-[11px] font-black text-slate-900 mt-0.5">70 Cal</span>
+                                <span className="text-[8px] font-bold text-slate-500 uppercase">Protein</span>
+                              </div>
+
+                              {/* Circle 2: Carbo */}
+                              <div className="w-20 h-20 sm:w-22 sm:h-22 rounded-full border-2 border-slate-800 flex flex-col items-center justify-center mx-auto p-1 text-center bg-white shadow-xs">
+                                <span className="text-lg leading-none">🍞</span>
+                                <span className="text-[11px] font-black text-slate-900 mt-0.5">155 Cal</span>
+                                <span className="text-[8px] font-bold text-slate-500 uppercase">Carbo</span>
+                              </div>
+
+                              {/* Circle 3: Fat */}
+                              <div className="w-20 h-20 sm:w-22 sm:h-22 rounded-full border-2 border-slate-800 flex flex-col items-center justify-center mx-auto p-1 text-center bg-white shadow-xs">
+                                <span className="text-lg leading-none">🧀</span>
+                                <span className="text-[11px] font-black text-slate-900 mt-0.5">80 Cal</span>
+                                <span className="text-[8px] font-bold text-slate-500 uppercase">Fat</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* TOTAL CALORIES ORANGE BADGE */}
+                          <div className="w-full py-3.5 px-6 rounded-full bg-[#FED7AA] border border-orange-300 flex items-center justify-between max-w-xs mx-auto shadow-sm">
+                            <div className="flex items-center space-x-2">
+                              <span className="text-lg">🔥</span>
+                              <span className="text-xl font-black text-slate-950 tracking-wider">307</span>
+                            </div>
+                            <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">Calories</span>
+                          </div>
+
+                          <button 
+                            onClick={() => {
+                              showToast('Hasil Scan Berhasil Disimpan ke Log Harian!', 'success');
+                              setNutrisiSubView('main');
+                            }}
+                            className="w-full py-3 rounded-2xl bg-[#00875A] hover:bg-[#00704a] text-white font-black text-xs uppercase tracking-wider shadow-md transition"
+                          >
+                            Simpan ke Diary Makanan
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* View: Pantry AI Recipe search & grid (EXACT IMAGE 2 REPLICA) */}
+                    {nutrisiSubView === 'pantry' && (
+                      <div className="space-y-4 animate-fadeIn pb-24 bg-white min-h-screen">
+                        
+                        {/* GREEN HEADER BANNER MATCHING IMAGE 2 */}
+                        <div className="bg-gradient-to-r from-[#00875A] to-[#10B981] p-5 pt-8 rounded-b-[32px] text-white relative shadow-md overflow-hidden">
+                          <div className="flex items-center justify-between mb-2">
+                            <button onClick={() => setNutrisiSubView('main')} className="p-1.5 bg-white/20 rounded-full transition">
+                              <ArrowLeft className="w-5 h-5 text-white" />
+                            </button>
+                            <img src="/images/logo full cekat station.png" alt="CEKAT Logo" className="h-7 object-contain drop-shadow" />
+                            <div className="text-white font-bold text-xs">•••</div>
+                          </div>
+
+                          <div className="flex items-center justify-between mt-2">
+                            <div className="space-y-0.5">
+                              <h3 className="text-xl font-black text-white tracking-tight leading-tight">
+                                Pantry AI &<br />Menu Sehat
+                              </h3>
+                            </div>
+                            <div className="w-20 h-20 rounded-2xl bg-white/10 backdrop-blur-xs flex items-center justify-center p-1.5 border border-white/20 shadow-inner">
+                              <span className="text-4xl">🥗</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="px-4 space-y-4 text-left">
+                          
+                          {/* APA ISI KULKASMU */}
                           <div className="space-y-2">
-                            <h4 className="text-xs font-black text-slate-400 uppercase tracking-wider text-left">Apa isi kulkasmu?</h4>
-                            {/* Tags list selectable */}
-                            <div className="flex flex-wrap gap-1.5">
-                              {pantryTagsList.map(tag => {
+                            <h4 className="text-sm font-black text-slate-900">Apa isi kulkasmu?</h4>
+                            <div className="flex items-center space-x-2 overflow-x-auto scrollbar-none py-1">
+                              {['Telur', 'Ikan', 'Ayam', 'Sayur'].map(tag => {
                                 const isSelected = selectedPantryTags.includes(tag);
                                 return (
                                   <button
@@ -3459,13 +3577,13 @@ function CekatAppContent() {
                                         setSelectedPantryTags([...selectedPantryTags, tag]);
                                       }
                                     }}
-                                    className={`px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider border transition ${
+                                    className={`px-3.5 py-1.5 rounded-full text-xs font-bold flex items-center space-x-1.5 border transition shrink-0 ${
                                       isSelected
-                                        ? 'bg-emerald-50 border-emerald-500 text-emerald-700 font-extrabold shadow-sm'
-                                        : 'bg-white border-slate-100 text-slate-400'
+                                        ? 'bg-slate-200 border-slate-300 text-slate-900'
+                                        : 'bg-slate-100 border-slate-200 text-slate-700'
                                     }`}
                                   >
-                                    <span>{isSelected ? '✓ ' : '+ '}</span>
+                                    <span>{tag === 'Telur' ? '🥚' : tag === 'Ikan' ? '🐟' : tag === 'Ayam' ? '🍗' : '🥦'}</span>
                                     <span>{tag}</span>
                                   </button>
                                 );
@@ -3473,30 +3591,30 @@ function CekatAppContent() {
                             </div>
                           </div>
 
-                          {/* Search recipes */}
-                          <div className="flex bg-slate-100 rounded-full items-center px-4 py-2 text-xs font-semibold shadow-inner">
-                            <Search className="w-4 h-4 text-slate-400 mr-2" />
+                          {/* SEARCH BAR */}
+                          <div className="flex bg-slate-100 rounded-full items-center px-4 py-2.5 text-xs font-medium border border-slate-200 shadow-inner">
+                            <Search className="w-4 h-4 text-slate-400 mr-2 shrink-0" />
                             <input 
                               type="text" 
                               value={searchQuery}
                               onChange={(e) => setSearchQuery(e.target.value)}
-                              placeholder="Telusuri resep..." 
-                              className="bg-transparent focus:outline-none flex-1"
+                              placeholder="Telusuri..." 
+                              className="bg-transparent focus:outline-none flex-1 text-slate-900 font-semibold placeholder:text-slate-400"
                             />
                           </div>
 
-                          {/* Recipe category filters */}
-                          <div className="flex overflow-x-auto space-x-2 text-[10px] font-black text-slate-500 scrollbar-none pb-1">
+                          {/* CATEGORY FILTERS */}
+                          <div className="flex overflow-x-auto space-x-2 text-xs font-bold text-slate-600 scrollbar-none pb-1">
                             {['Semua', 'Ikan', 'Ayam', 'Telur', 'Sayur', 'Daging'].map(cat => {
                               const isActive = pantryCategory === cat;
                               return (
                                 <button
                                   key={cat}
                                   onClick={() => setPantryCategory(cat)}
-                                  className={`px-4 py-1.5 border rounded-full shrink-0 transition ${
+                                  className={`px-4 py-1.5 rounded-full shrink-0 border transition ${
                                     isActive
-                                      ? 'bg-emerald-50 border-emerald-500 text-emerald-700'
-                                      : 'bg-white border-slate-100 text-slate-400'
+                                      ? 'bg-slate-900 border-slate-900 text-white font-black'
+                                      : 'bg-white border-slate-200 text-slate-600'
                                   }`}
                                 >
                                   {cat}
@@ -3505,29 +3623,27 @@ function CekatAppContent() {
                             })}
                           </div>
 
-                          {/* Recipes Grid */}
-                          <div className="space-y-4">
-                            <span className="text-[10px] text-slate-400 font-black tracking-widest uppercase block px-1 text-left">Rekomendasi Menu Sehat</span>
-                            
-                            <div className="grid grid-cols-2 gap-4">
-                              {filteredRecipes.map((recipe, index) => (
-                                <div 
-                                  key={index}
-                                  onClick={() => {
-                                    showToast('Membuka resep ' + recipe.name + '...', 'info');
-                                  }}
-                                  className="bg-white border border-slate-100 rounded-3xl p-3 shadow-sm flex flex-col justify-between space-y-3 cursor-pointer hover:shadow transition"
-                                >
-                                  <div className="space-y-2">
-                                    <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-slate-50 relative">
-                                      <img src={recipe.image} alt={recipe.name} className="w-full h-full object-cover" />
-                                    </div>
-                                    <h5 className="text-[10.5px] font-black text-slate-800 leading-snug line-clamp-2 text-left">{recipe.name}</h5>
+                          {/* RECIPE GRID - 2 COLUMNS (EXACT MATCH IMAGE 2) */}
+                          <div className="grid grid-cols-2 gap-3.5 pt-1">
+                            {filteredRecipes.map((recipe, index) => (
+                              <div 
+                                key={index}
+                                onClick={() => {
+                                  showToast('Membuka resep ' + recipe.name + '...', 'info');
+                                }}
+                                className="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-xs hover:shadow-md transition cursor-pointer flex flex-col justify-between"
+                              >
+                                <div className="space-y-2">
+                                  <div className="aspect-[4/3] w-full overflow-hidden bg-slate-100 relative">
+                                    <img src={recipe.image} alt={recipe.name} className="w-full h-full object-cover" />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
+                                    <h5 className="absolute bottom-2 left-2 right-2 text-xs font-black text-white leading-tight drop-shadow">
+                                      {recipe.name}
+                                    </h5>
                                   </div>
-                                  <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest bg-slate-50 px-2 py-0.5 rounded self-start">{recipe.tag}</span>
                                 </div>
-                              ))}
-                            </div>
+                              </div>
+                            ))}
                           </div>
 
                         </div>
