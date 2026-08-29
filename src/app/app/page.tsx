@@ -1812,11 +1812,36 @@ function CekatAppContent() {
                           </div>
                         </div>
 
-                        {/* Fixed spacing above grid menu */}
-                        <div className="h-3 shrink-0" />
+                        {/* Instant Quick Scan Makanan AI Banner (Zero Scroll Needed) */}
+                        <div className="mx-4 mt-2 shrink-0">
+                          <button 
+                            onClick={() => {
+                              setActiveTab('nutrisi');
+                              setNutrisiSubView('scan_camera');
+                            }}
+                            className="w-full py-3 px-4 bg-gradient-to-r from-[#00875A] to-[#10B981] text-white font-black rounded-2xl shadow-md flex items-center justify-between active:scale-98 transition group cursor-pointer border border-emerald-400/40"
+                          >
+                            <div className="flex items-center space-x-3 text-left">
+                              <div className="w-9 h-9 rounded-xl bg-white/20 backdrop-blur-xs flex items-center justify-center text-white shrink-0">
+                                <Camera className="w-5 h-5 text-white animate-pulse" />
+                              </div>
+                              <div>
+                                <h4 className="text-[12px] font-black text-white uppercase tracking-wider flex items-center gap-1.5">
+                                  <span>📸 Scan Makanan AI</span>
+                                  <span className="text-[8px] bg-yellow-400 text-slate-950 px-1.5 py-0.5 rounded font-extrabold uppercase">INSTAN</span>
+                                </h4>
+                                <p className="text-[9.5px] text-emerald-100 font-medium">Foto piring makanmu & hitung kalori otomatis</p>
+                              </div>
+                            </div>
+                            <div className="px-3 py-1 bg-[#F1C40F] text-slate-950 font-black text-[9.5px] uppercase rounded-full shadow-xs shrink-0 flex items-center gap-1">
+                              <span>SCAN</span>
+                              <ArrowRight className="w-3 h-3" />
+                            </div>
+                          </button>
+                        </div>
 
                         {/* Circular 6-item Grid Menu */}
-                        <div className="mx-4 mt-2 shrink-0">
+                        <div className="mx-4 mt-3 shrink-0">
                           <div className="grid grid-cols-3 gap-y-5 gap-x-2">
                             {/* Item 1: Edukasi Kesehatanmu */}
                             <div 
@@ -4674,6 +4699,19 @@ function CekatAppContent() {
                     )}
                   </button>
                 </nav>
+
+                {/* FLOATING ACTION CAMERA BUTTON (1-CLICK SCAN WITHOUT SCROLLING) */}
+                <button
+                  onClick={() => {
+                    setActiveTab('nutrisi');
+                    setNutrisiSubView('scan_camera');
+                  }}
+                  className="absolute bottom-20 right-4 bg-gradient-to-r from-[#00875A] to-[#10B981] text-white font-black px-3.5 py-2.5 rounded-full shadow-2xl flex items-center gap-1.5 border-2 border-white z-50 active:scale-95 transition hover:scale-105 cursor-pointer"
+                  title="Scan Makanan AI Instan"
+                >
+                  <Camera className="w-4 h-4 text-white animate-pulse" />
+                  <span className="text-[10px] font-black uppercase tracking-wider pr-0.5">Scan Gizi</span>
+                </button>
 
               </div>
             )}
