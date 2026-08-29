@@ -21,7 +21,12 @@ import {
   Ticket,
   Clock,
   Sparkles,
-  ArrowLeft
+  ArrowLeft,
+  ChevronRight,
+  ShieldCheck,
+  HelpCircle,
+  CheckCircle2,
+  AlertCircle
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -29,8 +34,9 @@ export default function CekatStation() {
   const [step, setStep] = useState<number>(1);
   
   // Step 1: Identification States & Modal
-  const [identMethod, setIdentMethod] = useState<'qr' | 'phone' | 'code' | null>(null);
+  const [identMethod, setIdentMethod] = useState<'qr' | 'phone' | 'code' | 'help' | null>(null);
   const [phoneInput, setPhoneInput] = useState<string>('08123456789');
+  const [nikInput, setNikInput] = useState<string>('3174000214060002');
   const [searchStatus, setSearchStatus] = useState<'idle' | 'searching' | 'found'>('idle');
   const [patientData, setPatientData] = useState<any>(null);
 
@@ -44,7 +50,7 @@ export default function CekatStation() {
   const [lingkarPerut, setLingkarPerut] = useState<number>(89);
 
   // Computed IMT
-  const heightInMeters = tb / 100;
+  const heightInMeters = tb > 0 ? tb / 100 : 1.65;
   const imt = parseFloat((bb / (heightInMeters * heightInMeters)).toFixed(1));
 
   // Step 3: Screening Questionnaire States
@@ -65,20 +71,26 @@ export default function CekatStation() {
   const [ticketPrinted, setTicketPrinted] = useState<boolean>(false);
 
   // Identification Simulation
-  const handleIdentify = () => {
+  const handleIdentify = (overrideName?: string) => {
     setSearchStatus('searching');
     setTimeout(() => {
       setSearchStatus('found');
       setPatientData({
-        name: 'Sofia Kusuma',
+        name: overrideName || (identMethod === 'phone' ? 'Sofia Kusuma' : 'Rizky Fitrianto'),
         age: 42,
         gender: 'Wanita',
-        nik: '3174XXXXXXXX0002',
+        nik: nikInput || '3174XXXXXXXX0002',
         bpjs: '0001234567890',
         lastVisit: '14 Juni 2026',
         history: 'Kecenderungan pre-hipertensi ringan & risiko gula darah postprandial di posbindu sebelumnya',
       });
-    }, 1000);
+    }, 800);
+  };
+
+  // Direct quick identify and start Step 2
+  const handleDirectStart = (method: 'qr' | 'phone' | 'code' | 'help') => {
+    setIdentMethod(method);
+    handleIdentify();
   };
 
   // Process risk calculation & Digital Queue routing
@@ -123,52 +135,52 @@ export default function CekatStation() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF8EE] text-slate-800 font-sans flex flex-col justify-between p-4 sm:p-8 relative overflow-x-hidden select-none">
+    <div className="min-h-screen bg-[#FAF8EE] text-slate-800 font-sans flex flex-col justify-between p-3 sm:p-6 md:p-8 relative overflow-x-hidden select-none">
       
-      {/* HEADER SECTION MATCHING DESIGN */}
-      <header className="w-full max-w-7xl mx-auto flex items-center justify-between border-b border-slate-200/80 pb-4 mb-4">
+      {/* HEADER SECTION - FULLY RESPONSIVE */}
+      <header className="w-full max-w-7xl mx-auto flex items-center justify-between border-b border-slate-200/80 pb-3 mb-3 sm:mb-4 gap-2">
         {/* Logo Left */}
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-2 sm:space-x-3 shrink-0">
           <img 
             src="/images/logo full cekat station.png" 
             alt="CEKAT Station Logo" 
-            className="h-12 sm:h-14 object-contain" 
+            className="h-9 sm:h-12 md:h-14 object-contain" 
             onError={(e) => {
               e.currentTarget.style.display = 'none';
             }}
           />
-          <div className="flex items-center space-x-2">
-            <div className="w-9 h-9 rounded-full bg-[#10B981] flex items-center justify-center text-white font-black text-lg shadow-sm">
+          <div className="flex items-center space-x-1.5 sm:space-x-2">
+            <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-[#10B981] flex items-center justify-center text-white font-black text-sm sm:text-lg shadow-xs">
               C
             </div>
             <div>
-              <h1 className="text-xl font-black text-slate-900 leading-none">Cekat</h1>
-              <span className="text-[9px] font-black text-[#00875A] tracking-wider uppercase block mt-0.5">Cek. Kenali. Tindaklanjuti</span>
+              <h1 className="text-base sm:text-xl font-black text-slate-900 leading-none">Cekat</h1>
+              <span className="text-[7.5px] sm:text-[9px] font-black text-[#00875A] tracking-wider uppercase block mt-0.5">Cek. Kenali. Tindaklanjuti</span>
             </div>
           </div>
         </div>
 
         {/* Time & Date Right */}
-        <div className="flex items-center space-x-3">
-          <div className="flex items-center space-x-2 bg-slate-900 text-white rounded-full px-4 py-2 text-xs sm:text-sm font-bold shadow-xs">
-            <Clock className="w-4 h-4 text-emerald-400" />
+        <div className="flex items-center space-x-2 sm:space-x-3 shrink-0">
+          <div className="flex items-center space-x-1.5 bg-slate-900 text-white rounded-full px-3 py-1.5 sm:px-4 sm:py-2 text-[11px] sm:text-sm font-bold shadow-xs">
+            <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-400" />
             <span>08 : 30 AM</span>
           </div>
-          <span className="hidden sm:inline text-xs font-bold text-slate-600">Senin, 31 Agustus 2026</span>
+          <span className="hidden md:inline text-xs font-bold text-slate-600">Senin, 31 Agustus 2026</span>
         </div>
       </header>
 
       {/* CORE CONTENT */}
-      <main className="w-full max-w-7xl mx-auto flex-1 flex flex-col justify-center my-2">
+      <main className="w-full max-w-7xl mx-auto flex-1 flex flex-col justify-center my-1 sm:my-2">
         
-        {/* STEP 1: WELCOME & ACCESS METHODS LANDING PAGE (EXACT IMAGE REPLICA) */}
+        {/* STEP 1: WELCOME & ACCESS METHODS LANDING PAGE */}
         {step === 1 && (
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             
             {/* Title Section */}
             <div className="text-center space-y-1">
-              <h3 className="text-lg sm:text-2xl font-bold text-slate-800 tracking-tight">Selamat Datang di</h3>
-              <h2 className="text-3xl sm:text-5xl font-black text-slate-950 tracking-tight uppercase">
+              <h3 className="text-sm sm:text-xl font-bold text-slate-800 tracking-tight">Selamat Datang di</h3>
+              <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-slate-950 tracking-tight uppercase">
                 CEKAT Station
               </h2>
               <p className="text-xs sm:text-base font-semibold text-slate-600">
@@ -176,9 +188,24 @@ export default function CekatStation() {
               </p>
             </div>
 
-            <div className="flex flex-col lg:flex-row items-center justify-between gap-6 my-4">
+            {/* Mobile Compact Mascot Banner */}
+            <div className="lg:hidden flex items-center bg-emerald-50 border border-emerald-200/80 rounded-2xl p-3 max-w-lg mx-auto gap-3 shadow-xs">
+              <img 
+                src="/images/maskot cekat normal.png" 
+                alt="Ceko Mascot" 
+                className="w-12 h-16 object-contain shrink-0" 
+              />
+              <div className="space-y-0.5 text-left">
+                <span className="text-[10px] font-black text-[#00875A] uppercase tracking-wider block">CEKAT Kiosk System</span>
+                <p className="text-xs font-extrabold text-slate-800 leading-snug">
+                  CEKAT Station siap membantu Anda hidup lebih sehat!
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-col lg:flex-row items-center justify-between gap-6 my-2 sm:my-4">
               
-              {/* Left Mascot */}
+              {/* Left Mascot Desktop */}
               <div className="hidden lg:flex flex-col items-center justify-center w-52 shrink-0 space-y-2">
                 <img 
                   src="/images/maskot cekat normal.png" 
@@ -194,192 +221,192 @@ export default function CekatStation() {
               </div>
 
               {/* Main Service Flow & Options Container */}
-              <div className="flex-1 w-full space-y-6">
+              <div className="flex-1 w-full space-y-4 sm:space-y-6">
                 
-                {/* ALUR PELAYANAN CEKAT STATION */}
-                <div className="space-y-3 bg-white/60 p-4 rounded-3xl border border-slate-200/60 shadow-xs">
-                  <h4 className="text-xs sm:text-sm font-black text-[#00875A] uppercase tracking-widest text-center">
-                    ALUR PELAYANAN CEKAT STATION
-                  </h4>
+                {/* ALUR PELAYANAN CEKAT STATION - MOBILE OPTIMIZED SCROLL */}
+                <div className="space-y-2.5 bg-white/80 backdrop-blur-xs p-3 sm:p-4 rounded-3xl border border-slate-200/80 shadow-xs">
+                  <div className="flex items-center justify-between px-1">
+                    <h4 className="text-xs sm:text-sm font-black text-[#00875A] uppercase tracking-widest">
+                      ALUR PELAYANAN CEKAT STATION
+                    </h4>
+                    <span className="text-[9px] font-bold text-slate-400 md:hidden flex items-center gap-0.5">
+                      Geser ➔
+                    </span>
+                  </div>
 
-                  <div className="flex items-center justify-center space-x-1 sm:space-x-3 overflow-x-auto py-2">
+                  <div className="flex items-center justify-start md:justify-center space-x-2 sm:space-x-3 overflow-x-auto py-2 scrollbar-none snap-x">
                     {/* Step 1 */}
-                    <div className="flex flex-col items-center space-y-1 text-center shrink-0 w-24">
-                      <span className="text-[9.5px] font-black text-[#00875A] uppercase tracking-wider">STEP 1</span>
-                      <div className="w-14 h-14 rounded-full bg-[#B4F769] border-2 border-slate-900 flex items-center justify-center shadow-xs">
-                        <User className="w-7 h-7 text-slate-950 stroke-[2.2]" />
+                    <div className="flex flex-col items-center space-y-1 text-center shrink-0 w-20 sm:w-24 snap-center">
+                      <span className="text-[9px] font-black text-[#00875A] uppercase tracking-wider">STEP 1</span>
+                      <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#B4F769] border-2 border-slate-900 flex items-center justify-center shadow-xs">
+                        <User className="w-6 h-6 sm:w-7 sm:h-7 text-slate-950 stroke-[2.2]" />
                       </div>
-                      <span className="text-[10.5px] font-extrabold text-slate-900 leading-tight">Identifikasi</span>
+                      <span className="text-[10px] sm:text-[10.5px] font-extrabold text-slate-900 leading-tight">Identifikasi</span>
                     </div>
 
-                    {/* Curved Arrow 1->2 */}
-                    <svg className="w-5 h-5 text-slate-700 shrink-0 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <svg className="w-4 h-4 sm:w-5 sm:h-5 text-slate-700 shrink-0 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M4 14 Q12 4 20 12" />
                       <polyline points="15 12 20 12 20 7" />
                     </svg>
 
                     {/* Step 2 */}
-                    <div className="flex flex-col items-center space-y-1 text-center shrink-0 w-24">
-                      <span className="text-[9.5px] font-black text-[#00875A] uppercase tracking-wider">STEP 2</span>
-                      <div className="w-14 h-14 rounded-full bg-[#B4F769] border-2 border-slate-900 flex items-center justify-center shadow-xs">
-                        <ClipboardList className="w-7 h-7 text-slate-950 stroke-[2.2]" />
+                    <div className="flex flex-col items-center space-y-1 text-center shrink-0 w-20 sm:w-24 snap-center">
+                      <span className="text-[9px] font-black text-[#00875A] uppercase tracking-wider">STEP 2</span>
+                      <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#B4F769] border-2 border-slate-900 flex items-center justify-center shadow-xs">
+                        <ClipboardList className="w-6 h-6 sm:w-7 sm:h-7 text-slate-950 stroke-[2.2]" />
                       </div>
-                      <span className="text-[10.5px] font-extrabold text-slate-900 leading-tight">Quick Health Check</span>
+                      <span className="text-[10px] sm:text-[10.5px] font-extrabold text-slate-900 leading-tight">Quick Health Check</span>
                     </div>
 
-                    {/* Curved Arrow 2->3 */}
-                    <svg className="w-5 h-5 text-slate-700 shrink-0 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <svg className="w-4 h-4 sm:w-5 sm:h-5 text-slate-700 shrink-0 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M4 14 Q12 4 20 12" />
                       <polyline points="15 12 20 12 20 7" />
                     </svg>
 
                     {/* Step 3 */}
-                    <div className="flex flex-col items-center space-y-1 text-center shrink-0 w-24">
-                      <span className="text-[9.5px] font-black text-[#00875A] uppercase tracking-wider">STEP 3</span>
-                      <div className="w-14 h-14 rounded-full bg-[#B4F769] border-2 border-slate-900 flex items-center justify-center shadow-xs">
-                        <Activity className="w-7 h-7 text-slate-950 stroke-[2.2]" />
+                    <div className="flex flex-col items-center space-y-1 text-center shrink-0 w-20 sm:w-24 snap-center">
+                      <span className="text-[9px] font-black text-[#00875A] uppercase tracking-wider">STEP 3</span>
+                      <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#B4F769] border-2 border-slate-900 flex items-center justify-center shadow-xs">
+                        <Activity className="w-6 h-6 sm:w-7 sm:h-7 text-slate-950 stroke-[2.2]" />
                       </div>
-                      <span className="text-[10.5px] font-extrabold text-slate-900 leading-tight">Health Screening</span>
+                      <span className="text-[10px] sm:text-[10.5px] font-extrabold text-slate-900 leading-tight">Health Screening</span>
                     </div>
 
-                    {/* Curved Arrow 3->4 */}
-                    <svg className="w-5 h-5 text-slate-700 shrink-0 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <svg className="w-4 h-4 sm:w-5 sm:h-5 text-slate-700 shrink-0 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M4 14 Q12 4 20 12" />
                       <polyline points="15 12 20 12 20 7" />
                     </svg>
 
-                    {/* Step 4 (Orange Header as in Design) */}
-                    <div className="flex flex-col items-center space-y-1 text-center shrink-0 w-24">
-                      <span className="text-[9.5px] font-black text-[#F59E0B] uppercase tracking-wider">STEP 4</span>
-                      <div className="w-14 h-14 rounded-full bg-[#B4F769] border-2 border-slate-900 flex items-center justify-center shadow-xs">
-                        <Compass className="w-7 h-7 text-slate-950 stroke-[2.5]" />
+                    {/* Step 4 */}
+                    <div className="flex flex-col items-center space-y-1 text-center shrink-0 w-20 sm:w-24 snap-center">
+                      <span className="text-[9px] font-black text-[#F59E0B] uppercase tracking-wider">STEP 4</span>
+                      <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#B4F769] border-2 border-slate-900 flex items-center justify-center shadow-xs">
+                        <Compass className="w-6 h-6 sm:w-7 sm:h-7 text-slate-950 stroke-[2.5]" />
                       </div>
-                      <span className="text-[10.5px] font-extrabold text-slate-900 leading-tight">Service Navigation</span>
+                      <span className="text-[10px] sm:text-[10.5px] font-extrabold text-slate-900 leading-tight">Service Navigation</span>
                     </div>
 
-                    {/* Curved Arrow 4->5 */}
-                    <svg className="w-5 h-5 text-slate-700 shrink-0 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <svg className="w-4 h-4 sm:w-5 sm:h-5 text-slate-700 shrink-0 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M4 14 Q12 4 20 12" />
                       <polyline points="15 12 20 12 20 7" />
                     </svg>
 
-                    {/* Step 5 (Orange Header as in Design) */}
-                    <div className="flex flex-col items-center space-y-1 text-center shrink-0 w-28">
-                      <span className="text-[9.5px] font-black text-[#F59E0B] uppercase tracking-wider">STEP 5</span>
-                      <div className="w-14 h-14 rounded-full bg-[#B4F769] border-2 border-slate-900 flex items-center justify-center shadow-xs">
-                        <Users className="w-7 h-7 text-slate-950 stroke-[2.2]" />
+                    {/* Step 5 */}
+                    <div className="flex flex-col items-center space-y-1 text-center shrink-0 w-24 sm:w-28 snap-center">
+                      <span className="text-[9px] font-black text-[#F59E0B] uppercase tracking-wider">STEP 5</span>
+                      <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#B4F769] border-2 border-slate-900 flex items-center justify-center shadow-xs">
+                        <Users className="w-6 h-6 sm:w-7 sm:h-7 text-slate-950 stroke-[2.2]" />
                       </div>
-                      <span className="text-[10.5px] font-extrabold text-slate-900 leading-tight">Digital Queue & Check-in</span>
+                      <span className="text-[10px] sm:text-[10.5px] font-extrabold text-slate-900 leading-tight">Digital Queue & Check-in</span>
                     </div>
 
-                    {/* Curved Arrow 5->6 */}
-                    <svg className="w-5 h-5 text-slate-700 shrink-0 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <svg className="w-4 h-4 sm:w-5 sm:h-5 text-slate-700 shrink-0 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M4 14 Q12 4 20 12" />
                       <polyline points="15 12 20 12 20 7" />
                     </svg>
 
                     {/* Step 6 */}
-                    <div className="flex flex-col items-center space-y-1 text-center shrink-0 w-28">
-                      <span className="text-[9.5px] font-black text-[#00875A] uppercase tracking-wider">STEP 6</span>
-                      <div className="w-14 h-14 rounded-full bg-[#B4F769] border-2 border-slate-900 flex items-center justify-center shadow-xs">
-                        <Smartphone className="w-7 h-7 text-slate-950 stroke-[2.2]" />
+                    <div className="flex flex-col items-center space-y-1 text-center shrink-0 w-24 sm:w-28 snap-center">
+                      <span className="text-[9px] font-black text-[#00875A] uppercase tracking-wider">STEP 6</span>
+                      <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-[#B4F769] border-2 border-slate-900 flex items-center justify-center shadow-xs">
+                        <Smartphone className="w-6 h-6 sm:w-7 sm:h-7 text-slate-950 stroke-[2.2]" />
                       </div>
-                      <span className="text-[10.5px] font-extrabold text-slate-900 leading-tight">Health Result to App</span>
+                      <span className="text-[10px] sm:text-[10.5px] font-extrabold text-slate-900 leading-tight">Health Result to App</span>
                     </div>
                   </div>
                 </div>
 
-                {/* PILIH CARA AKSES */}
+                {/* PILIH CARA AKSES - RESPONSIVE GRID */}
                 <div className="space-y-3">
                   <h4 className="text-xs sm:text-sm font-black text-slate-900 uppercase tracking-widest text-center">
                     PILIH CARA AKSES
                   </h4>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                     
                     {/* CARD 1: SCAN QR */}
-                    <div className="bg-[#B8F568] p-5 rounded-3xl flex flex-col justify-between items-center text-center space-y-4 shadow-sm hover:shadow-md transition border border-emerald-300/40">
-                      <div className="w-16 h-16 bg-slate-950 text-white rounded-2xl flex items-center justify-center p-3 shadow-inner">
-                        <QrCode className="w-10 h-10 text-white" />
+                    <div className="bg-[#B8F568] p-4 sm:p-5 rounded-3xl flex flex-col justify-between items-center text-center space-y-3 sm:space-y-4 shadow-xs hover:shadow-md transition border border-emerald-300/40">
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 bg-slate-950 text-white rounded-2xl flex items-center justify-center p-2.5 shadow-inner">
+                        <QrCode className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
                       </div>
                       <div>
-                        <h3 className="text-base font-black text-slate-900 uppercase tracking-tight">SCAN QR</h3>
-                        <p className="text-xs font-semibold text-slate-700 mt-0.5">dari aplikasi CEKAT</p>
+                        <h3 className="text-sm sm:text-base font-black text-slate-900 uppercase tracking-tight">SCAN QR</h3>
+                        <p className="text-[11px] sm:text-xs font-semibold text-slate-700 mt-0.5">dari aplikasi CEKAT</p>
                       </div>
                       <button 
-                        onClick={() => setIdentMethod('qr')}
-                        className="w-full py-3 bg-[#F1C40F] hover:bg-[#e2b70d] text-slate-950 font-black text-xs uppercase rounded-full flex items-center justify-center space-x-2 shadow-xs transition active:scale-95 cursor-pointer"
+                        onClick={() => handleDirectStart('qr')}
+                        className="w-full py-2.5 sm:py-3 bg-[#F1C40F] hover:bg-[#e2b70d] text-slate-950 font-black text-xs uppercase rounded-full flex items-center justify-center space-x-2 shadow-xs transition active:scale-95 cursor-pointer"
                       >
                         <span>MULAI</span>
-                        <div className="w-5 h-5 rounded-full bg-slate-950 text-white flex items-center justify-center">
-                          <ArrowRight className="w-3 h-3" />
+                        <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-slate-950 text-white flex items-center justify-center">
+                          <ArrowRight className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                         </div>
                       </button>
                     </div>
 
                     {/* CARD 2: NOMOR HP */}
-                    <div className="bg-[#FFDE00] p-5 rounded-3xl flex flex-col justify-between items-center text-center space-y-4 shadow-sm hover:shadow-md transition border border-yellow-300/40">
-                      <div className="flex items-center space-x-1 py-3">
-                        <span className="w-8 h-8 rounded-full bg-slate-950 text-white font-black text-xs flex items-center justify-center">4</span>
-                        <span className="w-8 h-8 rounded-full bg-slate-950 text-white font-black text-xs flex items-center justify-center">6</span>
-                        <span className="w-8 h-8 rounded-full bg-slate-950 text-white font-black text-xs flex items-center justify-center">1</span>
-                        <span className="w-8 h-8 rounded-full bg-slate-950 text-white font-black text-xs flex items-center justify-center">2</span>
+                    <div className="bg-[#FFDE00] p-4 sm:p-5 rounded-3xl flex flex-col justify-between items-center text-center space-y-3 sm:space-y-4 shadow-xs hover:shadow-md transition border border-yellow-300/40">
+                      <div className="flex items-center space-x-1 py-2 sm:py-3">
+                        <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-slate-950 text-white font-black text-xs flex items-center justify-center">4</span>
+                        <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-slate-950 text-white font-black text-xs flex items-center justify-center">6</span>
+                        <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-slate-950 text-white font-black text-xs flex items-center justify-center">1</span>
+                        <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-slate-950 text-white font-black text-xs flex items-center justify-center">2</span>
                       </div>
                       <div>
-                        <h3 className="text-base font-black text-slate-900 uppercase tracking-tight">NOMOR HP</h3>
-                        <p className="text-xs font-semibold text-slate-800 leading-snug mt-0.5">daftar/ masuk menggunakan nomor Hp</p>
+                        <h3 className="text-sm sm:text-base font-black text-slate-900 uppercase tracking-tight">NOMOR HP</h3>
+                        <p className="text-[11px] sm:text-xs font-semibold text-slate-800 leading-snug mt-0.5">daftar/ masuk menggunakan nomor Hp</p>
                       </div>
                       <button 
-                        onClick={() => setIdentMethod('phone')}
-                        className="w-full py-3 bg-[#F1C40F] hover:bg-[#e2b70d] text-slate-950 font-black text-xs uppercase rounded-full flex items-center justify-center space-x-2 shadow-xs transition active:scale-95 cursor-pointer border border-yellow-500/20"
+                        onClick={() => handleDirectStart('phone')}
+                        className="w-full py-2.5 sm:py-3 bg-[#F1C40F] hover:bg-[#e2b70d] text-slate-950 font-black text-xs uppercase rounded-full flex items-center justify-center space-x-2 shadow-xs transition active:scale-95 cursor-pointer border border-yellow-500/20"
                       >
                         <span>MULAI</span>
-                        <div className="w-5 h-5 rounded-full bg-slate-950 text-white flex items-center justify-center">
-                          <ArrowRight className="w-3 h-3" />
+                        <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-slate-950 text-white flex items-center justify-center">
+                          <ArrowRight className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                         </div>
                       </button>
                     </div>
 
                     {/* CARD 3: ID CARD */}
-                    <div className="bg-[#EBE9DC] p-5 rounded-3xl flex flex-col justify-between items-center text-center space-y-4 shadow-sm hover:shadow-md transition border border-slate-300/40">
-                      <div className="w-16 h-12 border-2 border-slate-900 rounded-xl bg-white flex items-center p-1.5 space-x-2 shadow-xs">
-                        <User className="w-6 h-6 text-slate-800 shrink-0" />
+                    <div className="bg-[#EBE9DC] p-4 sm:p-5 rounded-3xl flex flex-col justify-between items-center text-center space-y-3 sm:space-y-4 shadow-xs hover:shadow-md transition border border-slate-300/40">
+                      <div className="w-14 h-11 sm:w-16 sm:h-12 border-2 border-slate-900 rounded-xl bg-white flex items-center p-1.5 space-x-2 shadow-xs">
+                        <User className="w-5 h-5 sm:w-6 sm:h-6 text-slate-800 shrink-0" />
                         <div className="space-y-1 flex-1">
                           <div className="h-1 bg-slate-800 rounded w-full" />
                           <div className="h-1 bg-slate-400 rounded w-2/3" />
                         </div>
                       </div>
                       <div>
-                        <h3 className="text-base font-black text-slate-900 uppercase tracking-tight">ID CARD</h3>
-                        <p className="text-xs font-semibold text-slate-700 leading-snug mt-0.5">Gunakan Identitas sesuai sistem Fasilitas Kesehatan</p>
+                        <h3 className="text-sm sm:text-base font-black text-slate-900 uppercase tracking-tight">ID CARD</h3>
+                        <p className="text-[11px] sm:text-xs font-semibold text-slate-700 leading-snug mt-0.5">Gunakan Identitas sesuai sistem Fasilitas Kesehatan</p>
                       </div>
                       <button 
-                        onClick={() => setIdentMethod('code')}
-                        className="w-full py-3 bg-[#F1C40F] hover:bg-[#e2b70d] text-slate-950 font-black text-xs uppercase rounded-full flex items-center justify-center space-x-2 shadow-xs transition active:scale-95 cursor-pointer"
+                        onClick={() => handleDirectStart('code')}
+                        className="w-full py-2.5 sm:py-3 bg-[#F1C40F] hover:bg-[#e2b70d] text-slate-950 font-black text-xs uppercase rounded-full flex items-center justify-center space-x-2 shadow-xs transition active:scale-95 cursor-pointer"
                       >
                         <span>MULAI</span>
-                        <div className="w-5 h-5 rounded-full bg-slate-950 text-white flex items-center justify-center">
-                          <ArrowRight className="w-3 h-3" />
+                        <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-slate-950 text-white flex items-center justify-center">
+                          <ArrowRight className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                         </div>
                       </button>
                     </div>
 
                     {/* CARD 4: BANTUAN */}
-                    <div className="bg-[#3CB395] p-5 rounded-3xl flex flex-col justify-between items-center text-center space-y-4 shadow-sm hover:shadow-md transition border border-teal-400/40 text-white">
-                      <div className="w-16 h-12 border-2 border-white rounded-xl bg-slate-950 flex items-center justify-center p-1 shadow-xs">
-                        <UserCheck className="w-7 h-7 text-white" />
+                    <div className="bg-[#3CB395] p-4 sm:p-5 rounded-3xl flex flex-col justify-between items-center text-center space-y-3 sm:space-y-4 shadow-xs hover:shadow-md transition border border-teal-400/40 text-white">
+                      <div className="w-14 h-11 sm:w-16 sm:h-12 border-2 border-white rounded-xl bg-slate-950 flex items-center justify-center p-1 shadow-xs">
+                        <UserCheck className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
                       </div>
                       <div>
-                        <h3 className="text-base font-black text-white uppercase tracking-tight">BANTUAN</h3>
-                        <p className="text-xs font-semibold text-teal-50 mt-0.5">Petugas siap membantu Anda</p>
+                        <h3 className="text-sm sm:text-base font-black text-white uppercase tracking-tight">BANTUAN</h3>
+                        <p className="text-[11px] sm:text-xs font-semibold text-teal-50 mt-0.5">Petugas siap membantu Anda</p>
                       </div>
                       <button 
-                        onClick={() => setIdentMethod('phone')}
-                        className="w-full py-3 bg-[#F1C40F] hover:bg-[#e2b70d] text-slate-950 font-black text-xs uppercase rounded-full flex items-center justify-center space-x-2 shadow-xs transition active:scale-95 cursor-pointer"
+                        onClick={() => handleDirectStart('help')}
+                        className="w-full py-2.5 sm:py-3 bg-[#F1C40F] hover:bg-[#e2b70d] text-slate-950 font-black text-xs uppercase rounded-full flex items-center justify-center space-x-2 shadow-xs transition active:scale-95 cursor-pointer"
                       >
                         <span>MULAI</span>
-                        <div className="w-5 h-5 rounded-full bg-slate-950 text-white flex items-center justify-center">
-                          <ArrowRight className="w-3 h-3" />
+                        <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-slate-950 text-white flex items-center justify-center">
+                          <ArrowRight className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                         </div>
                       </button>
                     </div>
@@ -393,33 +420,33 @@ export default function CekatStation() {
             {/* IDENTIFICATION INPUT MODAL OVERLAY */}
             {identMethod && (
               <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center z-50 p-4 animate-fadeIn">
-                <div className="bg-white border border-slate-200 p-6 rounded-3xl max-w-lg w-full space-y-4 shadow-2xl relative text-slate-800">
+                <div className="bg-white border border-slate-200 p-5 sm:p-6 rounded-3xl max-w-lg w-full space-y-4 shadow-2xl relative text-slate-800">
                   
                   <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                    <h3 className="text-base font-black text-slate-900 uppercase flex items-center gap-2">
+                    <h3 className="text-sm sm:text-base font-black text-slate-900 uppercase flex items-center gap-2">
                       <UserCheck className="w-5 h-5 text-[#00875A]" />
                       <span>Verifikasi Pasien CEKAT Station</span>
                     </h3>
                     <button 
-                      onClick={() => setIdentMethod(null)}
-                      className="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:text-slate-900 flex items-center justify-center font-bold"
+                      onClick={() => { setIdentMethod(null); setSearchStatus('idle'); }}
+                      className="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:text-slate-900 flex items-center justify-center font-bold text-sm"
                     >
                       ✕
                     </button>
                   </div>
 
                   {identMethod === 'qr' && (
-                    <div className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-[#00875A]/40 bg-emerald-50/50 rounded-2xl">
-                      <div className="w-36 h-36 bg-white rounded-2xl flex items-center justify-center border border-slate-200 shadow-sm">
-                        <QrCode className="w-20 h-20 text-[#00875A] animate-pulse" />
+                    <div className="flex flex-col items-center justify-center p-5 sm:p-6 border-2 border-dashed border-[#00875A]/40 bg-emerald-50/50 rounded-2xl">
+                      <div className="w-28 h-28 sm:w-36 sm:h-36 bg-white rounded-2xl flex items-center justify-center border border-slate-200 shadow-xs">
+                        <QrCode className="w-16 h-16 sm:w-20 sm:h-20 text-[#00875A] animate-pulse" />
                       </div>
                       <p className="text-xs text-[#00875A] mt-3 font-bold uppercase tracking-wider text-center">
                         Arahkan QR Code CEKAT Mobile ke Kamera Kiosk
                       </p>
                       <button
                         type="button"
-                        onClick={handleIdentify}
-                        className="mt-4 px-6 py-2.5 rounded-xl bg-[#00875A] hover:bg-[#00704a] text-white text-xs font-black uppercase tracking-wider"
+                        onClick={() => handleIdentify('Sofia Kusuma')}
+                        className="mt-3 px-5 py-2.5 rounded-xl bg-[#00875A] hover:bg-[#00704a] text-white text-xs font-black uppercase tracking-wider cursor-pointer"
                       >
                         Simulasi Scan QR Berhasil
                       </button>
@@ -427,7 +454,7 @@ export default function CekatStation() {
                   )}
 
                   {identMethod === 'phone' && (
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                       <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
                         Nomor Handphone Terdaftar di Faskes:
                       </label>
@@ -437,12 +464,12 @@ export default function CekatStation() {
                           value={phoneInput}
                           onChange={(e) => setPhoneInput(e.target.value)}
                           placeholder="Contoh: 08123456789"
-                          className="flex-1 bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-slate-900 font-bold text-sm focus:outline-none focus:border-[#00875A]"
+                          className="flex-1 bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 font-bold text-sm focus:outline-none focus:border-[#00875A]"
                         />
                         <button
                           type="button"
-                          onClick={handleIdentify}
-                          className="px-6 rounded-xl bg-[#00875A] hover:bg-[#00704a] text-white font-black text-xs uppercase flex items-center gap-1.5 transition cursor-pointer shadow-sm"
+                          onClick={() => handleIdentify('Sofia Kusuma')}
+                          className="px-4 sm:px-6 rounded-xl bg-[#00875A] hover:bg-[#00704a] text-white font-black text-xs uppercase flex items-center gap-1.5 transition cursor-pointer shadow-xs"
                         >
                           <Search className="w-4 h-4" />
                           <span>Cari</span>
@@ -452,26 +479,46 @@ export default function CekatStation() {
                   )}
 
                   {identMethod === 'code' && (
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                       <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
                         NIK Pasien (KTP) / Nomor BPJS Kesehatan:
                       </label>
                       <div className="flex gap-2">
                         <input
                           type="text"
+                          value={nikInput}
+                          onChange={(e) => setNikInput(e.target.value)}
                           placeholder="Masukkan 16 digit NIK..."
-                          defaultValue="3174XXXXXXXX0002"
-                          className="flex-1 bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-slate-900 font-bold text-sm focus:outline-none focus:border-[#00875A]"
+                          className="flex-1 bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 font-bold text-sm focus:outline-none focus:border-[#00875A]"
                         />
                         <button
                           type="button"
-                          onClick={handleIdentify}
-                          className="px-6 rounded-xl bg-[#00875A] hover:bg-[#00704a] text-white font-black text-xs uppercase flex items-center gap-1.5 transition cursor-pointer shadow-sm"
+                          onClick={() => handleIdentify('Rizky Fitrianto')}
+                          className="px-4 sm:px-6 rounded-xl bg-[#00875A] hover:bg-[#00704a] text-white font-black text-xs uppercase flex items-center gap-1.5 transition cursor-pointer shadow-xs"
                         >
                           <Search className="w-4 h-4" />
                           <span>Cari</span>
                         </button>
                       </div>
+                    </div>
+                  )}
+
+                  {identMethod === 'help' && (
+                    <div className="space-y-3 p-4 bg-teal-50 border border-teal-200 rounded-2xl text-left">
+                      <div className="flex items-center space-x-2 text-teal-800 font-black">
+                        <UserCheck className="w-5 h-5 text-[#00875A]" />
+                        <span>Bantuan Petugas Kiosk</span>
+                      </div>
+                      <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                        Petugas faskes siap membantu pendaftaran manual. Tekan tombol di bawah untuk verifikasi kilat.
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => handleIdentify('Pasien Bantuan Kiosk')}
+                        className="w-full py-3 rounded-xl bg-[#00875A] hover:bg-[#00704a] text-white font-black text-xs uppercase tracking-wider"
+                      >
+                        Verifikasi Oleh Petugas
+                      </button>
                     </div>
                   )}
 
@@ -484,14 +531,14 @@ export default function CekatStation() {
                   )}
 
                   {searchStatus === 'found' && patientData && (
-                    <div className="p-5 border border-emerald-200 bg-emerald-50/60 rounded-2xl space-y-4 text-xs text-slate-800 shadow-inner">
+                    <div className="p-4 sm:p-5 border border-emerald-200 bg-emerald-50/60 rounded-2xl space-y-3 text-xs text-slate-800 shadow-inner">
                       <div className="flex items-center space-x-2 text-[#00875A] font-black border-b border-emerald-200 pb-2">
-                        <UserCheck className="w-5 h-5" />
+                        <UserCheck className="w-5 h-5 shrink-0" />
                         <span className="uppercase tracking-wider">
                           Pasien Ditemukan: {patientData.name} ({patientData.age} Thn / {patientData.gender})
                         </span>
                       </div>
-                      <div className="grid grid-cols-2 gap-2 text-slate-600 text-[11.5px] font-medium">
+                      <div className="grid grid-cols-2 gap-2 text-slate-600 text-[11px] font-medium">
                         <div>NIK: <span className="text-slate-900 font-bold">{patientData.nik}</span></div>
                         <div>Kunjungan: <span className="text-slate-900 font-bold">{patientData.lastVisit}</span></div>
                       </div>
@@ -501,7 +548,7 @@ export default function CekatStation() {
                       </div>
                       <button
                         type="button"
-                        onClick={() => setStep(2)}
+                        onClick={() => { setStep(2); setIdentMethod(null); }}
                         className="w-full py-3.5 rounded-xl bg-[#00875A] hover:bg-[#00704a] text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition cursor-pointer shadow-md"
                       >
                         <span>Lanjutkan ke Quick Health Check</span>
@@ -519,17 +566,17 @@ export default function CekatStation() {
 
         {/* STEP 2: QUICK HEALTH CHECK */}
         {step === 2 && (
-          <div className="space-y-6 max-w-4xl mx-auto w-full">
-            <div className="flex items-center justify-between bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
-              <button onClick={() => setStep(1)} className="p-2 hover:bg-slate-100 rounded-full transition flex items-center gap-1 text-xs font-bold text-slate-700">
+          <div className="space-y-4 sm:space-y-6 max-w-4xl mx-auto w-full">
+            <div className="flex items-center justify-between bg-white p-3 sm:p-4 rounded-2xl border border-slate-200 shadow-xs">
+              <button onClick={() => setStep(1)} className="p-1.5 hover:bg-slate-100 rounded-full transition flex items-center gap-1 text-xs font-bold text-slate-700">
                 <ArrowLeft className="w-4 h-4" />
                 <span>Kembali</span>
               </button>
-              <span className="text-xs font-black text-[#00875A] uppercase tracking-widest">STEP 2 DARI 6 • QUICK HEALTH CHECK</span>
+              <span className="text-[10px] sm:text-xs font-black text-[#00875A] uppercase tracking-widest">STEP 2 DARI 6 • QUICK HEALTH CHECK</span>
             </div>
 
             <div className="text-center space-y-1">
-              <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 uppercase">
+              <h2 className="text-xl sm:text-3xl font-black tracking-tight text-slate-900 uppercase">
                 Pengukuran Telemetri Fisik (Vitals HUD)
               </h2>
               <p className="text-xs text-slate-600 max-w-md mx-auto">
@@ -537,9 +584,9 @@ export default function CekatStation() {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6">
               {/* Form Input */}
-              <div className="md:col-span-7 bg-white border border-slate-200 p-6 rounded-3xl space-y-4 shadow-sm">
+              <div className="md:col-span-7 bg-white border border-slate-200 p-4 sm:p-6 rounded-3xl space-y-4 shadow-xs">
                 <div className="flex items-center justify-between border-b border-slate-100 pb-2">
                   <span className="text-xs font-black text-[#00875A] uppercase">Input Parameter Klinis</span>
                   <span className="text-[10px] font-bold text-slate-400">SATUSEHAT CONNECTED</span>
@@ -609,7 +656,7 @@ export default function CekatStation() {
               </div>
 
               {/* Assessment Panel */}
-              <div className="md:col-span-5 bg-white border border-slate-200 p-6 rounded-3xl flex flex-col justify-between space-y-4 shadow-sm">
+              <div className="md:col-span-5 bg-white border border-slate-200 p-4 sm:p-6 rounded-3xl flex flex-col justify-between space-y-4 shadow-xs">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between border-b border-slate-100 pb-2">
                     <span className="text-[10px] font-black text-[#00875A] uppercase">
@@ -661,17 +708,17 @@ export default function CekatStation() {
 
         {/* STEP 3: HEALTH SCREENING QUESTIONNAIRE */}
         {step === 3 && (
-          <div className="space-y-6 max-w-3xl mx-auto w-full">
-            <div className="flex items-center justify-between bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
-              <button onClick={() => setStep(2)} className="p-2 hover:bg-slate-100 rounded-full transition flex items-center gap-1 text-xs font-bold text-slate-700">
+          <div className="space-y-4 sm:space-y-6 max-w-3xl mx-auto w-full">
+            <div className="flex items-center justify-between bg-white p-3 sm:p-4 rounded-2xl border border-slate-200 shadow-xs">
+              <button onClick={() => setStep(2)} className="p-1.5 hover:bg-slate-100 rounded-full transition flex items-center gap-1 text-xs font-bold text-slate-700">
                 <ArrowLeft className="w-4 h-4" />
                 <span>Kembali</span>
               </button>
-              <span className="text-xs font-black text-[#00875A] uppercase tracking-widest">STEP 3 DARI 6 • HEALTH SCREENING</span>
+              <span className="text-[10px] sm:text-xs font-black text-[#00875A] uppercase tracking-widest">STEP 3 DARI 6 • HEALTH SCREENING</span>
             </div>
 
             <div className="text-center space-y-1">
-              <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 uppercase">
+              <h2 className="text-xl sm:text-3xl font-black tracking-tight text-slate-900 uppercase">
                 Kuesioner Gaya Hidup & Risiko PTM
               </h2>
               <p className="text-xs text-slate-600 max-w-md mx-auto">
@@ -679,10 +726,10 @@ export default function CekatStation() {
               </p>
             </div>
 
-            <div className="bg-white border border-slate-200 p-6 rounded-3xl space-y-5 shadow-sm">
+            <div className="bg-white border border-slate-200 p-4 sm:p-6 rounded-3xl space-y-4 sm:space-y-5 shadow-xs">
               <div className="space-y-2">
                 <label className="text-xs font-bold text-slate-800 block">1. Konsumsi Sayur dan Buah Harian:</label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                   <button
                     type="button"
                     onClick={() => setSayurBuah('cukup')}
@@ -706,7 +753,7 @@ export default function CekatStation() {
 
               <div className="space-y-2">
                 <label className="text-xs font-bold text-slate-800 block">2. Kebiasaan Minuman Manis / Gula Murni (&gt;4 sdm/hari):</label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                   <button
                     type="button"
                     onClick={() => setManis(true)}
@@ -730,7 +777,7 @@ export default function CekatStation() {
 
               <div className="space-y-2">
                 <label className="text-xs font-bold text-slate-800 block">3. Aktivitas Fisik Olahraga (150 menit/minggu):</label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
                   <button
                     type="button"
                     onClick={() => setOlahraga('cukup')}
@@ -766,9 +813,9 @@ export default function CekatStation() {
 
         {/* STEP 4: SERVICE NAVIGATION RESULT */}
         {step === 4 && (
-          <div className="space-y-6 max-w-3xl mx-auto w-full">
+          <div className="space-y-4 sm:space-y-6 max-w-3xl mx-auto w-full">
             <div className="text-center space-y-1">
-              <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 uppercase">
+              <h2 className="text-xl sm:text-3xl font-black tracking-tight text-slate-900 uppercase">
                 Hasil Navigasi Layanan Faskes
               </h2>
               <p className="text-xs text-slate-600 max-w-md mx-auto">
@@ -776,17 +823,17 @@ export default function CekatStation() {
               </p>
             </div>
 
-            <div className="bg-white border border-slate-200 p-6 rounded-3xl space-y-5 shadow-sm text-center">
+            <div className="bg-white border border-slate-200 p-5 sm:p-6 rounded-3xl space-y-4 sm:space-y-5 shadow-xs text-center">
               <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 space-y-1">
                 <span className="text-xs font-black uppercase tracking-wider block">Kategori Risiko Kesehatan</span>
-                <h3 className="text-xl font-black text-amber-800">
+                <h3 className="text-lg sm:text-xl font-black text-amber-800">
                   {riskResult === 'high' ? 'RISIKO TINGGI (Prioritas Kunjungan)' : 'RISIKO SEDANG (Pre-Diabetes / Pre-Hipertensi)'}
                 </h3>
               </div>
 
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-left space-y-2 text-xs">
                 <span className="font-black text-slate-900 uppercase block">Rekomendasi Poli Tujuan:</span>
-                <p className="font-bold text-[#00875A] text-sm">{queueRoom}</p>
+                <p className="font-bold text-[#00875A] text-sm sm:text-base">{queueRoom}</p>
                 <p className="text-slate-600 text-[11.5px] leading-relaxed">
                   Disarankan melakukan konseling gizi terstruktur, pencegahan hipertensi dengan pengurangan garam, serta evaluasi rutin kadar gula darah.
                 </p>
@@ -806,9 +853,9 @@ export default function CekatStation() {
 
         {/* STEP 5: DIGITAL QUEUE TICKET */}
         {step === 5 && (
-          <div className="space-y-6 max-w-md mx-auto w-full">
+          <div className="space-y-4 sm:space-y-6 max-w-md mx-auto w-full">
             <div className="text-center space-y-1">
-              <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 uppercase">
+              <h2 className="text-xl sm:text-3xl font-black tracking-tight text-slate-900 uppercase">
                 Tiket Antrean Faskes Digital
               </h2>
               <p className="text-xs text-slate-600">
@@ -816,20 +863,20 @@ export default function CekatStation() {
               </p>
             </div>
 
-            <div className="bg-white border-2 border-emerald-300 p-8 rounded-3xl space-y-6 text-center shadow-lg relative">
+            <div className="bg-white border-2 border-emerald-300 p-6 sm:p-8 rounded-3xl space-y-5 sm:space-y-6 text-center shadow-lg relative">
               <div className="border-b border-slate-100 pb-3 flex items-center justify-between text-[11px] font-bold text-slate-500">
                 <span>PUSKESMAS NGABAB</span>
                 <span className="text-[#00875A] font-black">#82049</span>
               </div>
 
-              <div className="space-y-1 py-2">
+              <div className="space-y-1 py-1 sm:py-2">
                 <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest block">
                   NOMOR ANTREAN DIGITAL
                 </span>
-                <div className="text-6xl font-black text-[#00875A] tracking-widest py-2">
+                <div className="text-5xl sm:text-6xl font-black text-[#00875A] tracking-widest py-1 sm:py-2">
                   {queueNo}
                 </div>
-                <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-xs font-bold text-[#00875A]">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-xs font-bold text-[#00875A]">
                   <span>{queueRoom}</span>
                 </div>
               </div>
@@ -837,15 +884,15 @@ export default function CekatStation() {
               <div className="grid grid-cols-2 gap-3 text-xs text-left">
                 <div className="p-3 bg-slate-50 rounded-xl">
                   <span className="text-[9px] text-slate-500 block uppercase font-bold">Estimasi Tunggu</span>
-                  <span className="text-slate-900 font-bold text-sm">{queueEstimasi}</span>
+                  <span className="text-slate-900 font-bold text-xs sm:text-sm">{queueEstimasi}</span>
                 </div>
                 <div className="p-3 bg-slate-50 rounded-xl">
                   <span className="text-[9px] text-slate-500 block uppercase font-bold">Nama Pasien</span>
-                  <span className="text-slate-900 font-bold text-sm truncate block">{patientData?.name || 'Sofia Kusuma'}</span>
+                  <span className="text-slate-900 font-bold text-xs sm:text-sm truncate block">{patientData?.name || 'Sofia Kusuma'}</span>
                 </div>
               </div>
 
-              <div className="flex gap-3">
+              <div className="flex gap-2.5 sm:gap-3">
                 <button
                   type="button"
                   onClick={() => setTicketPrinted(true)}
@@ -869,14 +916,14 @@ export default function CekatStation() {
 
         {/* STEP 6: SYNC & SUCCESS */}
         {step === 6 && (
-          <div className="space-y-6 max-w-md mx-auto w-full">
-            <div className="bg-white border border-slate-200 p-8 rounded-3xl text-center space-y-6 shadow-md">
-              <div className="w-16 h-16 rounded-full bg-emerald-100 border-2 border-[#00875A] flex items-center justify-center mx-auto text-[#00875A]">
-                <Check className="w-8 h-8 font-black" />
+          <div className="space-y-4 sm:space-y-6 max-w-md mx-auto w-full">
+            <div className="bg-white border border-slate-200 p-6 sm:p-8 rounded-3xl text-center space-y-5 sm:space-y-6 shadow-md">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-emerald-100 border-2 border-[#00875A] flex items-center justify-center mx-auto text-[#00875A]">
+                <Check className="w-7 h-7 sm:w-8 sm:h-8 font-black" />
               </div>
 
               <div className="space-y-2">
-                <h3 className="text-lg font-black text-slate-900 uppercase">
+                <h3 className="text-base sm:text-lg font-black text-slate-900 uppercase">
                   Pemeriksaan Station Selesai!
                 </h3>
                 <p className="text-xs text-slate-600 leading-relaxed font-medium">
@@ -911,13 +958,13 @@ export default function CekatStation() {
 
       </main>
 
-      {/* FOOTER */}
-      <footer className="w-full max-w-7xl mx-auto border-t border-slate-200/80 pt-3 mt-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-semibold text-slate-600">
+      {/* FOOTER - MOBILE FRIENDLY */}
+      <footer className="w-full max-w-7xl mx-auto border-t border-slate-200/80 pt-3 mt-3 sm:mt-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs font-semibold text-slate-600">
         <button className="px-4 py-2 bg-white border border-slate-200 rounded-full text-xs font-bold text-slate-800 flex items-center space-x-2 shadow-xs hover:bg-slate-50 transition">
           <span>BAHASA INDONESIA</span>
           <ArrowRight className="w-3.5 h-3.5" />
         </button>
-        <span>© 2026 CEKAT Station • KIOSK Point-of-Care • Kementerian Kesehatan RI</span>
+        <span className="text-[10px] sm:text-xs text-center">© 2026 CEKAT Station • KIOSK Point-of-Care • Kementerian Kesehatan RI</span>
       </footer>
 
     </div>
