@@ -140,24 +140,12 @@ export default function CekatStation() {
       {/* HEADER SECTION - FULLY RESPONSIVE */}
       <header className="w-full max-w-7xl mx-auto flex items-center justify-between border-b border-slate-200/80 pb-3 mb-3 sm:mb-4 gap-2">
         {/* Logo Left */}
-        <div className="flex items-center space-x-2 sm:space-x-3 shrink-0">
+        <div className="flex items-center shrink-0">
           <img 
             src="/images/logo full cekat station.png" 
             alt="CEKAT Station Logo" 
-            className="h-9 sm:h-12 md:h-14 object-contain" 
-            onError={(e) => {
-              e.currentTarget.style.display = 'none';
-            }}
+            className="h-10 sm:h-12 md:h-14 object-contain" 
           />
-          <div className="flex items-center space-x-1.5 sm:space-x-2">
-            <div className="w-7 h-7 sm:w-9 sm:h-9 rounded-full bg-[#10B981] flex items-center justify-center text-white font-black text-sm sm:text-lg shadow-xs">
-              C
-            </div>
-            <div>
-              <h1 className="text-base sm:text-xl font-black text-slate-900 leading-none">Cekat</h1>
-              <span className="text-[7.5px] sm:text-[9px] font-black text-[#00875A] tracking-wider uppercase block mt-0.5">Cek. Kenali. Tindaklanjuti</span>
-            </div>
-          </div>
         </div>
 
         {/* Time & Date Right */}
