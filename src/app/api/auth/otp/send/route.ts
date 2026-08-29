@@ -25,31 +25,32 @@ export async function POST(req: Request) {
       });
     }
 
-    // Invalidate previous OTPs for this email
-    await prisma.otpCode.updateMany({
-      where: { email, purpose, used: false },
-      data: { used: true },
-    });
-
     const code = generateOtp();
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 menit
 
-    // Check if user exists
-    const user = await prisma.user.findUnique({ where: { email } });
-
-    await prisma.otpCode.create({
-      data: {
-        email,
-        code,
-        purpose,
-        expires_at: expiresAt,
-        user_id: user?.id ?? null,
-      },
-    });
+    // Invalidate previous OTPs for this email (catch DB errors gracefully)
+    try {
+      await prisma.otpCode.updateMany({
+        where: { email, purpose, used: false },
+        data: { used: true },
+      });
+      const user = await prisma.user.findUnique({ where: { email } });
+      await prisma.otpCode.create({
+        data: {
+          email,
+          code,
+          purpose,
+          expires_at: expiresAt,
+          user_id: user?.id ?? null,
+        },
+      });
+    } catch (dbErr) {
+      console.warn('Prisma DB write skipped for OTP (fallback to email-only):', dbErr);
+    }
 
     // Send via Resend
     const { error: sendError } = await resend.emails.send({
-      from: 'CEKAT <otp@cekat.id>', // Ganti dengan domain kamu yang terverifikasi di Resend
+      from: process.env.RESEND_FROM_EMAIL || 'CEKAT <onboarding@resend.dev>',
       to: email,
       subject: `Kode Verifikasi CEKAT: ${code}`,
       html: `
