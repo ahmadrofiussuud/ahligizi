@@ -297,7 +297,7 @@ function CekatAppContent() {
       }
     }
     return [
-      { sender: 'bot', text: 'Halo Sofia! Saya Ceko, asisten AI gizi Anda. Ada yang ingin Anda tanyakan seputar kandungan kalori makanan, pantangan gizi, atau batas garam/gula hari ini?' }
+      { sender: 'bot', text: 'Halo Sofia! Saya Ceko, asisten AI kesehatan & gizi Anda. Ada yang ingin Anda tanyakan seputar gizi, hipertensi, diabetes, obesitas, pencegahan stunting, atau batas garam/gula/lemak hari ini?' }
     ];
   });
   const [chatInput, setChatInput] = useState('');
@@ -1996,7 +1996,7 @@ function CekatAppContent() {
                             </div>
                             <div className="text-left">
                               <h4 className="text-xs font-black text-slate-800 leading-none">Ceko AI</h4>
-                              <span className="text-[8px] font-bold text-emerald-600 block mt-0.5">Asisten Gizi • Online</span>
+                              <span className="text-[8px] font-bold text-emerald-600 block mt-0.5">Asisten Gizi & PTM • Online</span>
                             </div>
                           </div>
                           <div className="w-6" />
@@ -2009,7 +2009,7 @@ function CekatAppContent() {
                             <img src="/images/maskot cekat tanda tanya.png" alt="Ceko Mascot" className="w-10 h-14 object-contain shrink-0" />
                             <div className="space-y-0.5">
                               <h5 className="text-[12px] font-black text-slate-800 leading-tight">Konsultasi AI Ceko</h5>
-                              <p className="text-[9.5px] text-slate-500 font-semibold leading-relaxed">Ceko siap membantu mencarikan informasi kandungan gizi makanan Anda secara praktis & cepat!</p>
+                              <p className="text-[9.5px] text-slate-500 font-semibold leading-relaxed">Ceko siap membantu konsultasi gizi, pencegahan PTM (Hipertensi, Diabetes, Obesitas) & Stunting secara praktis & cepat!</p>
                             </div>
                           </div>
 
@@ -2069,13 +2069,7 @@ function CekatAppContent() {
                             <ArrowLeft className="w-5 h-5 text-slate-700" />
                           </button>
                           <div className="flex flex-col items-center">
-                            <div className="flex items-center space-x-1">
-                              <div className="w-5 h-5 rounded-full bg-[#10B981] flex items-center justify-center p-0.5">
-                                <span className="text-[10px] font-black text-white leading-none">C</span>
-                              </div>
-                              <span className="text-sm font-black text-slate-800 tracking-tight leading-none">Cekat</span>
-                            </div>
-                            <span className="text-[6.5px] font-black text-emerald-600 uppercase tracking-widest leading-none mt-0.5">Cek • Kenali • Tindaklanjuti</span>
+                            <img src="/images/logo full cekat station.png" alt="CEKAT Logo" className="h-6 object-contain" />
                           </div>
                           <button className="p-1 hover:bg-slate-50 rounded-full transition text-slate-600">
                             <MoreHorizontal className="w-5 h-5" />
@@ -4229,10 +4223,14 @@ function CekatAppContent() {
 
                           {/* Cute Mascot footer overlay */}
                           <div className="flex justify-end pt-2 pr-1">
-                            <div className="w-16 h-16 rounded-full bg-emerald-50 border border-emerald-150 flex items-center justify-center text-3xl shadow-sm relative overflow-visible select-none">
-                              🤖
-                              <div className="absolute -top-3 -left-3 w-5 h-5 bg-yellow-400 text-white rounded-full flex items-center justify-center text-xs font-black shadow border border-white">?</div>
-                            </div>
+                            <button 
+                              onClick={() => setDashboardSubView('tanya_ai')}
+                              className="w-16 h-16 rounded-full bg-emerald-50 border-2 border-emerald-200 flex items-center justify-center shadow-md relative overflow-visible select-none hover:scale-105 active:scale-95 transition cursor-pointer"
+                              title="Tanya Ceko AI"
+                            >
+                              <img src="/images/maskot cekat normal.png" alt="Ceko Mascot" className="w-12 h-14 object-contain" />
+                              <div className="absolute -top-2 -left-2 w-6 h-6 bg-yellow-400 text-white rounded-full flex items-center justify-center text-xs font-black shadow-md border-2 border-white">?</div>
+                            </button>
                           </div>
 
                         </div>
