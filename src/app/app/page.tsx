@@ -3937,8 +3937,8 @@ function CekatAppContent() {
                                 <div className="w-1.5 h-5 bg-emerald-400 rounded-t-sm" />
                                 <div className="w-1.5 h-7 bg-emerald-600 rounded-t-sm" />
                               </div>
-                              <div className="w-8 h-8 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center text-lg shadow-sm">
-                                🤖
+                              <div className="w-9 h-9 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center shadow-xs overflow-hidden p-0.5 shrink-0">
+                                <img src="/images/maskot cekat normal.png" alt="Ceko Mascot" className="w-full h-full object-contain" />
                               </div>
                             </div>
                           </div>
