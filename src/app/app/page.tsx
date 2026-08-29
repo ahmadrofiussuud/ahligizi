@@ -1204,14 +1204,14 @@ function CekatAppContent() {
                     📊 Grafik & IMT
                   </button>
                   <button 
-                    onClick={() => jumpToScreen('nutrisi', 'pantry')}
+                    onClick={() => setDashboardSubView('cek_risiko')}
                     className={`text-left px-3 py-2 rounded-xl text-xs font-bold border transition ${
-                      activeTab === 'nutrisi' && nutrisiSubView === 'pantry'
+                      dashboardSubView === 'cek_risiko'
                         ? 'bg-emerald-600/20 border-emerald-500 text-white'
                         : 'border-slate-800 hover:border-slate-700 bg-slate-950/30 text-slate-400'
                     }`}
                   >
-                    🍳 Pantry Kulkas AI
+                    🩺 Skrining PTM
                   </button>
                 </div>
               </div>
@@ -2984,23 +2984,21 @@ function CekatAppContent() {
                             </div>
                           </div>
 
-                          {/* Banner 2: Pantry AI & Menu Sehat */}
+                          {/* Banner 2: Ceko AI Consultation */}
                           <div className="bg-gradient-to-r from-emerald-50 to-emerald-100/50 border border-emerald-200/40 p-5 rounded-3xl flex items-center justify-between shadow-sm relative overflow-hidden">
                             <div className="space-y-2.5 max-w-[65%] text-left">
-                              <h4 className="text-[13px] font-black text-slate-800 leading-snug">Pantry AI & Menu Sehat</h4>
-                              <p className="text-[10px] text-slate-500 font-semibold leading-relaxed">Buat menu sehat dari bahan yang ada di rumah</p>
+                              <h4 className="text-[13px] font-black text-slate-800 leading-snug">Konsultasi Ceko AI</h4>
+                              <p className="text-[10px] text-slate-500 font-semibold leading-relaxed">Tanya gizi, batas gula/garam, & pencegahan PTM</p>
                               <button 
-                                onClick={() => setNutrisiSubView('pantry')}
+                                onClick={() => setDashboardSubView('tanya_ai')}
                                 className="px-3.5 py-1.5 bg-emerald-700 hover:bg-emerald-600 text-white text-[9.5px] font-black rounded-lg uppercase tracking-wider transition flex items-center gap-1 relative overflow-visible group"
                               >
-                                <span>Buka Menu</span>
+                                <span>Tanya Ceko</span>
                                 <Brain className="w-3.5 h-3.5" />
-                                <span className="absolute -bottom-4 -right-3 text-lg animate-bounce pointer-events-none opacity-90 group-hover:opacity-100">👆</span>
                               </button>
                             </div>
-                            <div className="w-16 h-16 shrink-0 bg-white rounded-2xl border border-slate-150 flex items-center justify-center p-2 shadow-sm overflow-hidden relative">
-                              <img src="https://images.unsplash.com/photo-1590779033100-9f60a05a013d?auto=format&fit=crop&w=100&q=80" alt="Kitchen scale" className="w-full h-full object-cover rounded-lg" />
-                              <div className="absolute -bottom-1 -right-1 bg-emerald-500 text-white text-[8px] px-1 rounded-full border border-white font-black scale-90">🤖</div>
+                            <div className="w-16 h-16 shrink-0 bg-white rounded-2xl border border-slate-150 flex items-center justify-center p-1.5 shadow-sm overflow-hidden relative">
+                              <img src="/images/maskot cekat normal.png" alt="Ceko Mascot" className="w-full h-full object-contain" />
                             </div>
                           </div>
                         </div>
@@ -3440,7 +3438,7 @@ function CekatAppContent() {
                           <button onClick={() => setNutrisiSubView('main')} className="p-1 hover:bg-slate-100 rounded-full transition">
                             <ArrowLeft className="w-5 h-5 text-slate-800" />
                           </button>
-                          <span className="text-sm font-black text-slate-800 uppercase tracking-wider">Pantry AI & Menu Sehat</span>
+                          <span className="text-sm font-black text-slate-800 uppercase tracking-wider">Rekomendasi Menu Sehat PTM</span>
                           <div className="w-7"></div>
                         </div>
 

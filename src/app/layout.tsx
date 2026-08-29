@@ -88,7 +88,7 @@ export default function RootLayout({
                   <Link href="/station" className="hover:text-emerald-400 transition-colors">CEKAT Station Kiosk</Link>
                 </li>
                 <li>
-                  <Link href="/pantry-ai" className="hover:text-emerald-400 transition-colors">Pantry AI Resep</Link>
+                  <Link href="/articles" className="hover:text-emerald-400 transition-colors">Edukasi PTM & Artikel</Link>
                 </li>
                 <li>
                   <Link href="/consultation" className="hover:text-emerald-400 transition-colors">Konsultasi Medis</Link>

@@ -427,11 +427,11 @@ export default function DashboardPage({ onLogout }: { onLogout?: () => void }) {
                 {/* Quick Switcher & Action Links */}
                 <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                   <Link
-                    href="/pantry-ai"
+                    href="/scan"
                     className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:brightness-110 text-white font-mono font-black text-xs uppercase flex items-center gap-1.5 transition shadow-[0_0_15px_rgba(16,185,129,0.15)]"
                   >
-                    <ChefHat className="w-4 h-4" />
-                    <span>Pantry AI</span>
+                    <Camera className="w-4 h-4" />
+                    <span>Scan Gizi AI</span>
                   </Link>
                   <Link
                     href="/scan"
@@ -737,13 +737,12 @@ export default function DashboardPage({ onLogout }: { onLogout?: () => void }) {
                 </h2>
                 <div className="flex gap-2">
                   <Link
-                    href="/pantry-ai"
-                    className="text-xs font-mono font-bold text-emerald-600 hover:text-emerald-700 flex items-center gap-1"
+                    href="/scan"
+                    className="text-xs font-mono font-bold text-teal-600 hover:text-teal-700 flex items-center gap-1"
                   >
-                    <ChefHat className="w-3.5 h-3.5" />
-                    <span>+ Resep Pantry AI</span>
+                    <Camera className="w-3.5 h-3.5" />
+                    <span>+ Scan Foto AI</span>
                   </Link>
-                  <span className="text-slate-300">•</span>
                   <Link
                     href="/scan"
                     className="text-xs font-mono font-bold text-teal-600 hover:text-teal-700 flex items-center gap-1"
@@ -759,11 +758,11 @@ export default function DashboardPage({ onLogout }: { onLogout?: () => void }) {
                   <p className="text-xs text-slate-500 font-mono">Belum ada makanan yang dicatat hari ini.</p>
                   <div className="flex justify-center gap-3">
                     <Link
-                      href="/pantry-ai"
+                      href="/scan"
                       className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#00875A] hover:bg-[#00704a] text-white font-mono font-bold text-xs"
                     >
-                      <ChefHat className="w-4 h-4" />
-                      <span>Racik di Pantry AI</span>
+                      <Camera className="w-4 h-4" />
+                      <span>Scan Makanan AI</span>
                     </Link>
                     <Link
                       href="/scan"

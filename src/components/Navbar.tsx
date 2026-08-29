@@ -43,7 +43,6 @@ export default function Navbar() {
 
   // Navigation links shown when logged in (Clean professional labels without raw emojis)
   const loggedInLinks = [
-    { name: 'Pantry AI', href: '/pantry-ai' },
     { name: 'CEKAT Station', href: '/station' },
     { name: 'Scan Gizi', href: '/scan' },
     { name: 'Dashboard', href: '/dashboard' },
@@ -53,7 +52,6 @@ export default function Navbar() {
 
   // Professional marketing navigation links shown on landing page (logged out)
   const landingLinks = [
-    { name: 'Pantry AI', href: '/pantry-ai' },
     { name: 'CEKAT Station', href: '/station' },
     { name: 'CEKAT App', href: '/app' },
     { name: 'Fitur Utama', href: '#features-section' },
