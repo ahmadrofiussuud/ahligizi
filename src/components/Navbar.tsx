@@ -169,38 +169,8 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Navigation Links / App Switcher Bar */}
-      {isLandingPage ? (
-        <div className={`md:hidden flex items-center overflow-x-auto py-2.5 px-4 space-x-2 text-xs transition-all scrollbar-none ${
-          isScrolled || isLoggedIn
-            ? 'bg-white/95 border-b border-slate-100 text-slate-800 shadow-sm' 
-            : 'bg-slate-950/85 backdrop-blur-md border-b border-white/10 text-white'
-        }`}>
-          <Link
-            href="/app"
-            className="shrink-0 px-3.5 py-1.5 rounded-full font-black text-xs bg-emerald-600 text-white shadow-md flex items-center gap-1 active:scale-95 transition"
-          >
-            <span>📱 CEKAT App</span>
-          </Link>
-          <Link
-            href="/station"
-            className="shrink-0 px-3 py-1.5 rounded-full font-bold text-xs bg-amber-100 text-amber-900 border border-amber-300 flex items-center gap-1"
-          >
-            <span>🏥 Station</span>
-          </Link>
-          {landingLinks.filter(l => !['/app', '/station'].includes(l.href)).map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={`shrink-0 px-2.5 py-1.5 rounded-lg font-semibold ${
-                isScrolled || isLoggedIn ? 'text-slate-600 hover:text-slate-900' : 'text-teal-100 hover:text-white'
-              }`}
-            >
-              <span>{link.name}</span>
-            </Link>
-          ))}
-        </div>
-      ) : (
+      {/* Mobile Navigation Links / App Switcher Bar (Only shown on non-landing routes when logged in) */}
+      {!isLandingPage && (
         <div className="md:hidden flex overflow-x-auto py-2.5 px-4 space-x-2 border-t border-slate-100 bg-white/95 text-xs">
           <Link
             href="/app"
