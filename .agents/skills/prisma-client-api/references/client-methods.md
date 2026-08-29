@@ -206,6 +206,8 @@ type UserWithPosts = Prisma.UserGetPayload<{
 Type-safe query fragments:
 
 ```typescript
+
+
 import { Prisma } from '../generated/client'
 
 const userSelect = {
