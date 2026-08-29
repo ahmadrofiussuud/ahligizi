@@ -1928,7 +1928,9 @@ function CekatAppContent() {
                         {/* Floating help bot inline */}
                         <div className="hidden absolute bottom-[80px] right-3 z-30 flex-col items-end pointer-events-none">
                           <div className="bg-amber-400 text-slate-900 font-black text-[9px] rounded-full px-2 py-0.5 border border-white shadow-md animate-pulse mb-1">💡</div>
-                          <div className="w-10 h-10 rounded-full bg-[#10b981] border-2 border-white shadow-lg flex items-center justify-center text-xl animate-bounce">🤖</div>
+                          <div className="w-10 h-10 rounded-full bg-white border-2 border-[#10b981] shadow-lg flex items-center justify-center p-1 overflow-hidden animate-bounce">
+                            <img src="/images/maskot cekat normal.png" alt="Ceko Mascot" className="w-full h-full object-contain" />
+                          </div>
                         </div>
                       </div>
                     )}
@@ -2224,7 +2226,9 @@ function CekatAppContent() {
                         {/* Floating mascot inline */}
                         <div className="absolute bottom-[80px] right-3 z-30 flex flex-col items-end pointer-events-none">
                           <div className="bg-amber-400 text-slate-900 font-black text-[9px] rounded-full px-2 py-0.5 border border-white shadow-md animate-pulse mb-1">💡</div>
-                          <div className="w-10 h-10 rounded-full bg-[#10b981] border-2 border-white shadow-lg flex items-center justify-center text-xl animate-bounce">🤖</div>
+                          <div className="w-10 h-10 rounded-full bg-white border-2 border-[#10b981] shadow-lg flex items-center justify-center p-1 overflow-hidden animate-bounce">
+                            <img src="/images/maskot cekat normal.png" alt="Ceko Mascot" className="w-full h-full object-contain" />
+                          </div>
                         </div>
                       </div>
                     )}
@@ -2329,7 +2333,9 @@ function CekatAppContent() {
                         {/* Floating mascot inline */}
                         <div className="absolute bottom-[80px] right-3 z-30 flex flex-col items-end pointer-events-none">
                           <div className="bg-amber-400 text-slate-900 font-black text-[9px] rounded-full px-2 py-0.5 border border-white shadow-md animate-pulse mb-1">💡</div>
-                          <div className="w-10 h-10 rounded-full bg-[#10b981] border-2 border-white shadow-lg flex items-center justify-center text-xl animate-bounce">🤖</div>
+                          <div className="w-10 h-10 rounded-full bg-white border-2 border-[#10b981] shadow-lg flex items-center justify-center p-1 overflow-hidden animate-bounce">
+                            <img src="/images/maskot cekat normal.png" alt="Ceko Mascot" className="w-full h-full object-contain" />
+                          </div>
                         </div>
                       </div>
                     )}
@@ -4122,8 +4128,8 @@ function CekatAppContent() {
                               </div>
                             </div>
                             {/* Mascot on Right */}
-                            <div className="w-16 h-16 shrink-0 bg-white/10 rounded-2xl flex items-center justify-center text-4xl shadow-inner border border-white/15 z-10">
-                              🤖
+                            <div className="w-16 h-16 shrink-0 bg-white/20 rounded-2xl flex items-center justify-center shadow-inner border border-white/20 z-10 overflow-hidden p-1">
+                              <img src="/images/maskot cekat normal.png" alt="Ceko Mascot" className="w-full h-full object-contain" />
                             </div>
                             {/* Decorative background blob */}
                             <div className="absolute -right-6 -bottom-6 w-24 h-24 bg-emerald-500/10 rounded-full blur-xl pointer-events-none"></div>
@@ -4185,8 +4191,8 @@ function CekatAppContent() {
                               🎁
                             </div>
                             {/* Decorative background blob */}
-                            <div className="absolute right-3 bottom-3 w-5 h-5 rounded-full bg-emerald-55 border border-emerald-100 flex items-center justify-center text-xs shadow-sm z-20">
-                              🤖
+                            <div className="absolute right-3 bottom-3 w-6 h-6 rounded-full bg-white border border-emerald-200 flex items-center justify-center shadow-xs z-20 overflow-hidden p-0.5">
+                              <img src="/images/maskot cekat normal.png" alt="Ceko Mascot" className="w-full h-full object-contain" />
                             </div>
                           </div>
                         </div>
@@ -4492,8 +4498,8 @@ function CekatAppContent() {
                             <h3 className="text-[14px] font-black text-slate-800 tracking-tight uppercase">Selamat 1 TAHUN bersama CEKAT</h3>
                             <p className="text-[11px] text-slate-500 font-bold">Kamu Hebat, Tetap Semangat ya!</p>
                             {/* Mascot in background */}
-                            <div className="w-10 h-10 rounded-full bg-emerald-50 border border-emerald-150 flex items-center justify-center text-xl shadow-sm mx-auto mt-2">
-                              🤖
+                            <div className="w-12 h-12 rounded-full bg-emerald-50 border border-emerald-200 flex items-center justify-center shadow-sm mx-auto mt-2 overflow-hidden p-1">
+                              <img src="/images/maskot cekat normal.png" alt="Ceko Mascot" className="w-full h-full object-contain" />
                             </div>
                           </div>
 

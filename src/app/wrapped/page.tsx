@@ -278,7 +278,7 @@ export default function WrappedPage() {
         <div className={`absolute top-4 left-6 flex items-center space-x-2 text-[9px] font-black uppercase tracking-widest ${
           activeSlide.isDark ? 'text-emerald-100' : 'text-slate-400'
         }`}>
-          <span>NutriSnap</span>
+          <span>CEKAT Wrapped</span>
         </div>
 
         {/* Dynamic content rendering with slide transition animations */}
