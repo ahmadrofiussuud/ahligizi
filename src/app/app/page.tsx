@@ -548,29 +548,41 @@ function CekatAppContent() {
     setRiwayatSubView('home');
   };
 
-  const handleSendChatMessage = () => {
-    if (!chatInput.trim()) return;
-    const userMsg = { sender: 'user', text: chatInput };
-    setChatMessages(prev => [...prev, userMsg]);
+  const handleSendChatMessage = async () => {
+    if (!chatInput.trim() || isBotTyping) return;
+    const userText = chatInput.trim();
+    const userMsg = { sender: 'user', text: userText };
+    const newMessages = [...chatMessages, userMsg];
+    
+    setChatMessages(newMessages);
     setChatInput('');
     setIsBotTyping(true);
 
-    // Simulate Bot response based on user inputs
-    setTimeout(() => {
-      let reply = '';
-      const text = chatInput.toLowerCase();
-      if (text.includes('kalori') || text.includes('makan') || text.includes('salad')) {
-        reply = 'Salad Ayam dengan sedikit dressing olive oil biasanya mengandung sekitar 320-350 kkal. Pilihan yang sangat bagus untuk menjaga target kalori harian Anda!';
-      } else if (text.includes('hipertensi') || text.includes('darah') || text.includes('tensi') || text.includes('garam')) {
-        reply = 'Untuk mencegah risiko hipertensi, batasi konsumsi garam maksimal 1 sendok teh (5 gram) per hari. Hindari makanan kaleng, mie instan, dan perbanyak konsumsi makanan kaya kalium seperti pisang dan bayam.';
-      } else if (text.includes('gula') || text.includes('manis') || text.includes('diabetes')) {
-        reply = 'Batas konsumsi gula harian yang disarankan Kemkes adalah maksimal 4 sendok makan (50 gram). Cobalah mengganti camilan manis dengan buah segar seperti apel atau pir untuk pelepasan energi yang lebih stabil.';
-      } else {
-        reply = 'Tentu, pola makan bergizi seimbang adalah kunci metabolisme prima! Pastikan piring makan Anda memenuhi prinsip "Isi Piringku": 50% sayur & buah, dan 50% karbohidrat & lauk pauk.';
-      }
-      setChatMessages(prev => [...prev, { sender: 'bot', text: reply }]);
+    try {
+      const res = await fetch('/api/ceko-ai', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: userText,
+          history: chatMessages.slice(-6).map(m => ({
+            sender: m.sender === 'user' ? 'user' : 'bot',
+            text: m.text
+          }))
+        })
+      });
+
+      const data = await res.json();
+      const botReply = data.reply || 'Maaf, Ceko AI sedang memperbarui data. Coba tanyakan kembali ya!';
+      setChatMessages(prev => [...prev, { sender: 'bot', text: botReply }]);
+    } catch (err) {
+      console.error('Ceko AI fetch error:', err);
+      setChatMessages(prev => [...prev, {
+        sender: 'bot',
+        text: 'Ceko AI siap membantu Anda dengan informasi kandungan gizi, kalori, dan pola makan sehat!'
+      }]);
+    } finally {
       setIsBotTyping(false);
-    }, 1500);
+    }
   };
 
   // Auto transition for splash screen if set to splash
@@ -1924,14 +1936,14 @@ function CekatAppContent() {
 
                     {/* View: Tanya Ceko AI Chat Page */}
                     {dashboardSubView === 'tanya_ai' && (
-                      <div className="flex-1 flex flex-col justify-between pb-20 animate-fadeIn bg-slate-50 min-h-screen text-left">
+                      <div className="flex-1 flex flex-col h-full max-h-full animate-fadeIn bg-slate-50 text-left overflow-hidden relative pb-16">
                         {/* Header */}
-                        <div className="bg-white border-b border-slate-100 px-4 pt-8 pb-3 flex items-center justify-between shadow-xs shrink-0">
-                          <button onClick={() => setDashboardSubView('home')} className="p-1 hover:bg-slate-55 rounded-full transition">
+                        <div className="bg-white border-b border-slate-100 px-4 py-3 flex items-center justify-between shadow-xs shrink-0 z-10">
+                          <button onClick={() => setDashboardSubView('home')} className="p-1 hover:bg-slate-100 rounded-full transition">
                             <ArrowLeft className="w-5 h-5 text-slate-700" />
                           </button>
                           <div className="flex items-center space-x-2">
-                            <div className="w-9 h-9 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center overflow-hidden shadow-xs shrink-0 p-0.5">
+                            <div className="w-8 h-8 rounded-full bg-emerald-50 border border-emerald-100 flex items-center justify-center overflow-hidden shadow-xs shrink-0 p-0.5">
                               <img src="/images/maskot cekat normal.png" alt="Ceko Mascot" className="w-full h-full object-cover" />
                             </div>
                             <div className="text-left">
@@ -1939,46 +1951,45 @@ function CekatAppContent() {
                               <span className="text-[8px] font-bold text-emerald-600 block mt-0.5">Asisten Gizi • Online</span>
                             </div>
                           </div>
-                          <div className="w-8" />
+                          <div className="w-6" />
                         </div>
 
                         {/* Chat Messages */}
-                        <div className="flex-1 p-4 overflow-y-auto space-y-3 flex flex-col justify-end">
-                          <div className="space-y-3 overflow-y-auto max-h-[360px] pr-1 w-full">
-                            {/* Cute Mascot Greeting Card */}
-                            <div className="p-4 bg-[#f0faf7] border border-teal-150/40 rounded-2xl flex items-center space-x-4 shadow-xs mb-3 text-left">
-                              <img src="/images/maskot cekat tanda tanya.png" alt="Ceko Mascot" className="w-12 h-16 object-contain shrink-0" />
-                              <div className="space-y-1">
-                                <h5 className="text-[12.5px] font-black text-slate-800 leading-tight">Konsultasi AI Ceko</h5>
-                                <p className="text-[10px] text-slate-500 font-semibold leading-relaxed">Ceko siap membantu mencarikan informasi kandungan gizi makanan Anda secara praktis & cepat!</p>
+                        <div className="flex-1 p-3 overflow-y-auto space-y-3 flex flex-col justify-start">
+                          {/* Cute Mascot Greeting Card */}
+                          <div className="p-3 bg-[#f0faf7] border border-teal-150/40 rounded-2xl flex items-center space-x-3 shadow-xs text-left shrink-0">
+                            <img src="/images/maskot cekat tanda tanya.png" alt="Ceko Mascot" className="w-10 h-14 object-contain shrink-0" />
+                            <div className="space-y-0.5">
+                              <h5 className="text-[12px] font-black text-slate-800 leading-tight">Konsultasi AI Ceko</h5>
+                              <p className="text-[9.5px] text-slate-500 font-semibold leading-relaxed">Ceko siap membantu mencarikan informasi kandungan gizi makanan Anda secara praktis & cepat!</p>
+                            </div>
+                          </div>
+
+                          {chatMessages.map((msg, idx) => (
+                            <div key={idx} className={`flex w-full ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+                              <div className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-[11.5px] font-medium shadow-xs leading-relaxed ${
+                                msg.sender === 'user' 
+                                  ? 'bg-[#00875A] text-white rounded-br-none' 
+                                  : 'bg-white border border-slate-100 text-slate-800 rounded-bl-none'
+                              }`}>
+                                {msg.text}
                               </div>
                             </div>
-                            {chatMessages.map((msg, idx) => (
-                              <div key={idx} className={`flex w-full ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                                <div className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-xs shadow-xs leading-relaxed ${
-                                  msg.sender === 'user' 
-                                    ? 'bg-[#00875A] text-white rounded-br-none' 
-                                    : 'bg-white border border-slate-100 text-slate-850 rounded-bl-none'
-                                }`}>
-                                  {msg.text}
-                                </div>
+                          ))}
+                          {isBotTyping && (
+                            <div className="flex justify-start">
+                              <div className="bg-white border border-slate-100 rounded-2xl rounded-bl-none px-3.5 py-2 text-xs text-slate-400 shadow-xs flex items-center space-x-1">
+                                <span className="animate-bounce">●</span>
+                                <span className="animate-bounce delay-150">●</span>
+                                <span className="animate-bounce delay-300">●</span>
                               </div>
-                            ))}
-                            {isBotTyping && (
-                              <div className="flex justify-start">
-                                <div className="bg-white border border-slate-100 rounded-2xl rounded-bl-none px-4 py-2.5 text-xs text-slate-400 shadow-xs flex items-center space-x-1">
-                                  <span className="animate-bounce">●</span>
-                                  <span className="animate-bounce delay-150">●</span>
-                                  <span className="animate-bounce delay-300">●</span>
-                                </div>
-                              </div>
-                            )}
-                          </div>
+                            </div>
+                          )}
                         </div>
 
-                        {/* Input Area */}
-                        <div className="p-3 bg-white border-t border-slate-100 shrink-0">
-                          <div className="flex items-center bg-slate-50 border border-slate-200 rounded-full px-3 py-1.5">
+                        {/* Input Area (16px font prevents iOS Safari auto-zoom) */}
+                        <div className="p-2.5 bg-white border-t border-slate-100 shrink-0">
+                          <div className="flex items-center bg-slate-50 border border-slate-200 rounded-full px-3 py-1">
                             <input 
                               type="text" 
                               value={chatInput}
@@ -1987,11 +1998,12 @@ function CekatAppContent() {
                                 if (e.key === 'Enter') handleSendChatMessage();
                               }}
                               placeholder="Tanya kalori, tensi darah, dll..."
-                              className="flex-1 bg-transparent border-none text-xs text-slate-855 focus:outline-none placeholder-slate-400 px-1"
+                              className="flex-1 bg-transparent border-none text-[16px] md:text-xs text-slate-800 focus:outline-none placeholder-slate-400 px-1"
+                              style={{ fontSize: '16px' }}
                             />
                             <button 
                               onClick={handleSendChatMessage}
-                              className="w-7 h-7 rounded-full bg-[#00875A] hover:bg-[#00704a] text-white flex items-center justify-center transition active:scale-95 shrink-0"
+                              className="w-8 h-8 rounded-full bg-[#00875A] hover:bg-[#00704a] text-white flex items-center justify-center transition active:scale-95 shrink-0"
                             >
                               <ArrowRight className="w-4 h-4" />
                             </button>
