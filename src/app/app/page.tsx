@@ -200,6 +200,20 @@ function CekatAppContent() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Load scan state from localStorage on mount to prevent loss on query sync navigation
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedImage = localStorage.getItem('cekat_captured_image_url');
+      const savedResult = localStorage.getItem('cekat_ai_scan_result');
+      if (savedImage) setCapturedImageUrl(savedImage);
+      if (savedResult) {
+        try {
+          setAiScanResult(JSON.parse(savedResult));
+        } catch (e) {}
+      }
+    }
+  }, []);
+
   // Simulator navigation states
   const [appState, setAppState] = useState<'splash' | 'welcome' | 'login' | 'signup' | 'otp' | 'main'>('welcome');
   const [activeTab, setActiveTab] = useState<'dashboard' | 'nutrisi' | 'challenge' | 'riwayat' | 'profil'>('dashboard');
@@ -401,6 +415,18 @@ function CekatAppContent() {
   // Use ref (NOT state) for stream → avoids stale closure in callbacks
   const streamRef = useRef<MediaStream | null>(null);
   const [capturedImageUrl, setCapturedImageUrl] = useState<string | null>(null);
+
+  const setCapturedImageUrlPersisted = (url: string | null) => {
+    setCapturedImageUrl(url);
+    if (typeof window !== 'undefined') {
+      if (url) {
+        localStorage.setItem('cekat_captured_image_url', url);
+      } else {
+        localStorage.removeItem('cekat_captured_image_url');
+      }
+    }
+  };
+
   const [cameraError, setCameraError] = useState<string | null>(null);
   const [flashActive, setFlashActive] = useState<boolean>(false);
   const [facingMode, setFacingMode] = useState<'environment' | 'user'>('environment');
@@ -422,7 +448,8 @@ function CekatAppContent() {
   /** Start camera with given facing mode. Stops existing stream first. */
   const startCamera = async (facing: 'environment' | 'user' = 'environment') => {
     setCameraError(null);
-    setCapturedImageUrl(null);
+    setCapturedImageUrlPersisted(null);
+    setAiScanResultPersisted(null);
     // Stop any existing stream SYNCHRONOUSLY before requesting new one
     stopCameraImmediate();
     try {
@@ -474,7 +501,18 @@ function CekatAppContent() {
   // AI Scan Result State
   const [aiScanResult, setAiScanResult] = useState<any>(null);
 
-  const analyzeCapturedImage = async (base64Data: string) => {
+  const setAiScanResultPersisted = (result: any) => {
+    setAiScanResult(result);
+    if (typeof window !== 'undefined') {
+      if (result) {
+        localStorage.setItem('cekat_ai_scan_result', JSON.stringify(result));
+      } else {
+        localStorage.removeItem('cekat_ai_scan_result');
+      }
+    }
+  };
+
+  const analyzeCapturedImage = async (base64Data: string) =>>,StartLine:473,TargetContent: {
     setIsScanning(true);
     try {
       const res = await fetch('/api/scan', {
@@ -484,9 +522,9 @@ function CekatAppContent() {
       });
       const data = await res.json();
       if (data.success && data.data) {
-        setAiScanResult(data.data);
+        setAiScanResultPersisted(data.data);
       } else {
-        setAiScanResult({
+        setAiScanResultPersisted({
           food_name: 'Menu Sehat Terdeteksi',
           calories: 520,
           protein_g: 24,
@@ -498,7 +536,7 @@ function CekatAppContent() {
       }
     } catch (err) {
       console.error('Scan API call error:', err);
-      setAiScanResult({
+      setAiScanResultPersisted({
         food_name: 'Menu Makanan Terdeteksi',
         calories: 490,
         protein_g: 22,
@@ -527,7 +565,7 @@ function CekatAppContent() {
       }
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
       const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
-      setCapturedImageUrl(dataUrl);
+      setCapturedImageUrlPersisted(dataUrl);
       stopCameraImmediate();
       setFlashActive(true);
       setTimeout(() => setFlashActive(false), 180);
@@ -541,7 +579,7 @@ function CekatAppContent() {
     const reader = new FileReader();
     reader.onload = (event) => {
       const dataUrl = event.target?.result as string;
-      setCapturedImageUrl(dataUrl);
+      setCapturedImageUrlPersisted(dataUrl);
       stopCameraImmediate();
       analyzeCapturedImage(dataUrl);
     };
@@ -3473,18 +3511,17 @@ function CekatAppContent() {
                     )}
 
                     {/* ════════════════════════════════════════
-                        View: Scan Result View (Score GOOD & Analysis 307 Cal)
+                        View: Scan Result View (Score GOOD & Analysis 307 Cal) (Commented out duplicate)
                     ════════════════════════════════════════ */}
+                    {/*
                     {nutrisiSubView === 'scan_result' && (
                       <div className="space-y-4 animate-fadeIn pb-24 bg-slate-100 min-h-screen">
-                        {/* Top Photo Header Container */}
                         <div className="relative w-full aspect-[4/3] bg-slate-900 overflow-hidden">
                           <img 
                             src="https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80" 
                             alt="Salad Bowl" 
                             className="w-full h-full object-cover" 
                           />
-                          {/* Overlay Controls */}
                           <div className="absolute top-4 left-4 right-4 flex items-center justify-between z-10">
                             <button 
                               onClick={() => setNutrisiSubView('main')} 
@@ -3503,48 +3540,38 @@ function CekatAppContent() {
                           </div>
                         </div>
 
-                        {/* White Sheet Modal Container */}
                         <div className="bg-white -mt-6 rounded-t-[32px] p-6 shadow-xl space-y-5 text-center relative z-20 max-w-lg mx-auto border-t border-slate-200">
-                          {/* Drag handle */}
                           <div className="w-10 h-1 bg-slate-300 rounded-full mx-auto -mt-2 mb-2" />
 
-                          {/* SCORE BADGE CIRCLE */}
                           <div className="w-28 h-28 rounded-full bg-[#86EFAC] border-4 border-emerald-300 flex flex-col items-center justify-center mx-auto shadow-md">
                             <span className="text-[10px] font-black tracking-widest text-slate-800 uppercase">SCORE:</span>
                             <span className="text-xl font-black text-slate-950 tracking-tight uppercase">GOOD</span>
                           </div>
 
-                          {/* STAR RATING */}
                           <div className="flex justify-center space-x-1 text-amber-400 text-lg">
                             <span>★</span><span>★</span><span>★</span><span>★</span><span className="text-slate-300">☆</span>
                           </div>
 
-                          {/* RECOMMENDATION TEXT */}
                           <p className="text-xs font-semibold text-slate-700 max-w-xs mx-auto leading-relaxed">
                             Saladnya sudah sehat! bisa ditambahkan telur atau alpukat supaya gizinya makin seimbang.
                           </p>
 
-                          {/* DASHED SEPARATOR */}
                           <div className="border-t-2 border-dashed border-slate-300 pt-4">
                             <h4 className="text-xs font-black text-slate-900 tracking-widest uppercase mb-4">ANALYSIS:</h4>
 
-                            {/* 3 ANALYSIS CIRCLES */}
                             <div className="grid grid-cols-3 gap-3 max-w-xs mx-auto">
-                              {/* Circle 1: Protein */}
                               <div className="w-20 h-20 sm:w-22 sm:h-22 rounded-full border-2 border-slate-800 flex flex-col items-center justify-center mx-auto p-1 text-center bg-white shadow-xs">
                                 <span className="text-lg leading-none">🍗</span>
                                 <span className="text-[11px] font-black text-slate-900 mt-0.5">70 Cal</span>
                                 <span className="text-[8px] font-bold text-slate-500 uppercase">Protein</span>
                               </div>
 
-                              {/* Circle 2: Carbo */}
                               <div className="w-20 h-20 sm:w-22 sm:h-22 rounded-full border-2 border-slate-800 flex flex-col items-center justify-center mx-auto p-1 text-center bg-white shadow-xs">
                                 <span className="text-lg leading-none">🍞</span>
                                 <span className="text-[11px] font-black text-slate-900 mt-0.5">155 Cal</span>
                                 <span className="text-[8px] font-bold text-slate-500 uppercase">Carbo</span>
                               </div>
 
-                              {/* Circle 3: Fat */}
                               <div className="w-20 h-20 sm:w-22 sm:h-22 rounded-full border-2 border-slate-800 flex flex-col items-center justify-center mx-auto p-1 text-center bg-white shadow-xs">
                                 <span className="text-lg leading-none">🧀</span>
                                 <span className="text-[11px] font-black text-slate-900 mt-0.5">80 Cal</span>
@@ -3553,7 +3580,6 @@ function CekatAppContent() {
                             </div>
                           </div>
 
-                          {/* TOTAL CALORIES ORANGE BADGE */}
                           <div className="w-full py-3.5 px-6 rounded-full bg-[#FED7AA] border border-orange-300 flex items-center justify-between max-w-xs mx-auto shadow-sm">
                             <div className="flex items-center space-x-2">
                               <span className="text-lg">🔥</span>
@@ -3574,6 +3600,7 @@ function CekatAppContent() {
                         </div>
                       </div>
                     )}
+                    */}
 
                     {/* View: Pantry AI Recipe search & grid (EXACT IMAGE 2 REPLICA) */}
                     {nutrisiSubView === 'pantry' && (
