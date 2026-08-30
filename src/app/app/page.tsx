@@ -512,7 +512,7 @@ function CekatAppContent() {
     }
   };
 
-  const analyzeCapturedImage = async (base64Data: string) =>>,StartLine:473,TargetContent: {
+  const analyzeCapturedImage = async (base64Data: string) => {
     setIsScanning(true);
     try {
       const res = await fetch('/api/scan', {
