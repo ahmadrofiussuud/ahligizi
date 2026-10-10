@@ -54,7 +54,7 @@ export async function POST(req: Request) {
         const promptText = `Kamu adalah ahli gizi digital. Analisis foto makanan berikut. Identifikasi nama makanan/minuman yang terlihat (bisa lebih dari satu item), estimasikan porsi dalam gram, lalu hitung perkiraan kalori total, protein (g), karbohidrat (g), lemak (g), dan serat (g). Berikan juga penilaian singkat apakah makanan ini tergolong sehat/cukup baik/kurang baik dikonsumsi rutin, beserta alasan singkat dan saran perbaikan jika ada. Jika gambar tidak jelas atau bukan makanan, katakan dengan jujur bahwa deteksi tidak bisa dilakukan. Jawab HANYA dalam format JSON valid dengan struktur: { "items": [{"name": string, "portion_estimate": string}], "calories": number, "protein_g": number, "carbs_g": number, "fat_g": number, "fiber_g": number, "health_verdict": "baik" | "cukup" | "kurang", "notes": string, "suggestion": string, "confidence": "tinggi" | "sedang" | "rendah", "is_food_detected": boolean }`;
 
         const geminiRes = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
           {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
