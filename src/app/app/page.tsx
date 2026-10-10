@@ -2146,10 +2146,11 @@ function CekatAppContent() {
                               <ArrowLeft className="w-5 h-5" />
                             </button>
                             <div className="flex items-center space-x-1.5">
-                              <div className="w-5.5 h-5.5 rounded-full bg-[#10B981] flex items-center justify-center p-0.5">
-                                <span className="text-[10px] font-black text-white leading-none">C</span>
+                              <img src="/images/logo C cekat.png" alt="Cekat Logo" className="w-6 h-6 object-contain shrink-0" />
+                              <div className="flex flex-col text-left">
+                                <span className="text-sm font-black text-slate-800 tracking-tight leading-none">Cekat</span>
+                                <span className="text-[5.5px] font-extrabold text-emerald-600 uppercase tracking-widest leading-none mt-0.5">Cek • Kenali • Tindaklanjuti</span>
                               </div>
-                              <span className="text-sm font-black text-slate-800 tracking-tight leading-none">Cekat</span>
                             </div>
                             <button 
                               onClick={() => setDashboardSubView('marketplace')}
@@ -2356,9 +2357,7 @@ function CekatAppContent() {
                             <ArrowLeft className="w-5 h-5" />
                           </button>
                           <div className="flex items-center space-x-1.5">
-                            <div className="w-5.5 h-5.5 rounded-full bg-[#10B981] flex items-center justify-center p-0.5">
-                              <span className="text-[10px] font-black text-white leading-none">C</span>
-                            </div>
+                            <img src="/images/logo C cekat.png" alt="Cekat Logo" className="w-6 h-6 object-contain shrink-0" />
                             <div className="flex flex-col text-left">
                               <span className="text-sm font-black text-slate-800 tracking-tight leading-none">Cekat</span>
                               <span className="text-[5.5px] font-extrabold text-emerald-600 uppercase tracking-widest leading-none mt-0.5">Cek • Kenali • Tindaklanjuti</span>
@@ -2509,9 +2508,7 @@ function CekatAppContent() {
                             <ArrowLeft className="w-5 h-5" />
                           </button>
                           <div className="flex items-center space-x-1.5">
-                            <div className="w-5.5 h-5.5 rounded-full bg-[#10B981] flex items-center justify-center p-0.5">
-                              <span className="text-[10px] font-black text-white leading-none">C</span>
-                            </div>
+                            <img src="/images/logo C cekat.png" alt="Cekat Logo" className="w-6 h-6 object-contain shrink-0" />
                             <div className="flex flex-col text-left">
                               <span className="text-sm font-black text-slate-800 tracking-tight leading-none">Cekat</span>
                               <span className="text-[5.5px] font-extrabold text-emerald-600 uppercase tracking-widest leading-none mt-0.5">Cek • Kenali • Tindaklanjuti</span>
@@ -2644,9 +2641,7 @@ function CekatAppContent() {
                             <ArrowLeft className="w-5 h-5" />
                           </button>
                           <div className="flex items-center space-x-1.5">
-                            <div className="w-5.5 h-5.5 rounded-full bg-[#10B981] flex items-center justify-center p-0.5">
-                              <span className="text-[10px] font-black text-white leading-none">C</span>
-                            </div>
+                            <img src="/images/logo C cekat.png" alt="Cekat Logo" className="w-6 h-6 object-contain shrink-0" />
                             <div className="flex flex-col text-left">
                               <span className="text-sm font-black text-slate-800 tracking-tight leading-none">Cekat</span>
                               <span className="text-[5.5px] font-extrabold text-emerald-600 uppercase tracking-widest leading-none mt-0.5">Cek • Kenali • Tindaklanjuti</span>
@@ -2789,9 +2784,7 @@ function CekatAppContent() {
                               <ArrowLeft className="w-5 h-5" />
                             </button>
                             <div className="flex items-center space-x-1.5">
-                              <div className="w-5.5 h-5.5 rounded-full bg-[#10B981] flex items-center justify-center p-0.5">
-                                <span className="text-[10px] font-black text-white leading-none">C</span>
-                              </div>
+                              <img src="/images/logo C cekat.png" alt="Cekat Logo" className="w-6 h-6 object-contain shrink-0" />
                               <div className="flex flex-col text-left">
                                 <span className="text-sm font-black text-slate-800 tracking-tight leading-none">Cekat</span>
                                 <span className="text-[5.5px] font-extrabold text-emerald-600 uppercase tracking-widest leading-none mt-0.5">Cek • Kenali • Tindaklanjuti</span>
@@ -2924,14 +2917,12 @@ function CekatAppContent() {
                           <button onClick={() => setDashboardSubView('station_summary')} className="p-1 hover:bg-slate-50 rounded-full transition">
                             <ArrowLeft className="w-5 h-5 text-slate-700" />
                           </button>
-                          <div className="flex flex-col items-center">
-                            <div className="flex items-center space-x-1">
-                              <div className="w-5 h-5 rounded-full bg-[#10B981] flex items-center justify-center p-0.5">
-                                <span className="text-[10px] font-black text-white leading-none">C</span>
-                              </div>
+                          <div className="flex items-center space-x-1.5">
+                            <img src="/images/logo C cekat.png" alt="Cekat Logo" className="w-6 h-6 object-contain shrink-0" />
+                            <div className="flex flex-col text-left">
                               <span className="text-sm font-black text-slate-800 tracking-tight leading-none">Cekat</span>
+                              <span className="text-[5.5px] font-extrabold text-emerald-600 uppercase tracking-widest leading-none mt-0.5">Cek • Kenali • Tindaklanjuti</span>
                             </div>
-                            <span className="text-[6.5px] font-black text-emerald-600 uppercase tracking-widest leading-none mt-0.5">Cek • Kenali • Tindaklanjuti</span>
                           </div>
                           <button className="p-1 hover:bg-slate-50 rounded-full transition text-slate-600">
                             <MoreHorizontal className="w-5 h-5" />
