@@ -3010,7 +3010,7 @@ function CekatAppContent() {
                                     : 'hover:bg-slate-200/70 text-slate-600 font-bold'
                                 }`}
                               >
-                                <span>💊 Vitamin</span>
+                                <span>💊 Swamedikasi</span>
                               </button>
                               <button 
                                 onClick={() => setSelectedRiskActionOption('pola_sehat')}
@@ -3041,7 +3041,7 @@ function CekatAppContent() {
                                 className="w-full py-3 bg-white border border-[#27AE60] text-[#27AE60] font-black rounded-3xl text-xs uppercase tracking-wider transition active:scale-98 shadow-xs hover:bg-emerald-50 flex items-center justify-center gap-2 animate-fadeIn"
                               >
                                 <span>💊</span>
-                                <span>Rekomendasi Vitamin & Suplemen</span>
+                                <span>Mulai Swamedikasi Mandiri</span>
                               </button>
                             )}
 
@@ -3173,7 +3173,7 @@ function CekatAppContent() {
                           </div>
                         )}
 
-                        {/* Modal: Rekomendasi Vitamin */}
+                        {/* Modal: Swamedikasi Mandiri */}
                         {showRekomendasiVitaminModal && (
                           <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 animate-fadeIn">
                             <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl border border-slate-100 p-6 space-y-5 relative text-left animate-scaleUp">
@@ -3183,8 +3183,8 @@ function CekatAppContent() {
                                     💊
                                   </div>
                                   <div>
-                                    <h3 className="text-sm font-black text-slate-900 leading-tight">Rekomendasi Vitamin & Suplemen</h3>
-                                    <p className="text-[10px] font-semibold text-slate-500">Disesuaikan dengan hasil skrining laboratorium hari ini</p>
+                                    <h3 className="text-sm font-black text-slate-900 leading-tight">Panduan Swamedikasi Mandiri</h3>
+                                    <p className="text-[10px] font-semibold text-slate-500">Panduan obat bebas (OTC), suplemen & pertolongan mandiri Kemenkes</p>
                                   </div>
                                 </div>
                                 <button 
@@ -3196,56 +3196,52 @@ function CekatAppContent() {
                               </div>
 
                               <div className="space-y-3 max-h-[380px] overflow-y-auto pr-1">
-                                {/* Vit 1: Asam Urat */}
+                                {/* Swamedikasi 1: Asam Urat */}
                                 <div className="p-3 bg-amber-50/60 border border-amber-100 rounded-2xl space-y-1.5">
                                   <div className="flex items-center justify-between">
-                                    <h4 className="text-xs font-black text-amber-900">Vitamin C (500mg - 1000mg)</h4>
-                                    <span className="px-2 py-0.5 bg-amber-200/80 text-amber-900 text-[8.5px] font-black rounded-md">Fokus Asam Urat</span>
+                                    <h4 className="text-xs font-black text-amber-900">Swamedikasi Asam Urat (5.9 mg/dl)</h4>
+                                    <span className="px-2 py-0.5 bg-amber-200/80 text-amber-900 text-[8.5px] font-black rounded-md">Batas Normal</span>
                                   </div>
                                   <p className="text-[10px] text-slate-600 leading-relaxed font-semibold">
-                                    Membantu meningkatkan ekskresi asam urat melalui ginjal serta menjaga kesehatan endotel pembuluh darah.
+                                    Konsumsi Vitamin C 500mg/hari untuk memicu pengeluaran kristal asam urat via ginjal, serta tingkatkan hidrasi air putih minimal 2.5 Liter per hari.
                                   </p>
-                                  <span className="text-[9px] font-bold text-slate-400 block">Dosis: 1x sehari setelah makan pagi</span>
                                 </div>
 
-                                {/* Vit 2: Kolesterol */}
+                                {/* Swamedikasi 2: Kolesterol */}
                                 <div className="p-3 bg-emerald-50/60 border border-emerald-100 rounded-2xl space-y-1.5">
                                   <div className="flex items-center justify-between">
-                                    <h4 className="text-xs font-black text-emerald-900">Omega-3 Minyak Ikan (1000mg EPA/DHA)</h4>
-                                    <span className="px-2 py-0.5 bg-emerald-200/80 text-emerald-900 text-[8.5px] font-black rounded-md">Fokus Kolesterol</span>
+                                    <h4 className="text-xs font-black text-emerald-900">Swamedikasi Kolesterol (220 mg/dl)</h4>
+                                    <span className="px-2 py-0.5 bg-emerald-200/80 text-emerald-900 text-[8.5px] font-black rounded-md">Sedikit Tinggi</span>
                                   </div>
                                   <p className="text-[10px] text-slate-600 leading-relaxed font-semibold">
-                                    Membantu menurunkan kadar kolesterol jahat (LDL) dan trigliserida serta menunjang fleksibilitas arteri jantung.
+                                    Gunakan suplemen Omega-3 Minyak Ikan (1000mg EPA/DHA) dan fitosteril/serat solubel (Plant Stanol) sebelum makan utama untuk mengikat lemak jahat.
                                   </p>
-                                  <span className="text-[9px] font-bold text-slate-400 block">Dosis: 1-2x sehari setelah makan utama</span>
                                 </div>
 
-                                {/* Vit 3: Hipertensi */}
+                                {/* Swamedikasi 3: Hipertensi */}
                                 <div className="p-3 bg-rose-50/60 border border-rose-100 rounded-2xl space-y-1.5">
                                   <div className="flex items-center justify-between">
-                                    <h4 className="text-xs font-black text-rose-900">Magnesium & Kalium (Potassium 99mg)</h4>
-                                    <span className="px-2 py-0.5 bg-rose-200/80 text-rose-900 text-[8.5px] font-black rounded-md">Fokus Hipertensi</span>
+                                    <h4 className="text-xs font-black text-rose-900">Swamedikasi Hipertensi (140/85 mmHg)</h4>
+                                    <span className="px-2 py-0.5 bg-rose-200/80 text-rose-900 text-[8.5px] font-black rounded-md">Tinggi</span>
                                   </div>
                                   <p className="text-[10px] text-slate-600 leading-relaxed font-semibold">
-                                    Membantu merelaksasi otot dinding pembuluh darah untuk menjaga tekanan darah tetap stabil & netralkan natrium berlebih.
+                                    Swamedikasi non-farmakologi: Batasi natrium garam &lt;1 sdt (5g/hari), konsumsi suplemen Magnesium 400mg & pengukuran tensi rutin 2x sehari.
                                   </p>
-                                  <span className="text-[9px] font-bold text-slate-400 block">Dosis: 1x sehari sebelum tidur</span>
                                 </div>
 
-                                {/* Vit 4: Diabetes */}
+                                {/* Swamedikasi 4: Diabetes */}
                                 <div className="p-3 bg-blue-50/60 border border-blue-100 rounded-2xl space-y-1.5">
                                   <div className="flex items-center justify-between">
-                                    <h4 className="text-xs font-black text-blue-900">Vitamin D3 (1000 IU) + Chromium</h4>
-                                    <span className="px-2 py-0.5 bg-blue-200/80 text-blue-900 text-[8.5px] font-black rounded-md">Fokus Diabetes</span>
+                                    <h4 className="text-xs font-black text-blue-900">Swamedikasi Diabetes (180 mg/dl)</h4>
+                                    <span className="px-2 py-0.5 bg-blue-200/80 text-blue-900 text-[8.5px] font-black rounded-md">Mengkhawatirkan</span>
                                   </div>
                                   <p className="text-[10px] text-slate-600 leading-relaxed font-semibold">
-                                    Meningkatkan sensitivitas reseptor insulin sel tubuh serta menjaga metabolisme gula darah harian.
+                                    Lakukan pengukuran Gula Darah Puasa (GDP) mandiri, gunakan pemanis alami nol kalori, & suplemen Chromium Picolinate untuk sensitivitas insulin.
                                   </p>
-                                  <span className="text-[9px] font-bold text-slate-400 block">Dosis: 1x sehari setelah makan siang</span>
                                 </div>
 
                                 <div className="p-3 bg-slate-100 rounded-2xl text-[9.5px] text-slate-500 font-semibold leading-relaxed">
-                                  ℹ️ <strong>Catatan Kemenkes:</strong> Konsumsi suplemen disarankan sebagai pendukung pola makan gizi seimbang. Konsultasikan dengan dokter untuk kondisi medis tertentu.
+                                  ℹ️ <strong>Prinsip Swamedikasi Kemenkes:</strong> Swamedikasi ditujukan untuk pertolongan awal & perawatan mandiri yang terukur. Bila gejala berlanjut &gt;3 hari, segera hubungi dokter terdekat.
                                 </div>
                               </div>
                             </div>
