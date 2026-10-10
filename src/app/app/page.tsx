@@ -186,6 +186,78 @@ const renderArticleSvg = (svgId: string) => {
   return null;
 };
 
+// Data Modul Screening Kesehatan (Hipertensi, Diabetes Melitus, Stunting)
+const screeningModulesData = {
+  hipertensi: {
+    id: 'hipertensi' as const,
+    title: 'Hipertensi',
+    subtitle: '9 pertanyaan',
+    questions: [
+      { id: 1, text: 'Apakah Anda pernah didiagnosis hipertensi oleh tenaga kesehatan?', options: ['Ya', 'Tidak', 'Tidak yakin'] },
+      { id: 2, text: 'Apakah saat ini Anda mengonsumsi obat untuk tekanan darah tinggi?', options: ['Ya, rutin', 'Ya, tetapi tidak rutin', 'Tidak'] },
+      { id: 3, text: 'Jika pernah mendapat obat, apakah Anda pernah melewatkan atau menghentikan dosis tanpa berkonsultasi dengan tenaga kesehatan?', options: ['Ya', 'Tidak', 'Tidak berlaku'] },
+      { id: 4, text: 'Apakah Anda memiliki riwayat penyakit berikut?', options: ['Diabetes melitus', 'Penyakit ginjal kronis', 'Penyakit jantung atau gagal jantung', 'Stroke atau penyakit pembuluh darah', 'Tidak ada', 'Tidak tahu'] },
+      { id: 5, text: 'Apakah orang tua atau saudara kandung Anda memiliki hipertensi?', options: ['Ya', 'Tidak', 'Tidak tahu'] },
+      { id: 6, text: 'Apakah anda merokok?', options: ['Saat ini', 'Pernah, tapi sudah berhenti', 'Tidak pernah'] },
+      { id: 7, text: 'Seberapa sering Anda mengonsumsi makanan tinggi garam, seperti makanan asin atau makanan olahan?', options: ['Jarang', 'Kadang-kadang', 'Sering'] },
+      { id: 8, text: 'Apakah anda rutin melakukan aktivitas fisik/olahraga?', options: ['Jarang', 'Kadang-kadang', 'Sering'] },
+      { id: 9, text: 'Apakah Anda pernah sakit kepala sangat berat yang muncul mendadak, kejang, atau penurunan kesadaran?', options: ['Pernah', 'Tidak pernah'] }
+    ]
+  },
+  diabetes: {
+    id: 'diabetes' as const,
+    title: 'Diabetes Melitus',
+    subtitle: '10 pertanyaan',
+    questions: [
+      { id: 1, text: 'Apakah Anda lebih sering buang air kecil daripada biasanya?', options: ['Ya', 'Tidak', 'Tidak yakin'] },
+      { id: 2, text: 'Apakah Anda sering merasa sangat haus?', options: ['Ya', 'Tidak'] },
+      { id: 3, text: 'Apakah Anda mengalami penurunan berat badan tanpa sebab yang jelas?', options: ['Ya', 'Tidak'] },
+      { id: 4, text: 'Apakah Anda sering merasa lapar meskipun sudah makan?', options: ['Ya', 'Tidak'] },
+      { id: 5, text: 'Apakah Anda pernah didiagnosis diabetes melitus oleh tenaga kesehatan?', options: ['Ya', 'Tidak'] },
+      { id: 6, text: 'Apakah Anda memiliki riwayat penyakit berikut?', options: ['Diabetes melitus', 'Penyakit ginjal kronis', 'Penyakit jantung atau gagal jantung', 'Stroke atau penyakit pembuluh darah', 'Tidak ada', 'Tidak tahu'] },
+      { id: 7, text: 'Apakah orang tua atau saudara kandung Anda memiliki diabetes melitus?', options: ['Ya', 'Tidak', 'Tidak tahu'] },
+      { id: 8, text: 'Seberapa sering Anda mengonsumsi makanan/minuman manis atau makanan olahan?', options: ['Jarang', 'Kadang-kadang', 'Sering'] },
+      { id: 9, text: 'Apakah anda merokok?', options: ['Saat ini', 'Pernah, tapi sudah berhenti', 'Tidak pernah'] },
+      { id: 10, text: 'Apakah anda rutin melakukan aktivitas fisik/olahraga?', options: ['Jarang', 'Kadang-kadang', 'Sering'] }
+    ]
+  },
+  stunting: {
+    id: 'stunting' as const,
+    title: 'Stunting',
+    subtitle: '7 pertanyaan',
+    baseQuestions: [
+      { id: 1, text: 'Berapa usia anak saat ini?', options: ['0–5 bulan', '6–23 bulan', '24–59 bulan', '5 tahun atau lebih'] },
+      { id: 2, text: 'Apakah berat badan anak ditimbang secara rutin di Posyandu atau fasilitas kesehatan?', options: ['Ya, rutin', 'Tidak rutin', 'Belum pernah'] },
+      { id: 3, text: 'Apakah hasil pengukuran tinggi/panjang badan anak pernah dinyatakan di bawah standar usianya oleh tenaga kesehatan?', options: ['Ya', 'Tidak', 'Tidak tahu'] },
+      { id: 4, text: 'Dalam beberapa bulan terakhir, bagaimana kenaikan berat badan anak?', options: ['Naik sesuai pemantauan', 'Tidak naik', 'Turun', 'Tidak tahu'] },
+      { id: 5, text: 'Apakah anak mengalami kesulitan makan atau sering menolak makanan?', options: ['Ya', 'Tidak', 'Kadang-kadang'] },
+      { id: 6, text: 'Apakah anak sering mengalami infeksi atau sakit berulang?', options: ['Ya', 'Tidak', 'Tidak tahu'] },
+      { id: 7, text: 'Apakah anak lahir prematur atau memiliki berat badan lahir rendah (kurang dari 2.500 gram)?', options: ['Ya', 'Tidak'] }
+    ],
+    ageFollowups: {
+      '0–5 bulan': [
+        { id: 8, text: 'Apakah bayi mendapat ASI?', options: ['ASI Eksklusif', 'ASI disertai susu formula', 'Tidak mendapatkan ASI'] },
+        { id: 9, text: 'Apakah ada kesulitan menyusu?', options: ['Tidak ada', 'Kadang-kadang', 'Sering', 'Bayi tidak dapat menyusu'] },
+        { id: 10, text: 'Apakah bayi memiliki masalah kesehatan yang mengganggu pemberian ASI?', options: ['Ya', 'Tidak', 'Tidak tahu'] }
+      ],
+      '6–23 bulan': [
+        { id: 8, text: 'Apakah MPASI sudah diberikan sejak usia 6 bulan?', options: ['Ya, sejak usia 6 bulan', 'Ya, tetapi dimulai sebelum usia 6 bulan', 'Ya, tetapi dimulai setelah usia 6 bulan', 'Belum diberikan', 'Tidak ingat'] },
+        { id: 9, text: 'Apakah makanan diberikan dengan tekstur, frekuensi, dan variasi yang sesuai usia?', options: ['Ya, ketiganya sesuai', 'Sebagian sesuai', 'Belum sesuai'] },
+        { id: 10, text: 'Apakah anak mendapat sumber protein hewani?', options: ['Setiap hari', 'Beberapa kali seminggu', 'Jarang', 'Belum pernah'] }
+      ],
+      '24–59 bulan': [
+        { id: 8, text: 'Apakah makanan anak cukup beragam dan mencakup sumber protein?', options: ['Ya, makanan beragam dan ada sumber protein', 'Makanan kurang beragam', 'Jarang mendapat sumber protein'] },
+        { id: 9, text: 'Apakah anak sering mengalami diare atau penyakit berulang?', options: ['Tidak pernah/jarang', 'Kadang-kadang', 'Sering', 'Sedang mengalami penyakit'] },
+        { id: 10, text: 'Apakah pertumbuhan dipantau secara berkala?', options: ['Setiap bulan', 'Setiap 2–3 bulan', 'Kurang dari setiap 3 bulan', 'Tidak pernah'] }
+      ],
+      '5 tahun atau lebih': [
+        { id: 8, text: 'Apakah tinggi badan anak dipantau sesuai usia?', options: ['Ya, rutin', 'Kadang-kadang', 'Belum pernah'] },
+        { id: 9, text: 'Apakah terdapat riwayat pertumbuhan yang melambat atau masalah kesehatan kronis?', options: ['Ya, pertumbuhan melambat', 'Ya, memiliki masalah kesehatan kronis', 'Ya, keduanya', 'Tidak ada', 'Tidak tahu'] }
+      ]
+    }
+  }
+};
+
 function CekatAppContent() {
   const [isMobile, setIsMobile] = useState<boolean>(true);
   const [isClient, setIsClient] = useState<boolean>(false);
@@ -220,8 +292,15 @@ function CekatAppContent() {
   
   // Sub-views for detailed pages
   // - For 'dashboard': 'home' (Kebutuhanmu), 'station_summary' (Hasil Station), 'cek_risiko' (Risiko Kesehatan), 'reminders' (Pengingat & Jadwal), 'marketplace' (Keranjangmu)
-  const [dashboardSubView, setDashboardSubView] = useState<'home' | 'station_summary' | 'cek_risiko' | 'reminders' | 'marketplace' | 'edukasi' | 'article_detail' | 'webinar_list' | 'kebutuhanmu' | 'tanya_ai' | 'mitos_fakta' | 'artikel_list' | 'obat_saya'>('home');
+  const [dashboardSubView, setDashboardSubView] = useState<'home' | 'station_summary' | 'cek_risiko' | 'reminders' | 'marketplace' | 'edukasi' | 'article_detail' | 'webinar_list' | 'kebutuhanmu' | 'tanya_ai' | 'mitos_fakta' | 'artikel_list' | 'obat_saya' | 'screening_list' | 'screening_form'>('home');
   const [selectedArticle, setSelectedArticle] = useState<any | null>(null);
+
+  // Screening States
+  const [activeScreeningModule, setActiveScreeningModule] = useState<'hipertensi' | 'diabetes' | 'stunting'>('hipertensi');
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
+  const [screeningAnswers, setScreeningAnswers] = useState<Record<string, string>>({});
+  const [selectedOption, setSelectedOption] = useState<string>('');
+  const [completedModules, setCompletedModules] = useState<string[]>([]);
 
   // BMI State Variables
   const [weightInput, setWeightInput] = useState<string>('68');
@@ -2270,102 +2349,95 @@ function CekatAppContent() {
 
                     {/* View: Station Summary (Ringkasan Hasil CEKAT Station) */}
                     {dashboardSubView === 'station_summary' && (
-                      <div className="space-y-6 flex-1 flex flex-col justify-between pb-20">
-                        {/* Custom Header matching screenshots */}
-                        <div className="bg-white border-b border-slate-100 px-4 pt-8 pb-3 flex items-center justify-between shadow-xs">
-                          <button onClick={() => setDashboardSubView('home')} className="p-1 hover:bg-slate-50 rounded-full transition">
-                            <ArrowLeft className="w-5 h-5 text-slate-700" />
+                      <div className="space-y-5 flex-1 flex flex-col justify-between pb-20 animate-fadeIn bg-slate-50 min-h-screen relative">
+                        {/* Header Bar */}
+                        <div className="bg-white border-b border-slate-100 px-4 pt-7 pb-3 flex items-center justify-between shadow-xs sticky top-0 z-20">
+                          <button onClick={() => setDashboardSubView('home')} className="p-1.5 hover:bg-slate-100 rounded-full transition text-slate-700 cursor-pointer">
+                            <ArrowLeft className="w-5 h-5" />
                           </button>
-                          <div className="flex flex-col items-center">
-                            <img src="/images/logo full cekat station.png" alt="CEKAT Logo" className="h-6 object-contain" />
+                          <div className="flex items-center space-x-1.5">
+                            <div className="w-5.5 h-5.5 rounded-full bg-[#10B981] flex items-center justify-center p-0.5">
+                              <span className="text-[10px] font-black text-white leading-none">C</span>
+                            </div>
+                            <div className="flex flex-col text-left">
+                              <span className="text-sm font-black text-slate-800 tracking-tight leading-none">Cekat</span>
+                              <span className="text-[5.5px] font-extrabold text-emerald-600 uppercase tracking-widest leading-none mt-0.5">Cek • Kenali • Tindaklanjuti</span>
+                            </div>
                           </div>
-                          <button className="p-1 hover:bg-slate-50 rounded-full transition text-slate-600">
+                          <button className="p-1.5 hover:bg-slate-100 rounded-full transition text-slate-600">
                             <MoreHorizontal className="w-5 h-5" />
                           </button>
                         </div>
 
-                        <div className="flex-1 px-5 space-y-4 overflow-y-auto">
-                          {/* Shadowed Title centered */}
+                        <div className="flex-1 px-5 space-y-4 overflow-y-auto text-left">
+                          {/* Title */}
                           <div className="text-center mt-2">
-                            <h3 className="text-base font-black text-slate-800 tracking-tight drop-shadow-sm">Ringkasan Hasil CEKAT Station</h3>
+                            <h3 className="text-lg font-black text-slate-800 tracking-tight drop-shadow-xs">Ringkasan Hasil CEKAT Station</h3>
                           </div>
 
                           <div className="text-left text-xs space-y-0.5 px-1">
-                            <span className="font-black text-slate-800 block">Hi, Sofia</span>
-                            <span className="text-[10.5px] font-semibold text-slate-500 block leading-tight">Berikut hasil pemeriksaan Kamu hari ini.</span>
-                          </div>
-
-                          {/* Risk Status Card */}
-                          <div className="p-4 bg-[#E8F5E9] border border-[#C8E6C9] rounded-3xl text-left shadow-xs">
-                            <span className="text-[10px] font-black text-emerald-800 uppercase tracking-wider block mb-2">Status Risiko Kamu</span>
-                            <div className="flex items-start space-x-3">
-                              <div className="w-9 h-9 rounded-full bg-amber-400 flex items-center justify-center text-white text-lg shrink-0 font-black shadow-sm">!</div>
-                              <div className="flex-1">
-                                <span className="text-xs font-black text-slate-850 block leading-none">Perlu Perhatian</span>
-                                <span className="text-[9.5px] font-semibold text-slate-650 block leading-tight mt-1">Jaga pola hidup sehat dan lakukan pemantauan rutin.</span>
-                                <span className="text-[7.5px] text-slate-400 font-bold block mt-2">Diperbarui: 30 Agustus 2026 • 09:30 WIB</span>
-                              </div>
-                            </div>
+                            <span className="font-black text-slate-800 text-sm block">Hi, Sofia 👋</span>
+                            <span className="text-[11px] font-semibold text-slate-500 block leading-tight">Berikut hasil pemeriksaan Kamu hari ini.</span>
                           </div>
 
                           {/* Indicators list */}
-                          <div className="text-left">
-                            <span className="text-xs font-black text-slate-700 block mb-2.5 px-1">Indikator Pemeriksaan</span>
-                            <div className="bg-[#E8F5E9] border border-[#C8E6C9] rounded-3xl p-4 shadow-xs space-y-3.5">
+                          <div className="text-left space-y-2">
+                            <span className="text-xs font-black text-slate-700 block px-1 uppercase tracking-wide">Indikator Pemeriksaan</span>
+                            <div className="bg-[#E8F5E9] border border-[#C8E6C9] rounded-3xl p-4.5 shadow-xs space-y-3.5">
                               {/* Row 1: Tekanan Darah */}
-                              <div className="flex items-center justify-between pb-3 border-b border-emerald-100/50">
+                              <div className="flex items-center justify-between pb-3 border-b border-emerald-200/60">
                                 <div className="flex items-center space-x-3">
                                   <div className="w-11 h-11 flex items-center justify-center shrink-0 overflow-hidden">
                                     <img src="/images/ind_tensi.jpg" alt="Tekanan Darah" className="w-full h-full object-contain mix-blend-multiply" />
                                   </div>
                                   <div className="flex flex-col">
-                                    <span className="text-[9.5px] font-bold text-slate-500 uppercase tracking-wide leading-none mb-0.5">Tekanan Darah</span>
+                                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide leading-none mb-0.5">Tekanan Darah</span>
                                     <span className="text-[15px] font-black text-slate-800 leading-tight">140 / 85 <span className="text-[10px] text-slate-400 font-semibold">mmHg</span></span>
                                   </div>
                                 </div>
-                                <span className="text-[8.5px] font-black bg-[#FDF2E9] text-[#A04000] px-2.5 py-1 rounded-full border border-[#F5CBA7] shrink-0">Perlu Perhatian</span>
+                                <span className="text-[8.5px] font-black bg-[#FDF2E9] text-[#A04000] px-3 py-1 rounded-full border border-[#F5CBA7] shrink-0">Perlu Perhatian</span>
                               </div>
 
                               {/* Row 2: Gula Darah */}
-                              <div className="flex items-center justify-between pb-3 border-b border-emerald-100/50">
+                              <div className="flex items-center justify-between pb-3 border-b border-emerald-200/60">
                                 <div className="flex items-center space-x-3">
                                   <div className="w-11 h-11 flex items-center justify-center shrink-0 overflow-hidden">
                                     <img src="/images/ind_gula.jpg" alt="Gula Darah" className="w-full h-full object-contain mix-blend-multiply" />
                                   </div>
                                   <div className="flex flex-col">
-                                    <span className="text-[9.5px] font-bold text-slate-500 uppercase tracking-wide leading-none mb-0.5">Gula Darah</span>
+                                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide leading-none mb-0.5">Gula Darah</span>
                                     <span className="text-[15px] font-black text-slate-800 leading-tight">112 <span className="text-[10px] text-slate-400 font-semibold">mg/L</span></span>
                                   </div>
                                 </div>
-                                <span className="text-[8.5px] font-black bg-[#FDF2E9] text-[#A04000] px-2.5 py-1 rounded-full border border-[#F5CBA7] shrink-0">Perlu Perhatian</span>
+                                <span className="text-[8.5px] font-black bg-[#FDF2E9] text-[#A04000] px-3 py-1 rounded-full border border-[#F5CBA7] shrink-0">Perlu Perhatian</span>
                               </div>
 
                               {/* Row 3: Denyut Nadi */}
-                              <div className="flex items-center justify-between pb-3 border-b border-emerald-100/50">
+                              <div className="flex items-center justify-between pb-3 border-b border-emerald-200/60">
                                 <div className="flex items-center space-x-3">
                                   <div className="w-11 h-11 flex items-center justify-center shrink-0 overflow-hidden">
                                     <img src="/images/ind_nadi.jpg" alt="Denyut Nadi" className="w-full h-full object-contain mix-blend-multiply" />
                                   </div>
                                   <div className="flex flex-col">
-                                    <span className="text-[9.5px] font-bold text-slate-500 uppercase tracking-wide leading-none mb-0.5">Denyut Nadi</span>
+                                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide leading-none mb-0.5">Denyut Nadi</span>
                                     <span className="text-[15px] font-black text-slate-800 leading-tight">72 <span className="text-[10px] text-slate-400 font-semibold">bpm</span></span>
                                   </div>
                                 </div>
-                                <span className="text-[8.5px] font-black bg-[#E8F8F5] text-[#117A65] px-2.5 py-1 rounded-full border border-[#A3E4D7] shrink-0">Normal</span>
+                                <span className="text-[8.5px] font-black bg-[#E8F8F5] text-[#117A65] px-3 py-1 rounded-full border border-[#A3E4D7] shrink-0">Normal</span>
                               </div>
 
                               {/* Row 4: Lingkar Perut */}
-                              <div className="flex items-center justify-between pb-3 border-b border-emerald-100/50">
+                              <div className="flex items-center justify-between pb-3 border-b border-emerald-200/60">
                                 <div className="flex items-center space-x-3">
                                   <div className="w-11 h-11 flex items-center justify-center shrink-0 overflow-hidden">
                                     <img src="/images/ind_perut.jpg" alt="Lingkar Perut" className="w-full h-full object-contain mix-blend-multiply" />
                                   </div>
                                   <div className="flex flex-col">
-                                    <span className="text-[9.5px] font-bold text-slate-500 uppercase tracking-wide leading-none mb-0.5">Lingkar Perut</span>
+                                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide leading-none mb-0.5">Lingkar Perut</span>
                                     <span className="text-[15px] font-black text-slate-800 leading-tight">88 <span className="text-[10px] text-slate-400 font-semibold">cm</span></span>
                                   </div>
                                 </div>
-                                <span className="text-[8.5px] font-black bg-[#FDF2E9] text-[#A04000] px-2.5 py-1 rounded-full border border-[#F5CBA7] shrink-0">Perlu Perhatian</span>
+                                <span className="text-[8.5px] font-black bg-[#FDF2E9] text-[#A04000] px-3 py-1 rounded-full border border-[#F5CBA7] shrink-0">Perlu Perhatian</span>
                               </div>
 
                               {/* Row 5: IMT (BMI) */}
@@ -2375,27 +2447,51 @@ function CekatAppContent() {
                                     <img src="/images/ind_bmi.jpg" alt="IMT" className="w-full h-full object-contain mix-blend-multiply" />
                                   </div>
                                   <div className="flex flex-col">
-                                    <span className="text-[9.5px] font-bold text-slate-500 uppercase tracking-wide leading-none mb-0.5">IMT (BMI)</span>
+                                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide leading-none mb-0.5">IMT (BMI)</span>
                                     <span className="text-[15px] font-black text-slate-800 leading-tight">24.6</span>
                                   </div>
                                 </div>
-                                <span className="text-[8.5px] font-black bg-[#E8F8F5] text-[#117A65] px-2.5 py-1 rounded-full border border-[#A3E4D7] shrink-0">Normal</span>
+                                <span className="text-[8.5px] font-black bg-[#E8F8F5] text-[#117A65] px-3 py-1 rounded-full border border-[#A3E4D7] shrink-0">Normal</span>
                               </div>
                             </div>
                           </div>
 
+                          {/* Screening direkomendasikan Card */}
+                          <div className="bg-[#E8F5E9] border border-[#C8E6C9] rounded-3xl p-4.5 shadow-xs space-y-3">
+                            <div className="flex items-center space-x-2.5">
+                              <div className="w-6 h-6 rounded-full bg-amber-400 text-slate-950 font-black text-sm flex items-center justify-center shrink-0 shadow-xs">!</div>
+                              <h4 className="text-xs font-black text-slate-850">Screening direkomendasikan</h4>
+                            </div>
+                            <p className="text-[11px] text-slate-650 font-semibold leading-relaxed">
+                              Berdasarkan contoh hasil tekanan darah, modul hipertensi disarankan untuk diisi.
+                            </p>
+                            <button 
+                              onClick={() => {
+                                setActiveScreeningModule('hipertensi');
+                                setCurrentQuestionIndex(0);
+                                setSelectedOption(screeningAnswers['hipertensi_q1'] || '');
+                                setDashboardSubView('screening_form');
+                              }}
+                              className="w-full py-3 bg-[#0f5132] hover:bg-[#0b3d26] text-white font-black text-xs rounded-2xl transition active:scale-98 shadow-xs cursor-pointer"
+                            >
+                              Mulai Screening Hipertensi
+                            </button>
+                            <span className="text-[8px] text-slate-400 font-bold block pt-0.5">Diperbaru: 30 Agustus 2026 • 09.30 WIB</span>
+                          </div>
+
+                          {/* Button Lihat Semua Modul */}
                           <div className="pt-2">
                             <button 
-                              onClick={() => setDashboardSubView('cek_risiko')}
-                              className="w-full py-3.5 bg-[#00875A] hover:bg-[#00704a] text-white font-black rounded-3xl text-xs uppercase tracking-wider shadow-sm transition active:scale-98"
+                              onClick={() => setDashboardSubView('screening_list')}
+                              className="w-full py-3.5 bg-[#212529] hover:bg-slate-900 text-white font-black rounded-full text-xs uppercase tracking-wider shadow-md transition active:scale-98 cursor-pointer"
                             >
-                              Lihat Detail
+                              Lihat Semua Modul
                             </button>
                           </div>
                         </div>
 
                         {/* Floating mascot inline */}
-                        <div className="absolute bottom-[80px] right-3 z-30 flex flex-col items-end pointer-events-none">
+                        <div className="fixed bottom-[80px] right-3 z-30 flex flex-col items-end pointer-events-none">
                           <div className="bg-amber-400 text-slate-900 font-black text-[9px] rounded-full px-2 py-0.5 border border-white shadow-md animate-pulse mb-1">💡</div>
                           <div className="w-10 h-10 rounded-full bg-white border-2 border-[#10b981] shadow-lg flex items-center justify-center p-1 overflow-hidden animate-bounce">
                             <img src="/images/maskot cekat normal.png" alt="Ceko Mascot" className="w-full h-full object-contain" />
@@ -2403,6 +2499,287 @@ function CekatAppContent() {
                         </div>
                       </div>
                     )}
+
+                    {/* View: Pilih Screening (Daftar 3 Modul Screening) */}
+                    {dashboardSubView === 'screening_list' && (
+                      <div className="space-y-5 flex-1 flex flex-col justify-between pb-20 animate-fadeIn bg-slate-50 min-h-screen relative">
+                        {/* Header Bar */}
+                        <div className="bg-white border-b border-slate-100 px-4 pt-7 pb-3 flex items-center justify-between shadow-xs sticky top-0 z-20">
+                          <button onClick={() => setDashboardSubView('station_summary')} className="p-1.5 hover:bg-slate-100 rounded-full transition text-slate-700 cursor-pointer">
+                            <ArrowLeft className="w-5 h-5" />
+                          </button>
+                          <div className="flex items-center space-x-1.5">
+                            <div className="w-5.5 h-5.5 rounded-full bg-[#10B981] flex items-center justify-center p-0.5">
+                              <span className="text-[10px] font-black text-white leading-none">C</span>
+                            </div>
+                            <div className="flex flex-col text-left">
+                              <span className="text-sm font-black text-slate-800 tracking-tight leading-none">Cekat</span>
+                              <span className="text-[5.5px] font-extrabold text-emerald-600 uppercase tracking-widest leading-none mt-0.5">Cek • Kenali • Tindaklanjuti</span>
+                            </div>
+                          </div>
+                          <button className="p-1.5 hover:bg-slate-100 rounded-full transition text-slate-600">
+                            <MoreHorizontal className="w-5 h-5" />
+                          </button>
+                        </div>
+
+                        <div className="flex-1 px-5 space-y-4 overflow-y-auto text-left">
+                          {/* Title */}
+                          <div className="text-center mt-2 space-y-1">
+                            <h3 className="text-xl font-black text-slate-800 tracking-tight drop-shadow-xs">Pilih Screening</h3>
+                            <p className="text-[11px] font-bold text-slate-600 leading-snug px-2">
+                              Pilih modul sesuai kebutuhan. Anda dapat mengisi lebih dari satu modul.
+                            </p>
+                          </div>
+
+                          {/* 3 Module Cards */}
+                          <div className="space-y-3.5 pt-2">
+                            {/* Card 1: Hipertensi */}
+                            <div 
+                              onClick={() => {
+                                setActiveScreeningModule('hipertensi');
+                                setCurrentQuestionIndex(0);
+                                setSelectedOption(screeningAnswers['hipertensi_q1'] || '');
+                                setDashboardSubView('screening_form');
+                              }}
+                              className="bg-[#E8F5E9] border border-[#C8E6C9] rounded-3xl p-5 shadow-xs flex items-center justify-between hover:scale-[1.01] active:scale-98 transition cursor-pointer group"
+                            >
+                              <div className="flex items-center space-x-4">
+                                <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center shadow-xs text-rose-500 shrink-0">
+                                  <Heart className="w-7 h-7 text-rose-500 fill-rose-100" />
+                                </div>
+                                <div className="space-y-0.5 text-left">
+                                  <h4 className="text-base font-black text-slate-850 group-hover:text-[#0f5132] transition">Hipertensi</h4>
+                                  <p className="text-xs text-slate-600 font-semibold">9 pertanyaan</p>
+                                  {completedModules.includes('hipertensi') && (
+                                    <span className="inline-block px-2 py-0.5 bg-emerald-700 text-white text-[8px] font-black uppercase rounded-full mt-1">✓ Selesai</span>
+                                  )}
+                                </div>
+                              </div>
+                              <ChevronRight className="w-5 h-5 text-emerald-700 group-hover:translate-x-1 transition-transform" />
+                            </div>
+
+                            {/* Card 2: Diabetes Melitus */}
+                            <div 
+                              onClick={() => {
+                                setActiveScreeningModule('diabetes');
+                                setCurrentQuestionIndex(0);
+                                setSelectedOption(screeningAnswers['diabetes_q1'] || '');
+                                setDashboardSubView('screening_form');
+                              }}
+                              className="bg-[#E8F5E9] border border-[#C8E6C9] rounded-3xl p-5 shadow-xs flex items-center justify-between hover:scale-[1.01] active:scale-98 transition cursor-pointer group"
+                            >
+                              <div className="flex items-center space-x-4">
+                                <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center shadow-xs text-blue-600 shrink-0">
+                                  <Droplet className="w-7 h-7 text-blue-600 fill-blue-100" />
+                                </div>
+                                <div className="space-y-0.5 text-left">
+                                  <h4 className="text-base font-black text-slate-850 group-hover:text-[#0f5132] transition">Diabetes Melitus</h4>
+                                  <p className="text-xs text-slate-600 font-semibold">10 pertanyaan</p>
+                                  {completedModules.includes('diabetes') && (
+                                    <span className="inline-block px-2 py-0.5 bg-emerald-700 text-white text-[8px] font-black uppercase rounded-full mt-1">✓ Selesai</span>
+                                  )}
+                                </div>
+                              </div>
+                              <ChevronRight className="w-5 h-5 text-emerald-700 group-hover:translate-x-1 transition-transform" />
+                            </div>
+
+                            {/* Card 3: Stunting */}
+                            <div 
+                              onClick={() => {
+                                setActiveScreeningModule('stunting');
+                                setCurrentQuestionIndex(0);
+                                setSelectedOption(screeningAnswers['stunting_q1'] || '');
+                                setDashboardSubView('screening_form');
+                              }}
+                              className="bg-[#E8F5E9] border border-[#C8E6C9] rounded-3xl p-5 shadow-xs flex items-center justify-between hover:scale-[1.01] active:scale-98 transition cursor-pointer group"
+                            >
+                              <div className="flex items-center space-x-4">
+                                <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center shadow-xs text-emerald-600 shrink-0">
+                                  <Scale className="w-7 h-7 text-emerald-600" />
+                                </div>
+                                <div className="space-y-0.5 text-left">
+                                  <h4 className="text-base font-black text-slate-850 group-hover:text-[#0f5132] transition">Stunting</h4>
+                                  <p className="text-xs text-slate-600 font-semibold">7+ pertanyaan</p>
+                                  {completedModules.includes('stunting') && (
+                                    <span className="inline-block px-2 py-0.5 bg-emerald-700 text-white text-[8px] font-black uppercase rounded-full mt-1">✓ Selesai</span>
+                                  )}
+                                </div>
+                              </div>
+                              <ChevronRight className="w-5 h-5 text-emerald-700 group-hover:translate-x-1 transition-transform" />
+                            </div>
+                          </div>
+
+                          {/* Button Lihat Semua Modul */}
+                          <div className="pt-4">
+                            <button 
+                              onClick={() => setDashboardSubView('screening_list')}
+                              className="w-full py-3.5 bg-[#212529] hover:bg-slate-900 text-white font-black rounded-full text-xs uppercase tracking-wider shadow-md transition active:scale-98 cursor-pointer"
+                            >
+                              Lihat Semua Modul
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Floating mascot inline */}
+                        <div className="fixed bottom-[80px] right-3 z-30 flex flex-col items-end pointer-events-none">
+                          <div className="bg-amber-400 text-slate-900 font-black text-[9px] rounded-full px-2 py-0.5 border border-white shadow-md animate-pulse mb-1">💡</div>
+                          <div className="w-10 h-10 rounded-full bg-white border-2 border-[#10b981] shadow-lg flex items-center justify-center p-1 overflow-hidden animate-bounce">
+                            <img src="/images/maskot cekat normal.png" alt="Ceko Mascot" className="w-full h-full object-contain" />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* View: Form Screening (Interactive Questionnaire Step-by-Step) */}
+                    {dashboardSubView === 'screening_form' && (() => {
+                      const getQuestionsList = () => {
+                        if (activeScreeningModule === 'hipertensi') return screeningModulesData.hipertensi.questions;
+                        if (activeScreeningModule === 'diabetes') return screeningModulesData.diabetes.questions;
+                        const base = screeningModulesData.stunting.baseQuestions;
+                        const selectedAge = screeningAnswers['stunting_q1'] || '0–5 bulan';
+                        const followups = screeningModulesData.stunting.ageFollowups[selectedAge as keyof typeof screeningModulesData.stunting.ageFollowups] || screeningModulesData.stunting.ageFollowups['0–5 bulan'];
+                        return [...base, ...followups];
+                      };
+
+                      const currentQuestions = getQuestionsList();
+                      const currentQ = currentQuestions[currentQuestionIndex] || currentQuestions[0];
+                      const totalQ = currentQuestions.length;
+                      const moduleTitle = screeningModulesData[activeScreeningModule].title;
+
+                      return (
+                        <div className="space-y-5 flex-1 flex flex-col justify-between pb-20 animate-fadeIn bg-slate-50 min-h-screen relative">
+                          {/* Header Bar */}
+                          <div className="bg-white border-b border-slate-100 px-4 pt-7 pb-3 flex items-center justify-between shadow-xs sticky top-0 z-20">
+                            <button onClick={() => setDashboardSubView('screening_list')} className="p-1.5 hover:bg-slate-100 rounded-full transition text-slate-700 cursor-pointer">
+                              <ArrowLeft className="w-5 h-5" />
+                            </button>
+                            <div className="flex items-center space-x-1.5">
+                              <div className="w-5.5 h-5.5 rounded-full bg-[#10B981] flex items-center justify-center p-0.5">
+                                <span className="text-[10px] font-black text-white leading-none">C</span>
+                              </div>
+                              <div className="flex flex-col text-left">
+                                <span className="text-sm font-black text-slate-800 tracking-tight leading-none">Cekat</span>
+                                <span className="text-[5.5px] font-extrabold text-emerald-600 uppercase tracking-widest leading-none mt-0.5">Cek • Kenali • Tindaklanjuti</span>
+                              </div>
+                            </div>
+                            <button className="p-1.5 hover:bg-slate-100 rounded-full transition text-slate-600">
+                              <MoreHorizontal className="w-5 h-5" />
+                            </button>
+                          </div>
+
+                          <div className="flex-1 px-5 space-y-4 overflow-y-auto text-left">
+                            {/* Title */}
+                            <div className="text-center mt-2">
+                              <h3 className="text-xl font-black text-slate-800 tracking-tight drop-shadow-xs">Form Screening</h3>
+                            </div>
+
+                            {/* Subheader Badge & Progress Bar */}
+                            <div className="space-y-2">
+                              <div className="flex items-center justify-between">
+                                <span className="px-4 py-1.5 bg-[#9e9e9e] text-slate-900 text-xs font-black rounded-full shadow-xs uppercase tracking-wider">
+                                  {moduleTitle}
+                                </span>
+                                <span className="text-xs font-extrabold text-slate-800">
+                                  Pertanyaan {currentQuestionIndex + 1} dari {totalQ}
+                                </span>
+                              </div>
+
+                              {/* Progress bar */}
+                              <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                                <div 
+                                  className="h-full bg-slate-800 rounded-full transition-all duration-300"
+                                  style={{ width: `${((currentQuestionIndex + 1) / totalQ) * 100}%` }}
+                                />
+                              </div>
+                            </div>
+
+                            {/* Question Mint Green Card */}
+                            <div className="bg-[#E8F5E9] border border-[#C8E6C9] rounded-3xl p-6 shadow-xs space-y-6 text-left min-h-[320px] flex flex-col justify-between">
+                              <div className="space-y-5">
+                                <h4 className="text-base font-black text-slate-900 leading-snug">
+                                  {currentQ.text}
+                                </h4>
+
+                                {/* Options Radio List */}
+                                <div className="space-y-3 pt-1">
+                                  {currentQ.options.map((opt, idx) => {
+                                    const isSelected = selectedOption === opt;
+                                    return (
+                                      <div
+                                        key={idx}
+                                        onClick={() => setSelectedOption(opt)}
+                                        className="flex items-center space-x-3.5 cursor-pointer group select-none"
+                                      >
+                                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
+                                          isSelected ? 'border-[#0f5132] bg-white shadow-xs' : 'border-slate-400 bg-white group-hover:border-slate-600'
+                                        }`}>
+                                          {isSelected && (
+                                            <div className="w-3 h-3 rounded-full bg-[#0f5132]" />
+                                          )}
+                                        </div>
+                                        <span className={`text-sm font-extrabold transition-colors ${
+                                          isSelected ? 'text-slate-950 font-black' : 'text-slate-800'
+                                        }`}>
+                                          {opt}
+                                        </span>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+
+                              {/* Action Button: Selanjutnya / Selesai */}
+                              <div className="pt-4">
+                                <button
+                                  onClick={() => {
+                                    if (!selectedOption) {
+                                      showToast('Silakan pilih salah satu jawaban.', 'info');
+                                      return;
+                                    }
+                                    const qKey = `${activeScreeningModule}_q${currentQuestionIndex + 1}`;
+                                    const updatedAnswers = { ...screeningAnswers, [qKey]: selectedOption };
+                                    setScreeningAnswers(updatedAnswers);
+
+                                    if (currentQuestionIndex < totalQ - 1) {
+                                      const nextIdx = currentQuestionIndex + 1;
+                                      setCurrentQuestionIndex(nextIdx);
+                                      const nextKey = `${activeScreeningModule}_q${nextIdx + 1}`;
+                                      setSelectedOption(updatedAnswers[nextKey] || '');
+                                    } else {
+                                      // Screening module complete!
+                                      setCompletedModules(prev => Array.from(new Set([...prev, activeScreeningModule])));
+                                      showToast(`Screening ${moduleTitle} berhasil diselesaikan!`, 'success');
+                                      setDashboardSubView('screening_list');
+                                    }
+                                  }}
+                                  className="w-full py-3.5 bg-[#0f5132] hover:bg-[#0b3d26] text-white font-black text-xs rounded-2xl uppercase tracking-wider shadow-md transition active:scale-98 cursor-pointer"
+                                >
+                                  {currentQuestionIndex === totalQ - 1 ? 'Selesai Screening' : 'Selanjutnya'}
+                                </button>
+                              </div>
+                            </div>
+
+                            {/* Button Lihat Semua Modul */}
+                            <div className="pt-2">
+                              <button 
+                                onClick={() => setDashboardSubView('screening_list')}
+                                className="w-full py-3.5 bg-[#212529] hover:bg-slate-900 text-white font-black rounded-full text-xs uppercase tracking-wider shadow-md transition active:scale-98 cursor-pointer"
+                              >
+                                Lihat Semua Modul
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Floating mascot inline */}
+                          <div className="fixed bottom-[80px] right-3 z-30 flex flex-col items-end pointer-events-none">
+                            <div className="bg-amber-400 text-slate-900 font-black text-[9px] rounded-full px-2 py-0.5 border border-white shadow-md animate-pulse mb-1">💡</div>
+                            <div className="w-10 h-10 rounded-full bg-white border-2 border-[#10b981] shadow-lg flex items-center justify-center p-1 overflow-hidden animate-bounce">
+                              <img src="/images/maskot cekat normal.png" alt="Ceko Mascot" className="w-full h-full object-contain" />
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })()}
 
                     {/* View: Cek Risiko Kesehatan Detail */}
                     {dashboardSubView === 'cek_risiko' && (
