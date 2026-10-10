@@ -348,7 +348,7 @@ export default function DashboardPage({ onLogout }: { onLogout?: () => void }) {
             { id: 'nutrisi', name: 'Nutrisi Harian' },
             { id: 'challenge', name: 'Misi & Target' },
             { id: 'riwayat', name: 'Riwayat Screening' },
-            { id: 'profil', name: 'Profil BPJS' }
+            { id: 'profil', name: 'Profil Kesehatan' }
           ].map(tab => {
             const isActive = activeTab === tab.id;
             return (
@@ -370,7 +370,7 @@ export default function DashboardPage({ onLogout }: { onLogout?: () => void }) {
         <div className="flex items-center gap-4 text-xs font-bold text-slate-500">
           <div className="hidden lg:flex items-center space-x-2 text-right">
             <span className="text-xs font-black text-slate-900 block leading-none">{profile?.name || 'Sofia Kusuma'}</span>
-            <span className="text-[9px] text-[#2d8d81] font-bold block leading-none">Terhubung BPJS Kes</span>
+            <span className="text-[9px] text-[#2d8d81] font-bold block leading-none">Terhubung Faskes</span>
           </div>
           
           <span className="text-slate-350 hidden lg:inline">|</span>
@@ -432,13 +432,6 @@ export default function DashboardPage({ onLogout }: { onLogout?: () => void }) {
                   >
                     <Camera className="w-4 h-4" />
                     <span>Scan Gizi AI</span>
-                  </Link>
-                  <Link
-                    href="/scan"
-                    className="px-4 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-55 text-xs font-mono font-bold text-slate-700 transition flex items-center gap-1.5"
-                  >
-                    <Camera className="w-4 h-4 text-emerald-600" />
-                    <span>Scan Gizi</span>
                   </Link>
                   <Link
                     href="/station"
@@ -743,33 +736,19 @@ export default function DashboardPage({ onLogout }: { onLogout?: () => void }) {
                     <Camera className="w-3.5 h-3.5" />
                     <span>+ Scan Foto AI</span>
                   </Link>
-                  <Link
-                    href="/scan"
-                    className="text-xs font-mono font-bold text-teal-600 hover:text-teal-700 flex items-center gap-1"
-                  >
-                    <Camera className="w-3.5 h-3.5" />
-                    <span>+ Scan Foto</span>
-                  </Link>
                 </div>
               </div>
 
               {todaysLogs.length === 0 ? (
                 <div className="bg-teal-50/10 border border-teal-100/50 border-dashed rounded-3xl p-8 text-center space-y-3">
                   <p className="text-xs text-slate-500 font-mono">Belum ada makanan yang dicatat hari ini.</p>
-                  <div className="flex justify-center gap-3">
+                  <div className="flex justify-center">
                     <Link
                       href="/scan"
                       className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#00875A] hover:bg-[#00704a] text-white font-mono font-bold text-xs"
                     >
                       <Camera className="w-4 h-4" />
                       <span>Scan Makanan AI</span>
-                    </Link>
-                    <Link
-                      href="/scan"
-                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-55 text-slate-700 font-mono font-bold text-xs"
-                    >
-                      <Camera className="w-4 h-4 text-emerald-600" />
-                      <span>Scan Foto Makanan</span>
                     </Link>
                   </div>
                 </div>
@@ -1020,7 +999,7 @@ export default function DashboardPage({ onLogout }: { onLogout?: () => void }) {
                   <span className="text-xs text-slate-450 font-bold block">NIK: 3174XXXXXXXX0002</span>
                   <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-black uppercase tracking-wider border border-emerald-100 mt-1 shadow-xs">
                     <ShieldCheck className="w-3.5 h-3.5 fill-emerald-100" />
-                    <span>Terintegrasi BPJS Kes</span>
+                    <span>Terintegrasi Faskes</span>
                   </span>
                 </div>
 
@@ -1053,7 +1032,7 @@ export default function DashboardPage({ onLogout }: { onLogout?: () => void }) {
                   </div>
                   <div className="flex items-start gap-3">
                     <div className="w-5 h-5 rounded-full bg-teal-50 text-[#2d8d81] flex items-center justify-center shrink-0 text-xs font-black">✓</div>
-                    <p>Program Pendampingan PTM BPJS: <span className="font-black text-slate-900 block mt-0.5">Pencegahan Risiko Hipertensi & Gizi Terpadu</span></p>
+                    <p>Program Pendampingan PTM: <span className="font-black text-slate-900 block mt-0.5">Pencegahan Risiko Hipertensi & Gizi Terpadu</span></p>
                   </div>
                 </div>
               </div>
@@ -1063,7 +1042,7 @@ export default function DashboardPage({ onLogout }: { onLogout?: () => void }) {
                 {[
                   { name: 'Ubah Data Fisik & Profil', icon: User, action: () => alert('Membuka pengaturan profil fisik...') },
                   { name: 'Riwayat Screening PTM', icon: ClipboardList, action: () => setActiveTab('riwayat') },
-                  { name: 'Hubungkan Kartu BPJS', icon: Award, action: () => alert('Menghubungkan BPJS Kesehatan...') },
+                  { name: 'Hubungkan Faskes / Asuransi', icon: Award, action: () => alert('Menghubungkan ke Faskes Terdekat...') },
                   { name: 'Pengaturan Notifikasi', icon: Activity, action: () => alert('Membuka pengaturan notifikasi...') }
                 ].map((item, idx) => {
                   const Icon = item.icon;

@@ -220,7 +220,7 @@ function CekatAppContent() {
   
   // Sub-views for detailed pages
   // - For 'dashboard': 'home' (Kebutuhanmu), 'station_summary' (Hasil Station), 'cek_risiko' (Risiko Kesehatan), 'reminders' (Pengingat & Jadwal), 'marketplace' (Keranjangmu)
-  const [dashboardSubView, setDashboardSubView] = useState<'home' | 'station_summary' | 'cek_risiko' | 'reminders' | 'marketplace' | 'edukasi' | 'article_detail' | 'webinar_list' | 'kebutuhanmu' | 'tanya_ai' | 'mitos_fakta' | 'artikel_list'>('home');
+  const [dashboardSubView, setDashboardSubView] = useState<'home' | 'station_summary' | 'cek_risiko' | 'reminders' | 'marketplace' | 'edukasi' | 'article_detail' | 'webinar_list' | 'kebutuhanmu' | 'tanya_ai' | 'mitos_fakta' | 'artikel_list' | 'obat_saya'>('home');
   const [selectedArticle, setSelectedArticle] = useState<any | null>(null);
 
   // BMI State Variables
@@ -803,7 +803,7 @@ function CekatAppContent() {
                   <div className="space-y-2">
                     <h2 className="text-2xl font-black text-slate-800 tracking-tight">Selamat Datang di CEKAT</h2>
                     <p className="text-xs text-slate-500 font-semibold leading-relaxed max-w-md mx-auto">
-                      Ketahui profil risiko Penyakit Tidak Menular (PTM) Anda secara dini dan ikuti program preventif pola makan gizi seimbang yang terintegrasi BPJS Kesehatan.
+                      Ketahui profil risiko Penyakit Tidak Menular (PTM) Anda secara dini dan ikuti program preventif pola makan gizi seimbang yang terintegrasi Fasilitas Kesehatan.
                     </p>
                   </div>
                   <div className="space-y-3 max-w-xs mx-auto">
@@ -827,7 +827,7 @@ function CekatAppContent() {
                 <div className="space-y-6">
                   <div className="space-y-1">
                     <h2 className="text-2xl font-black tracking-tight text-slate-800">Daftar Akun Baru</h2>
-                    <p className="text-xs text-slate-400 font-bold leading-normal">Lengkapi data Anda untuk integrasi data rekam gizi dan BPJS Kesehatan.</p>
+                    <p className="text-xs text-slate-400 font-bold leading-normal">Lengkapi data Anda untuk integrasi data rekam gizi dan Fasilitas Kesehatan.</p>
                   </div>
 
                   <div className="space-y-4">
@@ -1861,29 +1861,26 @@ function CekatAppContent() {
                           </div>
                         </div>
 
-                        {/* Instant Quick Scan Makanan AI Banner (Zero Scroll Needed) */}
+                        {/* Banner Daftar No. Antrian CEKAT Station */}
                         <div className="mx-4 mt-2 shrink-0">
                           <button 
-                            onClick={() => {
-                              setActiveTab('nutrisi');
-                              setNutrisiSubView('scan_camera');
-                            }}
+                            onClick={() => setDashboardSubView('station_summary')}
                             className="w-full py-3 px-4 bg-gradient-to-r from-[#00875A] to-[#10B981] text-white font-black rounded-2xl shadow-md flex items-center justify-between active:scale-98 transition group cursor-pointer border border-emerald-400/40"
                           >
                             <div className="flex items-center space-x-3 text-left">
                               <div className="w-9 h-9 rounded-xl bg-white/20 backdrop-blur-xs flex items-center justify-center text-white shrink-0">
-                                <Camera className="w-5 h-5 text-white animate-pulse" />
+                                <ClipboardList className="w-5 h-5 text-white" />
                               </div>
                               <div>
                                 <h4 className="text-[12px] font-black text-white uppercase tracking-wider flex items-center gap-1.5">
-                                  <span>📸 Scan Makanan AI</span>
-                                  <span className="text-[8px] bg-yellow-400 text-slate-950 px-1.5 py-0.5 rounded font-extrabold uppercase">INSTAN</span>
+                                  <span>🎫 DAFTAR NO ANTRIAN</span>
+                                  <span className="text-[8px] bg-yellow-400 text-slate-950 px-1.5 py-0.5 rounded font-extrabold uppercase">STATION</span>
                                 </h4>
-                                <p className="text-[9.5px] text-emerald-100 font-medium">Foto piring makanmu & hitung kalori otomatis</p>
+                                <p className="text-[9.5px] text-emerald-100 font-medium">Ambil nomor antrian & cek antrian CEKAT Station</p>
                               </div>
                             </div>
                             <div className="px-3 py-1 bg-[#F1C40F] text-slate-950 font-black text-[9.5px] uppercase rounded-full shadow-xs shrink-0 flex items-center gap-1">
-                              <span>SCAN</span>
+                              <span>DAFTAR</span>
                               <ArrowRight className="w-3 h-3" />
                             </div>
                           </button>
@@ -2040,18 +2037,154 @@ function CekatAppContent() {
                                     <Pill className="w-6 h-6" />
                                   </div>
                                   <div>
-                                    <h4 className="text-xs font-black text-slate-850">Obat & Jadwal Saya</h4>
-                                    <p className="text-[10px] text-slate-400 font-bold leading-snug mt-0.5">Pengingat rutin minum obat, air, & vitamin</p>
+                                    <h4 className="text-xs font-black text-slate-850">Obat Saya</h4>
+                                    <p className="text-[10px] text-slate-400 font-bold leading-snug mt-0.5">Lihat obat yang sedang digunakan & tabel interaksi obat</p>
                                   </div>
                                 </div>
                                 <button 
-                                  onClick={() => setDashboardSubView('reminders')}
-                                  className="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-black rounded-full uppercase transition active:scale-95 shadow-xs"
+                                  onClick={() => setDashboardSubView('obat_saya')}
+                                  className="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-black rounded-full uppercase transition active:scale-95 shadow-xs cursor-pointer"
                                 >
-                                  Jadwal
+                                  Lihat Obat Saya
                                 </button>
                               </div>
                             </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* View: Obat Saya (Tabel Kebutuhan & Interaksi Obat) */}
+                    {dashboardSubView === 'obat_saya' && (
+                      <div className="flex-1 flex flex-col justify-between pb-20 animate-fadeIn bg-[#f4f7f5] min-h-screen text-left relative">
+                        <div>
+                          {/* Header Bar */}
+                          <div className="bg-white border-b border-slate-100 px-5 pt-7 pb-3.5 flex items-center justify-between shadow-xs sticky top-0 z-20">
+                            <button 
+                              onClick={() => setDashboardSubView('kebutuhanmu')} 
+                              className="p-1.5 hover:bg-slate-100 rounded-full transition text-slate-700 cursor-pointer"
+                            >
+                              <ArrowLeft className="w-5 h-5" />
+                            </button>
+                            <div className="flex items-center space-x-1.5">
+                              <div className="w-5.5 h-5.5 rounded-full bg-[#10B981] flex items-center justify-center p-0.5">
+                                <span className="text-[10px] font-black text-white leading-none">C</span>
+                              </div>
+                              <span className="text-sm font-black text-slate-800 tracking-tight leading-none">Cekat</span>
+                            </div>
+                            <button 
+                              onClick={() => setDashboardSubView('marketplace')}
+                              className="relative p-1.5 hover:bg-slate-100 rounded-full transition text-slate-700 cursor-pointer"
+                            >
+                              <ShoppingCart className="w-5 h-5" />
+                              <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-rose-500 text-white text-[8px] font-black rounded-full flex items-center justify-center border border-white">0</span>
+                            </button>
+                          </div>
+
+                          {/* Main Title & Pill Badge Banner */}
+                          <div className="p-5 space-y-4">
+                            <div className="text-center space-y-2 pt-1">
+                              <h2 className="text-xl font-black text-slate-700 tracking-wider">Kebutuhanmu</h2>
+                              
+                              <div className="flex items-center justify-center gap-3">
+                                <span className="px-5 py-1.5 bg-[#2d8d81] text-white text-xs font-black rounded-full shadow-xs uppercase tracking-wider">
+                                  Obat Saya
+                                </span>
+                                <div className="w-12 h-12 rounded-2xl bg-teal-50 border border-teal-100 flex items-center justify-center text-[#2d8d81] shadow-xs">
+                                  <Pill className="w-7 h-7 text-[#2d8d81]" />
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Card 1: Tabel Kebutuhan Obat */}
+                            <div className="bg-white border border-slate-150 rounded-3xl p-4.5 shadow-sm space-y-3.5 mt-3">
+                              {/* Header Title with Pill Icon & Accent Lines */}
+                              <div className="flex items-center space-x-2">
+                                <div className="w-7 h-7 rounded-xl bg-emerald-100/70 flex items-center justify-center text-[#2d8d81] shrink-0">
+                                  <Pill className="w-4 h-4 text-[#2d8d81]" />
+                                </div>
+                                <h3 className="text-xs font-black text-slate-800 uppercase tracking-wide">Tabel Kebutuhan Obat</h3>
+                                <div className="flex-1 h-0.5 bg-gradient-to-r from-emerald-200 to-transparent rounded-full" />
+                              </div>
+
+                              {/* Table */}
+                              <div className="overflow-hidden rounded-2xl border border-slate-200/80">
+                                <table className="w-full text-left border-collapse">
+                                  <thead>
+                                    <tr className="bg-[#d1e7dd] text-[#0f5132]">
+                                      <th className="py-2.5 px-3 text-[10.5px] font-black uppercase tracking-wider border-b border-emerald-200">Kondisi</th>
+                                      <th className="py-2.5 px-3 text-[10.5px] font-black uppercase tracking-wider border-b border-emerald-200">Obat</th>
+                                      <th className="py-2.5 px-3 text-[10.5px] font-black uppercase tracking-wider border-b border-emerald-200">Aturan Pakai</th>
+                                      <th className="py-2.5 px-3 text-[10.5px] font-black uppercase tracking-wider border-b border-emerald-200">Sisa</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody className="divide-y divide-slate-150 text-[11px] font-semibold text-slate-700 bg-white">
+                                    <tr className="hover:bg-slate-50/80 transition">
+                                      <td className="py-3 px-3 font-bold text-slate-800">Hipertensi</td>
+                                      <td className="py-3 px-3 font-bold text-emerald-800">Amlodipine 5 mg</td>
+                                      <td className="py-3 px-3 text-slate-600">1x1 sesudah sarapan</td>
+                                      <td className="py-3 px-3 font-extrabold text-amber-700">7 tablet</td>
+                                    </tr>
+                                    <tr className="hover:bg-slate-50/80 transition">
+                                      <td className="py-3 px-3 font-bold text-slate-800">Diabetes</td>
+                                      <td className="py-3 px-3 font-bold text-emerald-800">Metformin 500 mg</td>
+                                      <td className="py-3 px-3 text-slate-600">2x1 sesudah makan</td>
+                                      <td className="py-3 px-3 font-extrabold text-amber-700">10 tablet</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+
+                            {/* Card 2: Tabel Interaksi Obat */}
+                            <div className="bg-white border border-slate-150 rounded-3xl p-4.5 shadow-sm space-y-3.5">
+                              {/* Header Title with Warning Icon & Accent Lines */}
+                              <div className="flex items-center space-x-2">
+                                <div className="w-7 h-7 rounded-xl bg-amber-100/70 flex items-center justify-center text-amber-700 shrink-0">
+                                  <AlertTriangle className="w-4 h-4 text-amber-700" />
+                                </div>
+                                <h3 className="text-xs font-black text-slate-800 uppercase tracking-wide">Tabel Interaksi Obat</h3>
+                                <div className="flex-1 h-0.5 bg-gradient-to-r from-amber-200 to-transparent rounded-full" />
+                              </div>
+
+                              {/* Table */}
+                              <div className="overflow-hidden rounded-2xl border border-slate-200/80">
+                                <table className="w-full text-left border-collapse">
+                                  <thead>
+                                    <tr className="bg-[#d1e7dd] text-[#0f5132]">
+                                      <th className="py-2.5 px-3 text-[10.5px] font-black uppercase tracking-wider border-b border-emerald-200">Obat</th>
+                                      <th className="py-2.5 px-3 text-[10.5px] font-black uppercase tracking-wider border-b border-emerald-200">Hindari/Waspada</th>
+                                      <th className="py-2.5 px-3 text-[10.5px] font-black uppercase tracking-wider border-b border-emerald-200">Anjuran</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody className="divide-y divide-slate-150 text-[11px] font-semibold text-slate-700 bg-white">
+                                    <tr className="hover:bg-slate-50/80 transition">
+                                      <td className="py-3 px-3 font-bold text-slate-800">Amlodipine</td>
+                                      <td className="py-3 px-3 text-rose-700 font-extrabold">Jus grapefruit</td>
+                                      <td className="py-3 px-3 text-slate-600">Konsumsi beri jeda, konsultasikan jika rutin</td>
+                                    </tr>
+                                    <tr className="hover:bg-slate-50/80 transition">
+                                      <td className="py-3 px-3 font-bold text-slate-800">Metformin</td>
+                                      <td className="py-3 px-3 text-rose-700 font-extrabold">Alkohol berlebihan</td>
+                                      <td className="py-3 px-3 text-slate-600">Batasi konsumsi dan minum setelah makan</td>
+                                    </tr>
+                                    <tr className="hover:bg-slate-50/80 transition">
+                                      <td className="py-3 px-3 font-bold text-slate-800">Captopril</td>
+                                      <td className="py-3 px-3 text-rose-700 font-extrabold">Suplemen kalium / pengganti garam</td>
+                                      <td className="py-3 px-3 text-slate-600">Gunakan sesuai anjuran dokter</td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Floating mascot inline */}
+                        <div className="fixed bottom-[80px] right-3 z-30 flex flex-col items-end pointer-events-none">
+                          <div className="bg-amber-400 text-slate-900 font-black text-[9px] rounded-full px-2 py-0.5 border border-white shadow-md animate-pulse mb-1">💡</div>
+                          <div className="w-10 h-10 rounded-full bg-white border-2 border-[#10b981] shadow-lg flex items-center justify-center p-1 overflow-hidden animate-bounce">
+                            <img src="/images/maskot cekat normal.png" alt="Ceko Mascot" className="w-full h-full object-contain" />
                           </div>
                         </div>
                       </div>
@@ -4553,7 +4686,7 @@ function CekatAppContent() {
                         
                         <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[9px] font-black uppercase tracking-wider border border-emerald-100 mt-1.5 shadow-xs">
                           <ShieldCheck className="w-3 h-3 fill-emerald-100" />
-                          <span>Terintegrasi BPJS Kes</span>
+                          <span>Terintegrasi Faskes</span>
                         </span>
                       </div>
 
@@ -4594,7 +4727,7 @@ function CekatAppContent() {
                       {[
                         { name: 'Ubah Data Fisik & Profil', icon: User, action: () => showToast('Membuka pengaturan profil fisik...', 'info') },
                         { name: 'Riwayat Screening PTM', icon: ClipboardList, action: () => { setActiveTab('riwayat'); setRiwayatSubView('home'); } },
-                        { name: 'Hubungkan Kartu BPJS', icon: Award, action: () => showToast('Menghubungkan ke BPJS Kesehatan...', 'info') },
+                        { name: 'Hubungkan Faskes / Asuransi', icon: Award, action: () => showToast('Menghubungkan ke Faskes Terdekat...', 'info') },
                         { name: 'Pengaturan Notifikasi', icon: Activity, action: () => showToast('Membuka pengaturan notifikasi...', 'info') }
                       ].map((item, idx) => {
                         const Icon = item.icon;
@@ -4744,18 +4877,7 @@ function CekatAppContent() {
                   </button>
                 </nav>
 
-                {/* FLOATING ACTION CAMERA BUTTON (1-CLICK SCAN WITHOUT SCROLLING) */}
-                <button
-                  onClick={() => {
-                    setActiveTab('nutrisi');
-                    setNutrisiSubView('scan_camera');
-                  }}
-                  className="absolute bottom-20 right-4 bg-gradient-to-r from-[#00875A] to-[#10B981] text-white font-black px-3.5 py-2.5 rounded-full shadow-2xl flex items-center gap-1.5 border-2 border-white z-50 active:scale-95 transition hover:scale-105 cursor-pointer"
-                  title="Scan Makanan AI Instan"
-                >
-                  <Camera className="w-4 h-4 text-white animate-pulse" />
-                  <span className="text-[10px] font-black uppercase tracking-wider pr-0.5">Scan Gizi</span>
-                </button>
+
 
               </div>
             )}

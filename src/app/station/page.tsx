@@ -80,7 +80,7 @@ export default function CekatStation() {
         age: 42,
         gender: 'Wanita',
         nik: nikInput || '3174XXXXXXXX0002',
-        bpjs: '0001234567890',
+        no_kartu: '0001234567890',
         lastVisit: '14 Juni 2026',
         history: 'Kecenderungan pre-hipertensi ringan & risiko gula darah postprandial di posbindu sebelumnya',
       });
@@ -469,7 +469,7 @@ export default function CekatStation() {
                   {identMethod === 'code' && (
                     <div className="space-y-3">
                       <label className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
-                        NIK Pasien (KTP) / Nomor BPJS Kesehatan:
+                        NIK Pasien (KTP) / Nomor Rekam Medis / Asuransi:
                       </label>
                       <div className="flex gap-2">
                         <input
