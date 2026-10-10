@@ -292,7 +292,7 @@ function CekatAppContent() {
   
   // Sub-views for detailed pages
   // - For 'dashboard': 'home' (Kebutuhanmu), 'station_summary' (Hasil Station), 'cek_risiko' (Risiko Kesehatan), 'reminders' (Pengingat & Jadwal), 'marketplace' (Keranjangmu)
-  const [dashboardSubView, setDashboardSubView] = useState<'home' | 'station_summary' | 'cek_risiko' | 'reminders' | 'marketplace' | 'edukasi' | 'article_detail' | 'webinar_list' | 'kebutuhanmu' | 'tanya_ai' | 'mitos_fakta' | 'artikel_list' | 'obat_saya' | 'screening_list' | 'screening_form'>('home');
+  const [dashboardSubView, setDashboardSubView] = useState<'home' | 'station_summary' | 'cek_risiko' | 'reminders' | 'marketplace' | 'edukasi' | 'article_detail' | 'webinar_list' | 'kebutuhanmu' | 'tanya_ai' | 'mitos_fakta' | 'artikel_list' | 'obat_saya' | 'screening_list' | 'screening_form' | 'antrian'>('home');
   const [selectedArticle, setSelectedArticle] = useState<any | null>(null);
 
   // Screening States
@@ -1943,7 +1943,7 @@ function CekatAppContent() {
                         {/* Banner Daftar No. Antrian CEKAT Station */}
                         <div className="mx-4 mt-2 shrink-0">
                           <button 
-                            onClick={() => setDashboardSubView('station_summary')}
+                            onClick={() => setDashboardSubView('antrian')}
                             className="w-full py-3 px-4 bg-gradient-to-r from-[#00875A] to-[#10B981] text-white font-black rounded-2xl shadow-md flex items-center justify-between active:scale-98 transition group cursor-pointer border border-emerald-400/40"
                           >
                             <div className="flex items-center space-x-3 text-left">
@@ -2486,6 +2486,141 @@ function CekatAppContent() {
                               className="w-full py-3.5 bg-[#212529] hover:bg-slate-900 text-white font-black rounded-full text-xs uppercase tracking-wider shadow-md transition active:scale-98 cursor-pointer"
                             >
                               Lihat Semua Modul
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Floating mascot inline */}
+                        <div className="fixed bottom-[80px] right-3 z-30 flex flex-col items-end pointer-events-none">
+                          <div className="bg-amber-400 text-slate-900 font-black text-[9px] rounded-full px-2 py-0.5 border border-white shadow-md animate-pulse mb-1">💡</div>
+                          <div className="w-10 h-10 rounded-full bg-white border-2 border-[#10b981] shadow-lg flex items-center justify-center p-1 overflow-hidden animate-bounce">
+                            <img src="/images/maskot cekat normal.png" alt="Ceko Mascot" className="w-full h-full object-contain" />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* View: Nomor Antrian CEKAT Station (Tiket Antrian Pasien) */}
+                    {dashboardSubView === 'antrian' && (
+                      <div className="space-y-5 flex-1 flex flex-col justify-between pb-20 animate-fadeIn bg-slate-50 min-h-screen relative text-left">
+                        {/* Header Bar */}
+                        <div className="bg-white border-b border-slate-100 px-4 pt-7 pb-3 flex items-center justify-between shadow-xs sticky top-0 z-20">
+                          <button onClick={() => setDashboardSubView('home')} className="p-1.5 hover:bg-slate-100 rounded-full transition text-slate-700 cursor-pointer">
+                            <ArrowLeft className="w-5 h-5" />
+                          </button>
+                          <div className="flex items-center space-x-1.5">
+                            <div className="w-5.5 h-5.5 rounded-full bg-[#10B981] flex items-center justify-center p-0.5">
+                              <span className="text-[10px] font-black text-white leading-none">C</span>
+                            </div>
+                            <div className="flex flex-col text-left">
+                              <span className="text-sm font-black text-slate-800 tracking-tight leading-none">Cekat</span>
+                              <span className="text-[5.5px] font-extrabold text-emerald-600 uppercase tracking-widest leading-none mt-0.5">Cek • Kenali • Tindaklanjuti</span>
+                            </div>
+                          </div>
+                          <button 
+                            onClick={() => showToast('Status antrian diperbarui secara otomatis', 'info')}
+                            className="p-1.5 hover:bg-slate-100 rounded-full transition text-slate-600 cursor-pointer"
+                            title="Refresh Antrian"
+                          >
+                            <RotateCcw className="w-5 h-5" />
+                          </button>
+                        </div>
+
+                        <div className="flex-1 px-5 space-y-4 overflow-y-auto">
+                          {/* Title */}
+                          <div className="text-center mt-2 space-y-1">
+                            <h3 className="text-xl font-black text-slate-800 tracking-tight drop-shadow-xs">Nomor Antrian Anda</h3>
+                            <p className="text-[11px] font-bold text-slate-500 leading-snug">
+                              Tunjukkan nomor antrian ini saat dipanggil di CEKAT Station.
+                            </p>
+                          </div>
+
+                          {/* Main Ticket Card (Green Accent Card with Perforated Ticket Design) */}
+                          <div className="bg-gradient-to-b from-[#00875A] to-[#0f5132] text-white rounded-3xl p-5 shadow-xl relative overflow-hidden space-y-4 border border-emerald-400/30">
+                            {/* Decorative Ticket Circles */}
+                            <div className="absolute top-1/2 -left-3.5 w-7 h-7 bg-slate-50 rounded-full -translate-y-1/2 shadow-inner" />
+                            <div className="absolute top-1/2 -right-3.5 w-7 h-7 bg-slate-50 rounded-full -translate-y-1/2 shadow-inner" />
+
+                            {/* Ticket Top Header */}
+                            <div className="flex items-center justify-between border-b border-emerald-400/30 pb-3">
+                              <div className="flex items-center space-x-2">
+                                <div className="w-7 h-7 rounded-lg bg-white/20 backdrop-blur-xs flex items-center justify-center p-1">
+                                  <img src="/images/logo C cekat.png" alt="Cekat Logo" className="w-full h-full object-contain" />
+                                </div>
+                                <div>
+                                  <span className="text-xs font-black uppercase tracking-wider block leading-none">CEKAT Station Ticket</span>
+                                  <span className="text-[8.5px] text-emerald-100 font-semibold block mt-0.5">Pos Skrining & Pemeriksaan PTM</span>
+                                </div>
+                              </div>
+                              <span className="px-2.5 py-0.5 bg-yellow-400 text-slate-950 text-[9px] font-black rounded-full uppercase tracking-wider shadow-xs">
+                                AKTIF
+                              </span>
+                            </div>
+
+                            {/* Big Queue Number Box */}
+                            <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 text-center space-y-1 shadow-inner">
+                              <span className="text-[10px] font-black text-emerald-200 uppercase tracking-widest block">NOMOR ANTRIAN</span>
+                              <div className="text-4xl font-black text-yellow-300 tracking-tight drop-shadow-md py-1">
+                                A-018
+                              </div>
+                              <span className="text-xs font-extrabold text-white block">Sofia Kusuma</span>
+                              <span className="text-[9px] text-emerald-100 block">NIK: 3174XXXXXXXX0002</span>
+                            </div>
+
+                            {/* Faskes Location Info */}
+                            <div className="bg-black/15 rounded-xl p-3 text-xs space-y-1 text-left">
+                              <div className="flex items-center space-x-1.5 text-emerald-200 font-bold">
+                                <span>📍</span>
+                                <span className="font-black text-white">Puskesmas Pembantu Ds. Ngabab</span>
+                              </div>
+                              <p className="text-[10px] text-emerald-100 leading-tight">
+                                Pujon, Kab. Malang • Meja 1 (Skrining & Cek Darah)
+                              </p>
+                            </div>
+
+                            {/* Barcode representation */}
+                            <div className="bg-white rounded-xl p-3 text-center space-y-1 text-slate-900 shadow-sm">
+                              <div className="h-10 flex items-center justify-center space-x-1 opacity-80">
+                                {[2, 4, 1, 3, 2, 5, 2, 1, 4, 2, 3, 1, 4, 2, 1, 3, 2, 4, 1, 3, 2, 5].map((w, i) => (
+                                  <div key={i} className="h-full bg-slate-900 rounded-xs" style={{ width: `${w * 2}px` }} />
+                                ))}
+                              </div>
+                              <span className="text-[9px] font-mono font-black text-slate-600 block tracking-widest uppercase">
+                                * STATION-A018-20261010 *
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Queue Telemetry Info Grid */}
+                          <div className="grid grid-cols-3 gap-2.5">
+                            <div className="bg-white border border-slate-150 p-3 rounded-2xl text-center shadow-xs">
+                              <span className="text-[9px] font-bold text-slate-400 uppercase block">Sedang Dilayani</span>
+                              <span className="text-base font-black text-emerald-700 block mt-0.5">A-015</span>
+                            </div>
+                            <div className="bg-white border border-slate-150 p-3 rounded-2xl text-center shadow-xs">
+                              <span className="text-[9px] font-bold text-slate-400 uppercase block">Sisa Antrian</span>
+                              <span className="text-base font-black text-amber-600 block mt-0.5">3 Orang</span>
+                            </div>
+                            <div className="bg-white border border-slate-150 p-3 rounded-2xl text-center shadow-xs">
+                              <span className="text-[9px] font-bold text-slate-400 uppercase block">Est. Tunggu</span>
+                              <span className="text-base font-black text-sky-700 block mt-0.5">~12 Mnt</span>
+                            </div>
+                          </div>
+
+                          {/* Action Buttons */}
+                          <div className="space-y-2.5 pt-1">
+                            <button
+                              onClick={() => showToast('Tiket antrian berhasil disimpan ke galeri!', 'success')}
+                              className="w-full py-3.5 bg-[#00875A] hover:bg-[#00704a] text-white font-black rounded-2xl text-xs uppercase tracking-wider shadow-md transition active:scale-98 cursor-pointer flex items-center justify-center gap-2"
+                            >
+                              <span>Simpan Tiket Antrian</span>
+                            </button>
+
+                            <button
+                              onClick={() => setDashboardSubView('station_summary')}
+                              className="w-full py-3.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-750 font-black rounded-2xl text-xs uppercase tracking-wider shadow-xs transition active:scale-98 cursor-pointer flex items-center justify-center gap-2"
+                            >
+                              <span>Lihat Hasil Pemeriksaan Station &gt;</span>
                             </button>
                           </div>
                         </div>
