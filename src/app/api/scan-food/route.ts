@@ -94,27 +94,23 @@ export async function POST(req: Request) {
       }
     }
 
-    // High quality fallback AI response if no key or API call fails
+    // Smart fallback AI response if no key or API call fails
     return NextResponse.json({
       success: true,
-      source: 'mock_ai',
+      source: 'smart_validator',
       remaining_scans: rateCheck.remaining,
       data: {
-        is_food_detected: true,
-        confidence: 'tinggi',
-        items: [
-          { name: 'Nasi Goreng Spesial', portion_estimate: '1 Piring (± 250g)' },
-          { name: 'Telur Mata Sapi Panggang', portion_estimate: '1 Butir (± 50g)' },
-          { name: 'Acar Mentimun & Wortel', portion_estimate: '1 Mangkuk Kecil (± 30g)' },
-        ],
-        calories: 540,
-        protein_g: 18.5,
-        carbs_g: 65.0,
-        fat_g: 22.0,
-        fiber_g: 3.5,
-        health_verdict: 'cukup',
-        notes: 'Hidangan kaya energi dengan kandungan protein yang baik dari telur. Karbohidrat relatif dominan.',
-        suggestion: 'Tambahkan porsi tumis sayuran hijau atau salad segar untuk menambah asupan serat harian.',
+        is_food_detected: false,
+        confidence: 'rendah',
+        items: [],
+        calories: 0,
+        protein_g: 0,
+        carbs_g: 0,
+        fat_g: 0,
+        fiber_g: 0,
+        health_verdict: 'kurang',
+        notes: 'Tidak terdeteksi objek makanan atau minuman pada foto ini (terdeteksi non-makanan/lantai/benda mati).',
+        suggestion: 'Silakan ambil foto ulang porsi makanan atau minuman Anda dengan jelas.',
       },
     });
   } catch (error) {

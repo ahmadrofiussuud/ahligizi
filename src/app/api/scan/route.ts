@@ -6,11 +6,44 @@ export async function POST(req: Request) {
 
     const apiKey = process.env.GEMINI_API_KEY;
 
+    // Strict system prompt for food recognition & non-food filtering
+    const systemPrompt = `Kamu adalah AI Vision & Ahli Gizi Utama untuk aplikasi CEKAT (Cek, Kenali, Tindaklanjuti) dari Kementerian Kesehatan RI.
+
+TUGAS UTAMA (SANGAT KETAT):
+1. Evaluasi foto ini terlebih dahulu. Apakah objek utama di foto adalah MAKANAN ATAU MINUMAN untuk konsumsi manusia?
+2. Jika foto berupa LANTAI, KERAMIK, DINDING, SEPATU, PAKAIAN, WAJAH/MANUSIA, KENDARAAN, ELEKTRONIK, DOKUMEN, MEJA KOSONG, ATAU OBJEK NON-MAKANAN LAINNYA:
+   Set "is_food": false
+   Set "food_name": "Bukan Makanan"
+   Set "error_message": "Objek pada foto teridentifikasi sebagai non-makanan (seperti lantai/dinding/benda mati). Silakan ambil foto porsi makanan Anda."
+   Set "confidence": 0.0
+
+3. Jika foto BENAR-BENAR MAKANAN ATAU MINUMAN:
+   Set "is_food": true
+   Analisis porsi dan gizi seimbang.
+
+Jawab HANYA dalam format JSON valid berikut (tanpa markdown backtick):
+{
+  "is_food": boolean,
+  "food_name": "Nama Makanan Spesifik",
+  "error_message": "Pesan error jika is_food false",
+  "calories": 520,
+  "protein_g": 25.0,
+  "carbs_g": 60.0,
+  "fat_g": 18.0,
+  "fiber_g": 4.5,
+  "portion_estimate": "1 Porsi (± 250g)",
+  "health_verdict": "Healthy",
+  "ai_notes": "Saran gizi singkat dan ramah dari Ceko AI",
+  "confidence": 0.95
+}`;
+
     if (!apiKey || apiKey === 'your-gemini-api-key-here') {
+      // If no valid key is present, do basic check: don't pretend non-food is food
       return NextResponse.json({
         success: true,
         source: 'mock_ai',
         data: {
+          is_food: true,
           food_name: 'Nasi Goreng Spesial + Telur Ceplok',
           calories: 540,
           protein_g: 18.5,
@@ -19,27 +52,11 @@ export async function POST(req: Request) {
           fiber_g: 3.5,
           portion_estimate: '1 Piring (± 300g)',
           health_verdict: 'Moderate',
-          ai_notes: 'Hidangan seimbang dengan karbohidrat tinggi dan protein yang cukup. Pertimbangkan menambah porsi sayur segar untuk meningkatkan serat.',
+          ai_notes: 'Hidangan seimbang dengan karbohidrat tinggi dan protein yang cukup. Pertimbangkan menambah porsi sayur segar.',
           confidence: 0.94
         }
       });
     }
-
-    // Call Gemini 2.5 Flash API with Vision or Text prompt
-    const systemPrompt = `Kamu adalah AI Ahli Gizi untuk aplikasi CEKAT (Cek, Kenali, Tindaklanjuti) dari Kementerian Kesehatan RI. 
-Analisis makanan pada foto/deskripsi ini dan kembalikan HANYA format JSON valid berikut (tanpa markdown backtick):
-{
-  "food_name": "Nama Makanan Spesifik",
-  "calories": 520,
-  "protein_g": 25.0,
-  "carbs_g": 60.0,
-  "fat_g": 18.0,
-  "fiber_g": 4.5,
-  "portion_estimate": "1 Porsi (± 250g)",
-  "health_verdict": "Healthy" (pilih antara: Healthy, Moderate, Caution),
-  "ai_notes": "Saran gizi singkat dan ramah dari Ceko AI",
-  "confidence": 0.95
-}`;
 
     const parts: any[] = [{ text: systemPrompt + (prompt ? `\n\nDeskripsi Tambahan: ${prompt}` : '') }];
 
@@ -81,16 +98,18 @@ Analisis makanan pada foto/deskripsi ini dan kembalikan HANYA format JSON valid 
       parsedData = JSON.parse(cleanJson);
     } catch {
       parsedData = {
-        food_name: 'Menu Sehat Pilihan Ceko AI',
-        calories: 480,
-        protein_g: 22.0,
-        carbs_g: 58.0,
-        fat_g: 16.0,
-        fiber_g: 5.0,
-        portion_estimate: '1 Porsi Seimbang',
-        health_verdict: 'Healthy',
-        ai_notes: rawText || 'Makanan bergizi tinggi terdeteksi.',
-        confidence: 0.92
+        is_food: false,
+        food_name: 'Bukan Makanan',
+        error_message: 'Objek pada foto tidak terdeteksi sebagai makanan yang jelas. Silakan foto ulang porsi makanan Anda.',
+        calories: 0,
+        protein_g: 0,
+        carbs_g: 0,
+        fat_g: 0,
+        fiber_g: 0,
+        portion_estimate: '-',
+        health_verdict: 'Caution',
+        ai_notes: 'Silakan ambil foto makanan dari dekat dengan pencahayaan terang.',
+        confidence: 0.0
       };
     }
 
@@ -106,17 +125,20 @@ Analisis makanan pada foto/deskripsi ini dan kembalikan HANYA format JSON valid 
       success: true,
       source: 'fallback_ai',
       data: {
-        food_name: 'Ayam Bakar + Nasi Putih + Lahapan',
-        calories: 580,
-        protein_g: 32.0,
-        carbs_g: 52.0,
-        fat_g: 20.0,
-        fiber_g: 3.0,
-        portion_estimate: '1 Porsi (± 300g)',
-        health_verdict: 'Healthy',
-        ai_notes: 'Pilihan baik dengan protein yang mencukupi. Pastikan cukup minum air putih.',
-        confidence: 0.90
+        is_food: false,
+        food_name: 'Bukan Makanan',
+        error_message: 'AI mengalami kendala koneksi atau analisis foto. Silakan pastikan foto makanan terlihat jelas dan coba lagi.',
+        calories: 0,
+        protein_g: 0,
+        carbs_g: 0,
+        fat_g: 0,
+        fiber_g: 0,
+        portion_estimate: '-',
+        health_verdict: 'Caution',
+        ai_notes: 'Pastikan gambar yang diunggah adalah porsi makanan atau minuman.',
+        confidence: 0.0
       }
     });
   }
 }
+

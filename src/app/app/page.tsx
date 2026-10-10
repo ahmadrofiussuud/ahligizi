@@ -3861,89 +3861,133 @@ function CekatAppContent() {
                           <div className="w-7"></div>
                         </div>
 
-                        {/* Top Card Image & Score */}
-                        <div className="flex-1 overflow-y-auto px-5 py-6 space-y-6">
-                          <div className="relative aspect-video rounded-3xl overflow-hidden shadow border border-slate-100 bg-slate-900">
-                            <img 
-                              src={capturedImageUrl || 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80'} 
-                              alt="Scanned Food" 
-                              className="w-full h-full object-cover"
-                            />
-                            {/* Score circular badge */}
-                            <div className={`absolute bottom-3 right-3 px-3 py-2 rounded-2xl border-2 border-white flex flex-col items-center justify-center shadow-lg text-white ${
-                              (aiScanResult?.health_verdict || 'Healthy').toLowerCase() === 'healthy' ? 'bg-emerald-500' :
-                              (aiScanResult?.health_verdict || '').toLowerCase() === 'moderate' ? 'bg-amber-500' : 'bg-rose-500'
-                            }`}>
-                              <span className="text-[7.5px] font-bold block uppercase leading-none">VERDICT:</span>
-                              <span className="text-[11px] font-black block uppercase leading-none mt-0.5">
-                                {aiScanResult?.health_verdict || 'SEHAT'}
-                              </span>
-                            </div>
-                          </div>
-
-                          {/* Food Name & Star feedback text */}
-                          <div className="text-center space-y-1.5 px-2">
-                            <h3 className="text-base font-black text-slate-900 leading-snug">
-                              {aiScanResult?.food_name || 'Nasi Goreng Spesial'}
-                            </h3>
-                            <div className="flex justify-center space-x-1 text-yellow-400">
-                              <Star className="w-4 h-4 fill-yellow-400" />
-                              <Star className="w-4 h-4 fill-yellow-400" />
-                              <Star className="w-4 h-4 fill-yellow-400" />
-                              <Star className="w-4 h-4 fill-yellow-400" />
-                              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                            </div>
-                            <p className="text-[11px] leading-relaxed text-slate-600 font-semibold px-2 pt-1">
-                              {aiScanResult?.ai_notes || 'Porsi makanan seimbang dengan karbohidrat dan protein yang baik.'}
-                            </p>
-                          </div>
-
-                          {/* Macro circles list */}
-                          <div className="space-y-3 text-left">
-                            <span className="text-[10px] text-slate-400 font-black tracking-widest uppercase block px-1">HASIL ANALISIS GIZI:</span>
-                            
-                            <div className="grid grid-cols-3 gap-2.5 text-center">
-                              {/* Protein */}
-                              <div className="bg-emerald-50/60 border border-emerald-100 rounded-2xl p-2.5 flex flex-col items-center justify-center space-y-1 shadow-xs">
-                                <div className="w-11 h-11 rounded-full border-2 border-emerald-500 flex flex-col items-center justify-center font-black text-[11px] text-emerald-900 bg-white">
-                                  <span>{aiScanResult?.protein_g ? `${aiScanResult.protein_g}g` : '24g'}</span>
+                        {/* Top Card Image & Score or Non-Food Error State */}
+                        {aiScanResult && (aiScanResult.is_food === false || aiScanResult.is_food_detected === false || aiScanResult.food_name === 'Bukan Makanan') ? (
+                          <div className="flex-1 overflow-y-auto px-5 py-6 space-y-6 text-center">
+                            <div className="relative aspect-video rounded-3xl overflow-hidden shadow border border-rose-200 bg-slate-900">
+                              <img 
+                                src={capturedImageUrl || 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80'} 
+                                alt="Scanned Image" 
+                                className="w-full h-full object-cover opacity-75"
+                              />
+                              <div className="absolute inset-0 bg-rose-950/40 backdrop-blur-[2px] flex flex-col items-center justify-center p-4 text-white">
+                                <div className="w-12 h-12 rounded-full bg-rose-500/90 flex items-center justify-center mb-2 shadow-lg">
+                                  <span className="text-xl">⚠️</span>
                                 </div>
-                                <span className="text-[9.5px] font-extrabold text-emerald-800 uppercase tracking-wide">Protein</span>
-                              </div>
-
-                              {/* Carbs */}
-                              <div className="bg-amber-50/60 border border-amber-100 rounded-2xl p-2.5 flex flex-col items-center justify-center space-y-1 shadow-xs">
-                                <div className="w-11 h-11 rounded-full border-2 border-amber-500 flex flex-col items-center justify-center font-black text-[11px] text-amber-900 bg-white">
-                                  <span>{aiScanResult?.carbs_g ? `${aiScanResult.carbs_g}g` : '58g'}</span>
-                                </div>
-                                <span className="text-[9.5px] font-extrabold text-amber-800 uppercase tracking-wide">Carbo</span>
-                              </div>
-
-                              {/* Fat */}
-                              <div className="bg-rose-50/60 border border-rose-100 rounded-2xl p-2.5 flex flex-col items-center justify-center space-y-1 shadow-xs">
-                                <div className="w-11 h-11 rounded-full border-2 border-rose-500 flex flex-col items-center justify-center font-black text-[11px] text-rose-900 bg-white">
-                                  <span>{aiScanResult?.fat_g ? `${aiScanResult.fat_g}g` : '18g'}</span>
-                                </div>
-                                <span className="text-[9.5px] font-extrabold text-rose-800 uppercase tracking-wide">Fat</span>
+                                <span className="text-xs font-black uppercase tracking-wider text-rose-200">Objek Non-Makanan</span>
                               </div>
                             </div>
-                          </div>
-                        </div>
 
-                        {/* Bottom Total Button & Save CTA */}
-                        <div className="px-5 py-5 bg-slate-50 border-t border-slate-100 space-y-3">
-                          <div className="w-full py-3 bg-[#fdf2e9] border border-[#f5c299] text-[#e67e22] text-xs font-black rounded-xl uppercase tracking-wider flex items-center justify-center gap-2">
-                            <span>🔥</span>
-                            <span>{aiScanResult?.calories || 520} CALORIES</span>
+                            <div className="bg-rose-50/80 border border-rose-200 rounded-2xl p-4 text-left space-y-2 shadow-xs">
+                              <h4 className="text-xs font-black text-rose-900 uppercase tracking-wide flex items-center gap-1.5">
+                                <span>🚫</span> Foto Tidak Teridentifikasi Sebagai Makanan
+                              </h4>
+                              <p className="text-xs text-rose-700 leading-relaxed font-semibold">
+                                {aiScanResult?.error_message || aiScanResult?.ai_notes || 'Objek pada foto tampak seperti lantai, dinding, atau benda non-makanan. AI CEKAT hanya menganalisis porsi makanan atau minuman.'}
+                              </p>
+                            </div>
+
+                            <div className="space-y-3 pt-2">
+                              <button
+                                onClick={() => setNutrisiSubView('scan_camera')}
+                                className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black rounded-xl uppercase tracking-wider shadow-md transition active:scale-98 flex items-center justify-center gap-2"
+                              >
+                                <span>📷</span> Ambil Foto Ulang Makanan
+                              </button>
+                              <button
+                                onClick={() => setNutrisiSubView('main')}
+                                className="w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-black rounded-xl uppercase tracking-wider transition flex items-center justify-center gap-2"
+                              >
+                                <span>✏️</span> Kembalikan ke Log & Pilih Makanan
+                              </button>
+                            </div>
                           </div>
-                          
-                          <button 
-                            onClick={handleSaveScanResult}
-                            className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black rounded-xl uppercase tracking-wider shadow-sm transition active:scale-98"
-                          >
-                            Simpan ke Log Harian
-                          </button>
-                        </div>
+                        ) : (
+                          <>
+                            <div className="flex-1 overflow-y-auto px-5 py-6 space-y-6">
+                              <div className="relative aspect-video rounded-3xl overflow-hidden shadow border border-slate-100 bg-slate-900">
+                                <img 
+                                  src={capturedImageUrl || 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80'} 
+                                  alt="Scanned Food" 
+                                  className="w-full h-full object-cover"
+                                />
+                                {/* Score circular badge */}
+                                <div className={`absolute bottom-3 right-3 px-3 py-2 rounded-2xl border-2 border-white flex flex-col items-center justify-center shadow-lg text-white ${
+                                  (aiScanResult?.health_verdict || 'Healthy').toLowerCase() === 'healthy' ? 'bg-emerald-500' :
+                                  (aiScanResult?.health_verdict || '').toLowerCase() === 'moderate' ? 'bg-amber-500' : 'bg-rose-500'
+                                }`}>
+                                  <span className="text-[7.5px] font-bold block uppercase leading-none">VERDICT:</span>
+                                  <span className="text-[11px] font-black block uppercase leading-none mt-0.5">
+                                    {aiScanResult?.health_verdict || 'SEHAT'}
+                                  </span>
+                                </div>
+                              </div>
+
+                              {/* Food Name & Star feedback text */}
+                              <div className="text-center space-y-1.5 px-2">
+                                <h3 className="text-base font-black text-slate-900 leading-snug">
+                                  {aiScanResult?.food_name || 'Nasi Goreng Spesial'}
+                                </h3>
+                                <div className="flex justify-center space-x-1 text-yellow-400">
+                                  <Star className="w-4 h-4 fill-yellow-400" />
+                                  <Star className="w-4 h-4 fill-yellow-400" />
+                                  <Star className="w-4 h-4 fill-yellow-400" />
+                                  <Star className="w-4 h-4 fill-yellow-400" />
+                                  <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                                </div>
+                                <p className="text-[11px] leading-relaxed text-slate-600 font-semibold px-2 pt-1">
+                                  {aiScanResult?.ai_notes || 'Porsi makanan seimbang dengan karbohidrat dan protein yang baik.'}
+                                </p>
+                              </div>
+
+                              {/* Macro circles list */}
+                              <div className="space-y-3 text-left">
+                                <span className="text-[10px] text-slate-400 font-black tracking-widest uppercase block px-1">HASIL ANALISIS GIZI:</span>
+                                
+                                <div className="grid grid-cols-3 gap-2.5 text-center">
+                                  {/* Protein */}
+                                  <div className="bg-emerald-50/60 border border-emerald-100 rounded-2xl p-2.5 flex flex-col items-center justify-center space-y-1 shadow-xs">
+                                    <div className="w-11 h-11 rounded-full border-2 border-emerald-500 flex flex-col items-center justify-center font-black text-[11px] text-emerald-900 bg-white">
+                                      <span>{aiScanResult?.protein_g ? `${aiScanResult.protein_g}g` : '24g'}</span>
+                                    </div>
+                                    <span className="text-[9.5px] font-extrabold text-emerald-800 uppercase tracking-wide">Protein</span>
+                                  </div>
+
+                                  {/* Carbs */}
+                                  <div className="bg-amber-50/60 border border-amber-100 rounded-2xl p-2.5 flex flex-col items-center justify-center space-y-1 shadow-xs">
+                                    <div className="w-11 h-11 rounded-full border-2 border-amber-500 flex flex-col items-center justify-center font-black text-[11px] text-amber-900 bg-white">
+                                      <span>{aiScanResult?.carbs_g ? `${aiScanResult.carbs_g}g` : '58g'}</span>
+                                    </div>
+                                    <span className="text-[9.5px] font-extrabold text-amber-800 uppercase tracking-wide">Carbo</span>
+                                  </div>
+
+                                  {/* Fat */}
+                                  <div className="bg-rose-50/60 border border-rose-100 rounded-2xl p-2.5 flex flex-col items-center justify-center space-y-1 shadow-xs">
+                                    <div className="w-11 h-11 rounded-full border-2 border-rose-500 flex flex-col items-center justify-center font-black text-[11px] text-rose-900 bg-white">
+                                      <span>{aiScanResult?.fat_g ? `${aiScanResult.fat_g}g` : '18g'}</span>
+                                    </div>
+                                    <span className="text-[9.5px] font-extrabold text-rose-800 uppercase tracking-wide">Fat</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Bottom Total Button & Save CTA */}
+                            <div className="px-5 py-5 bg-slate-50 border-t border-slate-100 space-y-3">
+                              <div className="w-full py-3 bg-[#fdf2e9] border border-[#f5c299] text-[#e67e22] text-xs font-black rounded-xl uppercase tracking-wider flex items-center justify-center gap-2">
+                                <span>🔥</span>
+                                <span>{aiScanResult?.calories || 520} CALORIES</span>
+                              </div>
+                              
+                              <button 
+                                onClick={handleSaveScanResult}
+                                className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black rounded-xl uppercase tracking-wider shadow-sm transition active:scale-98"
+                              >
+                                Simpan ke Log Harian
+                              </button>
+                            </div>
+                          </>
+                        )}
                       </div>
                     )}
 
