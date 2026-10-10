@@ -331,6 +331,10 @@ function CekatAppContent() {
   
   const [riwayatCategory, setRiwayatCategory] = useState<string>('Semua');
 
+  // Modals for Cek Risiko Action CTAs
+  const [showKonsultasiDokterModal, setShowKonsultasiDokterModal] = useState<boolean>(false);
+  const [showRekomendasiVitaminModal, setShowRekomendasiVitaminModal] = useState<boolean>(false);
+
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
   // Auto-reset scroll position to top (top: 0) on tab/subview switch for ultra-smooth UI/UX
@@ -2984,18 +2988,38 @@ function CekatAppContent() {
                             </div>
                           </div>
 
-                          <div className="pt-2 flex flex-col items-center gap-3.5">
+                          <div className="pt-2 flex flex-col items-center gap-2.5">
+                            {/* Option 1: Pola Hidup Sehat (Red outline button) */}
                             <button 
                               onClick={() => {
                                 setActiveTab('challenge');
                                 setChallengeSubView('home');
                               }}
-                              className="w-full py-3 bg-white border border-[#E74C3C] text-[#E74C3C] font-black rounded-3xl text-xs uppercase tracking-wider transition active:scale-98 shadow-xs hover:bg-rose-50"
+                              className="w-full py-3 bg-white border border-[#E74C3C] text-[#E74C3C] font-black rounded-3xl text-xs uppercase tracking-wider transition active:scale-98 shadow-xs hover:bg-rose-50 flex items-center justify-center gap-2"
                             >
-                              Pola Hidup Sehat
+                              <span>🏃‍♂️</span>
+                              <span>Pola Hidup Sehat</span>
                             </button>
 
-                            <div className="w-full p-4 bg-emerald-50/50 border border-emerald-100 rounded-3xl flex items-start gap-3 shadow-xs">
+                            {/* Option 2: Konsultasi Ke Dokter (Blue outline button) */}
+                            <button 
+                              onClick={() => setShowKonsultasiDokterModal(true)}
+                              className="w-full py-3 bg-white border border-[#2980B9] text-[#2980B9] font-black rounded-3xl text-xs uppercase tracking-wider transition active:scale-98 shadow-xs hover:bg-blue-50 flex items-center justify-center gap-2"
+                            >
+                              <span>🩺</span>
+                              <span>Konsultasi Ke Dokter</span>
+                            </button>
+
+                            {/* Option 3: Rekomendasi Vitamin (Emerald/Amber outline button) */}
+                            <button 
+                              onClick={() => setShowRekomendasiVitaminModal(true)}
+                              className="w-full py-3 bg-white border border-[#27AE60] text-[#27AE60] font-black rounded-3xl text-xs uppercase tracking-wider transition active:scale-98 shadow-xs hover:bg-emerald-50 flex items-center justify-center gap-2"
+                            >
+                              <span>💊</span>
+                              <span>Rekomendasi Vitamin</span>
+                            </button>
+
+                            <div className="w-full p-4 mt-1 bg-emerald-50/50 border border-emerald-100 rounded-3xl flex items-start gap-3 shadow-xs">
                               <div className="w-10 h-10 shrink-0 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 font-bold text-lg animate-bounce">🥗</div>
                               <p className="text-[10px] leading-relaxed text-slate-500 font-semibold text-left">
                                 Ingin mempelajari tentang Resiko Penyakitmu? Jangan khawatir! segera <button onClick={() => setDashboardSubView('edukasi')} className="text-blue-500 font-extrabold underline cursor-pointer">kunjungi artikel & Webinar kami</button>, dan semoga dapat membantu
@@ -3003,6 +3027,191 @@ function CekatAppContent() {
                             </div>
                           </div>
                         </div>
+
+                        {/* Modal: Konsultasi Ke Dokter */}
+                        {showKonsultasiDokterModal && (
+                          <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 animate-fadeIn">
+                            <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl border border-slate-100 p-6 space-y-5 relative text-left animate-scaleUp">
+                              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                                <div className="flex items-center gap-2.5">
+                                  <div className="w-9 h-9 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-lg">
+                                    🩺
+                                  </div>
+                                  <div>
+                                    <h3 className="text-sm font-black text-slate-900 leading-tight">Konsultasi Ke Dokter</h3>
+                                    <p className="text-[10px] font-semibold text-slate-500">Layanan dokter spesialis & telemedis Kemenkes</p>
+                                  </div>
+                                </div>
+                                <button 
+                                  onClick={() => setShowKonsultasiDokterModal(false)}
+                                  className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-black text-xs flex items-center justify-center transition"
+                                >
+                                  ✕
+                                </button>
+                              </div>
+
+                              <div className="space-y-3 max-h-[380px] overflow-y-auto pr-1">
+                                {/* Doctor 1 */}
+                                <div className="p-3.5 bg-slate-50 border border-slate-200/80 rounded-2xl space-y-2.5 hover:border-blue-300 transition">
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                      <div className="w-10 h-10 rounded-full bg-blue-500 text-white font-black flex items-center justify-center text-xs shadow-xs">
+                                        DR
+                                      </div>
+                                      <div>
+                                        <h4 className="text-xs font-black text-slate-900">dr. Dinda Rahma, Sp.GK</h4>
+                                        <p className="text-[10px] text-slate-500 font-semibold">Spesialis Gizi Klinis — RSUP Cipto Mangunkusumo</p>
+                                      </div>
+                                    </div>
+                                    <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[8.5px] font-extrabold rounded-md">Online</span>
+                                  </div>
+                                  <p className="text-[9.5px] text-slate-600 leading-relaxed font-semibold">
+                                    Spesialisasi diet PTM: Pendampingan pola makan Hipertensi, Kolesterol Tinggi, & Obesitas.
+                                  </p>
+                                  <button 
+                                    onClick={() => {
+                                      setShowKonsultasiDokterModal(false);
+                                      setDashboardSubView('tanya_ai');
+                                    }}
+                                    className="w-full py-2 bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-black rounded-xl uppercase tracking-wider transition active:scale-98 shadow-xs"
+                                  >
+                                    Mulai Konsultasi Chat / Telemedis
+                                  </button>
+                                </div>
+
+                                {/* Doctor 2 */}
+                                <div className="p-3.5 bg-slate-50 border border-slate-200/80 rounded-2xl space-y-2.5 hover:border-blue-300 transition">
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-3">
+                                      <div className="w-10 h-10 rounded-full bg-emerald-600 text-white font-black flex items-center justify-center text-xs shadow-xs">
+                                        BS
+                                      </div>
+                                      <div>
+                                        <h4 className="text-xs font-black text-slate-900">dr. Budi Santoso, Sp.PD</h4>
+                                        <p className="text-[10px] text-slate-500 font-semibold">Spesialis Penyakit Dalam — CEKAT Station</p>
+                                      </div>
+                                    </div>
+                                    <span className="px-2 py-0.5 bg-blue-100 text-blue-800 text-[8.5px] font-extrabold rounded-md">Praktek Station</span>
+                                  </div>
+                                  <p className="text-[9.5px] text-slate-600 leading-relaxed font-semibold">
+                                    Evaluasi medis terpadu untuk kontrol kadar gula darah diabetes & tekanan darah tinggi.
+                                  </p>
+                                  <button 
+                                    onClick={() => {
+                                      setShowKonsultasiDokterModal(false);
+                                      setDashboardSubView('antrian');
+                                    }}
+                                    className="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-[10px] font-black rounded-xl uppercase tracking-wider transition active:scale-98 shadow-xs"
+                                  >
+                                    Buat Janji Temu CEKAT Station
+                                  </button>
+                                </div>
+
+                                {/* AI Consult 24/7 */}
+                                <div className="p-3.5 bg-emerald-50/70 border border-emerald-200 rounded-2xl space-y-2.5">
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2.5">
+                                      <span className="text-lg">🤖</span>
+                                      <div>
+                                        <h4 className="text-xs font-black text-emerald-900">Ceko AI Consult 24/7 (Kemenkes)</h4>
+                                        <p className="text-[9.5px] text-emerald-700 font-semibold">Asisten AI Konsultasi Kesehatan Gizi Instan</p>
+                                      </div>
+                                    </div>
+                                    <span className="px-2 py-0.5 bg-amber-100 text-amber-800 text-[8.5px] font-black rounded-md">24 Jam</span>
+                                  </div>
+                                  <button 
+                                    onClick={() => {
+                                      setShowKonsultasiDokterModal(false);
+                                      setDashboardSubView('tanya_ai');
+                                    }}
+                                    className="w-full py-2 bg-slate-900 hover:bg-slate-800 text-white text-[10px] font-black rounded-xl uppercase tracking-wider transition active:scale-98 shadow-xs"
+                                  >
+                                    Tanya Ceko AI (Respon Instan)
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Modal: Rekomendasi Vitamin */}
+                        {showRekomendasiVitaminModal && (
+                          <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 animate-fadeIn">
+                            <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl border border-slate-100 p-6 space-y-5 relative text-left animate-scaleUp">
+                              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                                <div className="flex items-center gap-2.5">
+                                  <div className="w-9 h-9 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-lg">
+                                    💊
+                                  </div>
+                                  <div>
+                                    <h3 className="text-sm font-black text-slate-900 leading-tight">Rekomendasi Vitamin & Suplemen</h3>
+                                    <p className="text-[10px] font-semibold text-slate-500">Disesuaikan dengan hasil skrining laboratorium hari ini</p>
+                                  </div>
+                                </div>
+                                <button 
+                                  onClick={() => setShowRekomendasiVitaminModal(false)}
+                                  className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-black text-xs flex items-center justify-center transition"
+                                >
+                                  ✕
+                                </button>
+                              </div>
+
+                              <div className="space-y-3 max-h-[380px] overflow-y-auto pr-1">
+                                {/* Vit 1: Asam Urat */}
+                                <div className="p-3 bg-amber-50/60 border border-amber-100 rounded-2xl space-y-1.5">
+                                  <div className="flex items-center justify-between">
+                                    <h4 className="text-xs font-black text-amber-900">Vitamin C (500mg - 1000mg)</h4>
+                                    <span className="px-2 py-0.5 bg-amber-200/80 text-amber-900 text-[8.5px] font-black rounded-md">Fokus Asam Urat</span>
+                                  </div>
+                                  <p className="text-[10px] text-slate-600 leading-relaxed font-semibold">
+                                    Membantu meningkatkan ekskresi asam urat melalui ginjal serta menjaga kesehatan endotel pembuluh darah.
+                                  </p>
+                                  <span className="text-[9px] font-bold text-slate-400 block">Dosis: 1x sehari setelah makan pagi</span>
+                                </div>
+
+                                {/* Vit 2: Kolesterol */}
+                                <div className="p-3 bg-emerald-50/60 border border-emerald-100 rounded-2xl space-y-1.5">
+                                  <div className="flex items-center justify-between">
+                                    <h4 className="text-xs font-black text-emerald-900">Omega-3 Minyak Ikan (1000mg EPA/DHA)</h4>
+                                    <span className="px-2 py-0.5 bg-emerald-200/80 text-emerald-900 text-[8.5px] font-black rounded-md">Fokus Kolesterol</span>
+                                  </div>
+                                  <p className="text-[10px] text-slate-600 leading-relaxed font-semibold">
+                                    Membantu menurunkan kadar kolesterol jahat (LDL) dan trigliserida serta menunjang fleksibilitas arteri jantung.
+                                  </p>
+                                  <span className="text-[9px] font-bold text-slate-400 block">Dosis: 1-2x sehari setelah makan utama</span>
+                                </div>
+
+                                {/* Vit 3: Hipertensi */}
+                                <div className="p-3 bg-rose-50/60 border border-rose-100 rounded-2xl space-y-1.5">
+                                  <div className="flex items-center justify-between">
+                                    <h4 className="text-xs font-black text-rose-900">Magnesium & Kalium (Potassium 99mg)</h4>
+                                    <span className="px-2 py-0.5 bg-rose-200/80 text-rose-900 text-[8.5px] font-black rounded-md">Fokus Hipertensi</span>
+                                  </div>
+                                  <p className="text-[10px] text-slate-600 leading-relaxed font-semibold">
+                                    Membantu merelaksasi otot dinding pembuluh darah untuk menjaga tekanan darah tetap stabil & netralkan natrium berlebih.
+                                  </p>
+                                  <span className="text-[9px] font-bold text-slate-400 block">Dosis: 1x sehari sebelum tidur</span>
+                                </div>
+
+                                {/* Vit 4: Diabetes */}
+                                <div className="p-3 bg-blue-50/60 border border-blue-100 rounded-2xl space-y-1.5">
+                                  <div className="flex items-center justify-between">
+                                    <h4 className="text-xs font-black text-blue-900">Vitamin D3 (1000 IU) + Chromium</h4>
+                                    <span className="px-2 py-0.5 bg-blue-200/80 text-blue-900 text-[8.5px] font-black rounded-md">Fokus Diabetes</span>
+                                  </div>
+                                  <p className="text-[10px] text-slate-600 leading-relaxed font-semibold">
+                                    Meningkatkan sensitivitas reseptor insulin sel tubuh serta menjaga metabolisme gula darah harian.
+                                  </p>
+                                  <span className="text-[9px] font-bold text-slate-400 block">Dosis: 1x sehari setelah makan siang</span>
+                                </div>
+
+                                <div className="p-3 bg-slate-100 rounded-2xl text-[9.5px] text-slate-500 font-semibold leading-relaxed">
+                                  ℹ️ <strong>Catatan Kemenkes:</strong> Konsumsi suplemen disarankan sebagai pendukung pola makan gizi seimbang. Konsultasikan dengan dokter untuk kondisi medis tertentu.
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
 
                         {/* Floating mascot inline */}
                         <div className="absolute bottom-[80px] right-3 z-30 flex flex-col items-end pointer-events-none">
