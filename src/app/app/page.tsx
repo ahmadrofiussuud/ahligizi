@@ -334,6 +334,7 @@ function CekatAppContent() {
   // Modals for Cek Risiko Action CTAs
   const [showKonsultasiDokterModal, setShowKonsultasiDokterModal] = useState<boolean>(false);
   const [showRekomendasiVitaminModal, setShowRekomendasiVitaminModal] = useState<boolean>(false);
+  const [selectedRiskActionOption, setSelectedRiskActionOption] = useState<'dokter' | 'vitamin' | 'pola_sehat'>('dokter');
 
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -2988,38 +2989,76 @@ function CekatAppContent() {
                             </div>
                           </div>
 
-                          <div className="pt-2 flex flex-col items-center gap-2.5">
-                            {/* Option 1: Pola Hidup Sehat (Red outline button) */}
-                            <button 
-                              onClick={() => {
-                                setActiveTab('challenge');
-                                setChallengeSubView('home');
-                              }}
-                              className="w-full py-3 bg-white border border-[#E74C3C] text-[#E74C3C] font-black rounded-3xl text-xs uppercase tracking-wider transition active:scale-98 shadow-xs hover:bg-rose-50 flex items-center justify-center gap-2"
-                            >
-                              <span>🏃‍♂️</span>
-                              <span>Pola Hidup Sehat</span>
-                            </button>
+                          <div className="pt-2 space-y-3">
+                            {/* Option Selector Pills */}
+                            <div className="flex bg-slate-100/80 p-1 rounded-2xl text-[9.5px] font-black text-slate-500 gap-1 border border-slate-200/60 shadow-xs">
+                              <button 
+                                onClick={() => setSelectedRiskActionOption('dokter')}
+                                className={`flex-1 py-1.5 px-2 rounded-xl transition flex items-center justify-center gap-1 ${
+                                  selectedRiskActionOption === 'dokter'
+                                    ? 'bg-blue-600 text-white shadow-xs font-black'
+                                    : 'hover:bg-slate-200/70 text-slate-600 font-bold'
+                                }`}
+                              >
+                                <span>🩺 Dokter</span>
+                              </button>
+                              <button 
+                                onClick={() => setSelectedRiskActionOption('vitamin')}
+                                className={`flex-1 py-1.5 px-2 rounded-xl transition flex items-center justify-center gap-1 ${
+                                  selectedRiskActionOption === 'vitamin'
+                                    ? 'bg-emerald-600 text-white shadow-xs font-black'
+                                    : 'hover:bg-slate-200/70 text-slate-600 font-bold'
+                                }`}
+                              >
+                                <span>💊 Vitamin</span>
+                              </button>
+                              <button 
+                                onClick={() => setSelectedRiskActionOption('pola_sehat')}
+                                className={`flex-1 py-1.5 px-2 rounded-xl transition flex items-center justify-center gap-1 ${
+                                  selectedRiskActionOption === 'pola_sehat'
+                                    ? 'bg-[#E74C3C] text-white shadow-xs font-black'
+                                    : 'hover:bg-slate-200/70 text-slate-600 font-bold'
+                                }`}
+                              >
+                                <span>🏃‍♂️ Pola Sehat</span>
+                              </button>
+                            </div>
 
-                            {/* Option 2: Konsultasi Ke Dokter (Blue outline button) */}
-                            <button 
-                              onClick={() => setShowKonsultasiDokterModal(true)}
-                              className="w-full py-3 bg-white border border-[#2980B9] text-[#2980B9] font-black rounded-3xl text-xs uppercase tracking-wider transition active:scale-98 shadow-xs hover:bg-blue-50 flex items-center justify-center gap-2"
-                            >
-                              <span>🩺</span>
-                              <span>Konsultasi Ke Dokter</span>
-                            </button>
+                            {/* Single Action Button Rendered dynamically (1 baris saja) */}
+                            {selectedRiskActionOption === 'dokter' && (
+                              <button 
+                                onClick={() => setShowKonsultasiDokterModal(true)}
+                                className="w-full py-3 bg-white border border-[#2980B9] text-[#2980B9] font-black rounded-3xl text-xs uppercase tracking-wider transition active:scale-98 shadow-xs hover:bg-blue-50 flex items-center justify-center gap-2 animate-fadeIn"
+                              >
+                                <span>🩺</span>
+                                <span>Konsultasi Ke Dokter (Direkomendasikan)</span>
+                              </button>
+                            )}
 
-                            {/* Option 3: Rekomendasi Vitamin (Emerald/Amber outline button) */}
-                            <button 
-                              onClick={() => setShowRekomendasiVitaminModal(true)}
-                              className="w-full py-3 bg-white border border-[#27AE60] text-[#27AE60] font-black rounded-3xl text-xs uppercase tracking-wider transition active:scale-98 shadow-xs hover:bg-emerald-50 flex items-center justify-center gap-2"
-                            >
-                              <span>💊</span>
-                              <span>Rekomendasi Vitamin</span>
-                            </button>
+                            {selectedRiskActionOption === 'vitamin' && (
+                              <button 
+                                onClick={() => setShowRekomendasiVitaminModal(true)}
+                                className="w-full py-3 bg-white border border-[#27AE60] text-[#27AE60] font-black rounded-3xl text-xs uppercase tracking-wider transition active:scale-98 shadow-xs hover:bg-emerald-50 flex items-center justify-center gap-2 animate-fadeIn"
+                              >
+                                <span>💊</span>
+                                <span>Rekomendasi Vitamin & Suplemen</span>
+                              </button>
+                            )}
 
-                            <div className="w-full p-4 mt-1 bg-emerald-50/50 border border-emerald-100 rounded-3xl flex items-start gap-3 shadow-xs">
+                            {selectedRiskActionOption === 'pola_sehat' && (
+                              <button 
+                                onClick={() => {
+                                  setActiveTab('challenge');
+                                  setChallengeSubView('home');
+                                }}
+                                className="w-full py-3 bg-white border border-[#E74C3C] text-[#E74C3C] font-black rounded-3xl text-xs uppercase tracking-wider transition active:scale-98 shadow-xs hover:bg-rose-50 flex items-center justify-center gap-2 animate-fadeIn"
+                              >
+                                <span>🏃‍♂️</span>
+                                <span>Pola Hidup Sehat & Tantangan</span>
+                              </button>
+                            )}
+
+                            <div className="w-full p-4 bg-emerald-50/50 border border-emerald-100 rounded-3xl flex items-start gap-3 shadow-xs">
                               <div className="w-10 h-10 shrink-0 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 font-bold text-lg animate-bounce">🥗</div>
                               <p className="text-[10px] leading-relaxed text-slate-500 font-semibold text-left">
                                 Ingin mempelajari tentang Resiko Penyakitmu? Jangan khawatir! segera <button onClick={() => setDashboardSubView('edukasi')} className="text-blue-500 font-extrabold underline cursor-pointer">kunjungi artikel & Webinar kami</button>, dan semoga dapat membantu
