@@ -230,10 +230,10 @@ export default function LandingPage() {
               
               <div className="space-y-2">
                 <h3 className="text-sm font-extrabold text-slate-800 transition-colors duration-250 group-hover:text-[#2d8d81] tracking-wide">
-                  Unggah atau Ambil Foto
+                  CEK — Periksa kesehatanmu
                 </h3>
                 <p className="text-xs text-slate-500 leading-relaxed font-semibold">
-                  Gunakan kamera ponsel Anda untuk mengambil gambar menu makanan Anda secara langsung.
+                  Masukkan data dan hasil pemeriksaan kesehatan untuk mulai mengenali kondisi tubuh.
                 </p>
               </div>
               
@@ -255,10 +255,10 @@ export default function LandingPage() {
               
               <div className="space-y-2">
                 <h3 className="text-sm font-extrabold text-slate-800 transition-colors duration-250 group-hover:text-[#2d8d81] tracking-wide">
-                  Analisis Gizi Otomatis
+                  KENALI — Pahami kondisi dan risikomu
                 </h3>
-                <p className="text-xs text-slate-505 leading-relaxed font-semibold">
-                  Kecerdasan Buatan (AI Gemini) menganalisis kalori, kadar protein, karbohidrat, dan lemak dalam hitungan detik.
+                <p className="text-xs text-slate-500 leading-relaxed font-semibold">
+                  Lihat interpretasi hasil dalam kategori yang mudah dipahami serta pantau informasi kesehatan dan nutrisi.
                 </p>
               </div>
               
@@ -280,10 +280,10 @@ export default function LandingPage() {
               
               <div className="space-y-2">
                 <h3 className="text-sm font-extrabold text-slate-800 transition-colors duration-250 group-hover:text-[#2d8d81] tracking-wide">
-                  Konsultasikan & Lacak
+                  TINDAK LANJUTI — Ambil langkah sehat
                 </h3>
-                <p className="text-xs text-slate-505 leading-relaxed font-semibold">
-                  Simpan log ke dashboard harian Anda atau bagikan ke dokter gizi pilihan Anda untuk bimbingan langsung.
+                <p className="text-xs text-slate-500 leading-relaxed font-semibold">
+                  Dapatkan rekomendasi, tetapkan tujuan kesehatan, dan akses layanan tindak lanjut sesuai kebutuhan.
                 </p>
               </div>
               
