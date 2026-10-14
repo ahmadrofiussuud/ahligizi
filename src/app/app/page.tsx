@@ -56,6 +56,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import DashboardPage from '../dashboard/page';
+import RegistrationBarcode from '@/components/RegistrationBarcode';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 
 // Data artikel static
@@ -301,6 +302,20 @@ function CekatAppContent() {
   const [screeningAnswers, setScreeningAnswers] = useState<Record<string, string>>({});
   const [selectedOption, setSelectedOption] = useState<string>('');
   const [completedModules, setCompletedModules] = useState<string[]>([]);
+  const [showRegistrationBarcode, setShowRegistrationBarcode] = useState(false);
+  const [showPharmacistModal, setShowPharmacistModal] = useState(false);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('cekat_screening_progress') || '{}');
+      if (saved.answers && typeof saved.answers === 'object') setScreeningAnswers(saved.answers);
+      if (Array.isArray(saved.completed)) setCompletedModules(saved.completed.filter((id: string) => ['hipertensi', 'diabetes', 'stunting'].includes(id)));
+    } catch { /* Invalid saved progress is ignored. */ }
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, []);
+
 
   // BMI State Variables
   const [weightInput, setWeightInput] = useState<string>('68');
@@ -886,6 +901,7 @@ function CekatAppContent() {
                   </div>
                   <div className="space-y-2">
                     <h2 className="text-2xl font-black text-slate-800 tracking-tight">Selamat Datang di CEKAT</h2>
+                    <Link href="/patient" className="block rounded-xl bg-emerald-700 px-5 py-3 text-sm font-bold text-white">Masuk ke akun & hasil pemeriksaan tersimpan →</Link>
                     <p className="text-xs text-slate-500 font-semibold leading-relaxed max-w-md mx-auto">
                       Ketahui profil risiko Penyakit Tidak Menular (PTM) Anda secara dini dan ikuti program preventif pola makan gizi seimbang yang terintegrasi Fasilitas Kesehatan.
                     </p>
@@ -911,7 +927,6 @@ function CekatAppContent() {
                 <div className="space-y-6">
                   <div className="space-y-1">
                     <h2 className="text-2xl font-black tracking-tight text-slate-800">Daftar Akun Baru</h2>
-                    <p className="text-xs text-slate-400 font-bold leading-normal">Lengkapi data Anda untuk integrasi data rekam gizi dan Fasilitas Kesehatan.</p>
                   </div>
 
                   <div className="space-y-4">
@@ -1226,7 +1241,7 @@ function CekatAppContent() {
                 <span>Cekat App</span>
                 <span className="text-[9px] bg-emerald-950 border border-emerald-500/30 text-emerald-400 font-bold px-1.5 py-0.5 rounded uppercase">Simulator</span>
               </h1>
-              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Cek • Kenali • Tindaklanjuti</p>
+              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Cek, Kenali, Tindak Lanjuti</p>
             </div>
           </div>
 
@@ -1460,7 +1475,7 @@ function CekatAppContent() {
                   </div>
                   <div className="space-y-1">
                     <h1 className="text-4xl font-extrabold tracking-tight text-emerald-800">Cekat</h1>
-                    <p className="text-xs font-black text-slate-500 uppercase tracking-widest">Cek • Kenali • Tindaklanjuti</p>
+                    <p className="text-xs font-black text-slate-500 uppercase tracking-widest">Cek, Kenali, Tindak Lanjuti</p>
                   </div>
                 </div>
                 <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
@@ -1504,6 +1519,7 @@ function CekatAppContent() {
                     <div className="text-xs font-semibold text-emerald-100">
                       Sudah mempunyai akun? <button onClick={() => setAppState('login')} className="underline text-white font-black">Masuk</button>
                     </div>
+                    <Link href="/patient" className="block rounded-xl bg-white px-4 py-3 text-sm font-bold text-emerald-800">Buka akun & hasil pemeriksaan tersimpan →</Link>
                   </div>
                 </div>
               </div>
@@ -1518,7 +1534,7 @@ function CekatAppContent() {
                     <img src="/images/logo C cekat.png" alt="Cekat Logo" className="w-8 h-8 object-contain" />
                     <div>
                       <span className="text-sm font-black text-slate-800 block">CEKAT</span>
-                      <span className="text-[6.5px] font-black text-emerald-600 uppercase tracking-wider block">Cek • Kenali • Tindaklanjuti</span>
+                      <span className="text-[6.5px] font-black text-emerald-600 uppercase tracking-wider block">Cek, Kenali, Tindak Lanjuti</span>
                     </div>
                   </div>
 
@@ -1661,7 +1677,6 @@ function CekatAppContent() {
 
                   <div className="space-y-1">
                     <h2 className="text-xl font-black tracking-tight text-slate-800">Daftar Akun Baru</h2>
-                    <p className="text-xs text-slate-400 font-bold leading-normal">Lengkapi data di bawah ini untuk integrasi data rekam gizi Anda.</p>
                   </div>
 
                   <div className="space-y-3">
@@ -1857,6 +1872,7 @@ function CekatAppContent() {
             {/* 4. MAIN CORE APPLICATION */}
             {appState === 'main' && (
               <div ref={scrollContainerRef} className="flex-1 flex flex-col justify-between overflow-y-auto scroll-smooth">
+                <div className="shrink-0 border-b border-amber-200 bg-amber-50 px-4 py-2 text-[11px] text-amber-950"><span className="font-bold">Mode demo · Data pada tampilan ini adalah contoh.</span> <Link href="/patient" className="font-bold underline">Buka akun & hasil tersimpan</Link></div>
                 
                 {/* -------------------------------------------------------------
                     TAB 1: BERANDA / HOME (Kebutuhanmu, Station, Risiko, Reminders, Cart)
@@ -1876,7 +1892,7 @@ function CekatAppContent() {
                               </div>
                               <div className="flex flex-col">
                                 <span className="text-xs font-black tracking-tight text-white uppercase leading-none">Cekat</span>
-                                <span className="text-[5.5px] font-bold text-white/90 uppercase tracking-widest leading-none mt-0.5">Cerdas Sehat Terkendali</span>
+                                <span className="text-[5.5px] font-bold text-white/90 uppercase tracking-widest leading-none mt-0.5">Cek, Kenali, Tindak Lanjuti</span>
                               </div>
                             </div>
                             <button 
@@ -1906,7 +1922,7 @@ function CekatAppContent() {
                           </div>
                         </div>
 
-                        {/* Sudah cek kesehatan di CEKAT Station? Promo Banner Card */}
+                        {/* Sudah cek kesehatan bulan ini? Promo Banner Card */}
                         <div className="mx-4 mt-1 shrink-0">
                           <div 
                             onClick={() => setDashboardSubView('station_summary')}
@@ -1923,7 +1939,7 @@ function CekatAppContent() {
                             {/* Right side: Information */}
                             <div className="flex-1 pl-4 space-y-1.5 z-10 flex flex-col justify-between h-full">
                               <div>
-                                <h4 className="text-[16px] font-black leading-snug tracking-tight">Sudah cek kesehatan di CEKAT Station?</h4>
+                                <h4 className="text-[16px] font-black leading-snug tracking-tight">Sudah cek kesehatan bulan ini?</h4>
                                 <p className="text-[11.5px] text-emerald-100 font-semibold leading-tight mt-0.5">
                                   Lihat hasil pemeriksaan dan lanjutkan perjalanan sehatmu di CEKAT App!
                                 </p>
@@ -1948,7 +1964,13 @@ function CekatAppContent() {
                         {/* Banner Daftar No. Antrian CEKAT Station */}
                         <div className="mx-4 mt-2 shrink-0">
                           <button 
-                            onClick={() => setDashboardSubView('antrian')}
+                            onClick={() => {
+                              if (!['hipertensi', 'diabetes', 'stunting'].every(id => completedModules.includes(id))) {
+                                showToast('Mohon lengkapi data skrining kesehatan anda terlebih dahulu 🙏', 'info');
+                                return;
+                              }
+                              setDashboardSubView('antrian');
+                            }}
                             className="w-full py-3 px-4 bg-gradient-to-r from-[#00875A] to-[#10B981] text-white font-black rounded-2xl shadow-md flex items-center justify-between active:scale-98 transition group cursor-pointer border border-emerald-400/40"
                           >
                             <div className="flex items-center space-x-3 text-left">
@@ -1957,14 +1979,11 @@ function CekatAppContent() {
                               </div>
                               <div>
                                 <h4 className="text-[12px] font-black text-white uppercase tracking-wider flex items-center gap-1.5">
-                                  <span>🎫 DAFTAR NO ANTRIAN</span>
-                                  <span className="text-[8px] bg-yellow-400 text-slate-950 px-1.5 py-0.5 rounded font-extrabold uppercase">STATION</span>
+                                  <span>Cek Nomor Antrian di Faskes Terdekat</span>
                                 </h4>
-                                <p className="text-[9.5px] text-emerald-100 font-medium">Ambil nomor antrian & cek antrian CEKAT Station</p>
                               </div>
                             </div>
                             <div className="px-3 py-1 bg-[#F1C40F] text-slate-950 font-black text-[9.5px] uppercase rounded-full shadow-xs shrink-0 flex items-center gap-1">
-                              <span>DAFTAR</span>
                               <ArrowRight className="w-3 h-3" />
                             </div>
                           </button>
@@ -2154,7 +2173,7 @@ function CekatAppContent() {
                               <img src="/images/logo C cekat.png" alt="Cekat Logo" className="w-6 h-6 object-contain shrink-0" />
                               <div className="flex flex-col text-left">
                                 <span className="text-sm font-black text-slate-800 tracking-tight leading-none">Cekat</span>
-                                <span className="text-[5.5px] font-extrabold text-emerald-600 uppercase tracking-widest leading-none mt-0.5">Cek • Kenali • Tindaklanjuti</span>
+                                <span className="text-[5.5px] font-extrabold text-emerald-600 uppercase tracking-widest leading-none mt-0.5">Cek, Kenali, Tindak Lanjuti</span>
                               </div>
                             </div>
                             <button 
@@ -2353,7 +2372,7 @@ function CekatAppContent() {
                       </div>
                     )}
 
-                    {/* View: Station Summary (Ringkasan Hasil CEKAT Station) */}
+                    {/* View: Station Summary (Hasil Screening Kesehatan Anda) */}
                     {dashboardSubView === 'station_summary' && (
                       <div className="space-y-5 flex-1 flex flex-col justify-between pb-20 animate-fadeIn bg-slate-50 min-h-screen relative">
                         {/* Header Bar */}
@@ -2365,7 +2384,7 @@ function CekatAppContent() {
                             <img src="/images/logo C cekat.png" alt="Cekat Logo" className="w-6 h-6 object-contain shrink-0" />
                             <div className="flex flex-col text-left">
                               <span className="text-sm font-black text-slate-800 tracking-tight leading-none">Cekat</span>
-                              <span className="text-[5.5px] font-extrabold text-emerald-600 uppercase tracking-widest leading-none mt-0.5">Cek • Kenali • Tindaklanjuti</span>
+                              <span className="text-[5.5px] font-extrabold text-emerald-600 uppercase tracking-widest leading-none mt-0.5">Cek, Kenali, Tindak Lanjuti</span>
                             </div>
                           </div>
                           <button className="p-1.5 hover:bg-slate-100 rounded-full transition text-slate-600">
@@ -2376,7 +2395,7 @@ function CekatAppContent() {
                         <div className="flex-1 px-5 space-y-4 overflow-y-auto text-left">
                           {/* Title */}
                           <div className="text-center mt-2">
-                            <h3 className="text-lg font-black text-slate-800 tracking-tight drop-shadow-xs">Ringkasan Hasil CEKAT Station</h3>
+                            <h3 className="text-lg font-black text-slate-800 tracking-tight drop-shadow-xs">Hasil Screening Kesehatan Anda</h3>
                           </div>
 
                           <div className="text-left text-xs space-y-0.5 px-1">
@@ -2428,6 +2447,17 @@ function CekatAppContent() {
                                   </div>
                                 </div>
                                 <span className="text-[8.5px] font-black bg-[#E8F8F5] text-[#117A65] px-3 py-1 rounded-full border border-[#A3E4D7] shrink-0">Normal</span>
+                              </div>
+
+                              <div className="flex items-center justify-between pb-3 border-b border-emerald-200/60">
+                                <div className="flex items-center space-x-3">
+                                  <div className="w-11 h-11 flex items-center justify-center shrink-0"><Activity className="w-7 h-7 text-teal-600" /></div>
+                                  <div className="flex flex-col">
+                                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Saturasi Oksigen (SpO₂)</span>
+                                    <span className="text-[15px] font-black text-slate-800">— <span className="text-[10px] text-slate-400">%</span></span>
+                                  </div>
+                                </div>
+                                <span className="text-[8.5px] font-black bg-white text-slate-500 px-3 py-1 rounded-full border border-slate-200">Belum diukur</span>
                               </div>
 
                               {/* Row 4: Lingkar Perut */}
@@ -2516,7 +2546,7 @@ function CekatAppContent() {
                             <img src="/images/logo C cekat.png" alt="Cekat Logo" className="w-6 h-6 object-contain shrink-0" />
                             <div className="flex flex-col text-left">
                               <span className="text-sm font-black text-slate-800 tracking-tight leading-none">Cekat</span>
-                              <span className="text-[5.5px] font-extrabold text-emerald-600 uppercase tracking-widest leading-none mt-0.5">Cek • Kenali • Tindaklanjuti</span>
+                              <span className="text-[5.5px] font-extrabold text-emerald-600 uppercase tracking-widest leading-none mt-0.5">Cek, Kenali, Tindak Lanjuti</span>
                             </div>
                           </div>
                           <button 
@@ -2649,7 +2679,7 @@ function CekatAppContent() {
                             <img src="/images/logo C cekat.png" alt="Cekat Logo" className="w-6 h-6 object-contain shrink-0" />
                             <div className="flex flex-col text-left">
                               <span className="text-sm font-black text-slate-800 tracking-tight leading-none">Cekat</span>
-                              <span className="text-[5.5px] font-extrabold text-emerald-600 uppercase tracking-widest leading-none mt-0.5">Cek • Kenali • Tindaklanjuti</span>
+                              <span className="text-[5.5px] font-extrabold text-emerald-600 uppercase tracking-widest leading-none mt-0.5">Cek, Kenali, Tindak Lanjuti</span>
                             </div>
                           </div>
                           <button className="p-1.5 hover:bg-slate-100 rounded-full transition text-slate-600">
@@ -2792,7 +2822,7 @@ function CekatAppContent() {
                               <img src="/images/logo C cekat.png" alt="Cekat Logo" className="w-6 h-6 object-contain shrink-0" />
                               <div className="flex flex-col text-left">
                                 <span className="text-sm font-black text-slate-800 tracking-tight leading-none">Cekat</span>
-                                <span className="text-[5.5px] font-extrabold text-emerald-600 uppercase tracking-widest leading-none mt-0.5">Cek • Kenali • Tindaklanjuti</span>
+                                <span className="text-[5.5px] font-extrabold text-emerald-600 uppercase tracking-widest leading-none mt-0.5">Cek, Kenali, Tindak Lanjuti</span>
                               </div>
                             </div>
                             <button className="p-1.5 hover:bg-slate-100 rounded-full transition text-slate-600">
@@ -2872,6 +2902,7 @@ function CekatAppContent() {
                                     const qKey = `${activeScreeningModule}_q${currentQuestionIndex + 1}`;
                                     const updatedAnswers = { ...screeningAnswers, [qKey]: selectedOption };
                                     setScreeningAnswers(updatedAnswers);
+                                    localStorage.setItem('cekat_screening_progress', JSON.stringify({ answers: updatedAnswers, completed: completedModules }));
 
                                     if (currentQuestionIndex < totalQ - 1) {
                                       const nextIdx = currentQuestionIndex + 1;
@@ -2880,7 +2911,9 @@ function CekatAppContent() {
                                       setSelectedOption(updatedAnswers[nextKey] || '');
                                     } else {
                                       // Screening module complete!
-                                      setCompletedModules(prev => Array.from(new Set([...prev, activeScreeningModule])));
+                                      const completed = Array.from(new Set([...completedModules, activeScreeningModule]));
+                                      setCompletedModules(completed);
+                                      localStorage.setItem('cekat_screening_progress', JSON.stringify({ answers: updatedAnswers, completed }));
                                       showToast(`Screening ${moduleTitle} berhasil diselesaikan!`, 'success');
                                       setDashboardSubView('screening_list');
                                     }
@@ -2926,7 +2959,7 @@ function CekatAppContent() {
                             <img src="/images/logo C cekat.png" alt="Cekat Logo" className="w-6 h-6 object-contain shrink-0" />
                             <div className="flex flex-col text-left">
                               <span className="text-sm font-black text-slate-800 tracking-tight leading-none">Cekat</span>
-                              <span className="text-[5.5px] font-extrabold text-emerald-600 uppercase tracking-widest leading-none mt-0.5">Cek • Kenali • Tindaklanjuti</span>
+                              <span className="text-[5.5px] font-extrabold text-emerald-600 uppercase tracking-widest leading-none mt-0.5">Cek, Kenali, Tindak Lanjuti</span>
                             </div>
                           </div>
                           <button className="p-1 hover:bg-slate-50 rounded-full transition text-slate-600">
@@ -3041,7 +3074,7 @@ function CekatAppContent() {
                                 className="w-full py-3 bg-white border border-[#27AE60] text-[#27AE60] font-black rounded-3xl text-xs uppercase tracking-wider transition active:scale-98 shadow-xs hover:bg-emerald-50 flex items-center justify-center gap-2 animate-fadeIn"
                               >
                                 <span>💊</span>
-                                <span>Mulai Swamedikasi Mandiri</span>
+                                <span>Mulai Swamedikasi</span>
                               </button>
                             )}
 
@@ -3173,6 +3206,17 @@ function CekatAppContent() {
                           </div>
                         )}
 
+                        {showPharmacistModal && (
+                          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-5" role="dialog" aria-modal="true" aria-label="Konsultasi dengan Apoteker">
+                            <div className="w-full max-w-sm rounded-3xl bg-white p-6 space-y-4 text-left">
+                              <div className="flex justify-between items-center"><h3 className="font-black text-slate-900">Konsultasi dengan Apoteker</h3><button type="button" onClick={() => setShowPharmacistModal(false)} aria-label="Tutup konsultasi apoteker" className="p-2">✕</button></div>
+                              <p className="text-sm text-slate-600">Konsultasikan pilihan obat, suplemen, aturan pakai, dan interaksi obat dengan apoteker di faskes atau apotek terdekat.</p>
+                              <p className="text-xs text-slate-500">Layanan konsultasi apoteker online belum tersedia.</p>
+                              <button type="button" onClick={() => setShowPharmacistModal(false)} className="w-full rounded-xl bg-emerald-600 py-3 text-white font-bold">Mengerti</button>
+                            </div>
+                          </div>
+                        )}
+
                         {/* Modal: Swamedikasi Mandiri */}
                         {showRekomendasiVitaminModal && (
                           <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 animate-fadeIn">
@@ -3183,7 +3227,7 @@ function CekatAppContent() {
                                     💊
                                   </div>
                                   <div>
-                                    <h3 className="text-sm font-black text-slate-900 leading-tight">Panduan Swamedikasi Mandiri</h3>
+                                    <h3 className="text-sm font-black text-slate-900 leading-tight">Panduan Swamedikasi</h3>
                                     <p className="text-[10px] font-semibold text-slate-500">Panduan obat bebas (OTC), suplemen & pertolongan mandiri Kemenkes</p>
                                   </div>
                                 </div>
@@ -3243,6 +3287,9 @@ function CekatAppContent() {
                                 <div className="p-3 bg-slate-100 rounded-2xl text-[9.5px] text-slate-500 font-semibold leading-relaxed">
                                   ℹ️ <strong>Prinsip Swamedikasi Kemenkes:</strong> Swamedikasi ditujukan untuk pertolongan awal & perawatan mandiri yang terukur. Bila gejala berlanjut &gt;3 hari, segera hubungi dokter terdekat.
                                 </div>
+                                <button type="button" onClick={() => { setShowRekomendasiVitaminModal(false); setShowPharmacistModal(true); }} className="w-full py-3 px-4 rounded-2xl bg-emerald-600 text-white text-xs font-black flex items-center justify-center gap-2">
+                                  <MessageCircle className="w-4 h-4" /> Konsultasi dengan Apoteker
+                                </button>
                               </div>
                             </div>
                           </div>
@@ -3408,17 +3455,18 @@ function CekatAppContent() {
                             <span className="px-3.5 py-1.5 bg-emerald-50 border border-emerald-100 text-emerald-700 rounded-full shrink-0">Semua</span>
                             <span className="px-3.5 py-1.5 bg-white border border-slate-100 rounded-full shrink-0">Vitamin</span>
                             <span className="px-3.5 py-1.5 bg-white border border-slate-100 rounded-full shrink-0">Tablet Penambah darah</span>
-                            <span className="px-3.5 py-1.5 bg-white border border-slate-100 rounded-full shrink-0">Susu</span>
+                            <span className="px-3.5 py-1.5 bg-white border border-slate-100 rounded-full shrink-0">Suplemen</span>
                             <span className="px-3.5 py-1.5 bg-white border border-slate-100 rounded-full shrink-0">Obat</span>
                           </div>
 
+                          <p className="text-[10px] text-slate-500">Ilustrasi produk. Katalog dan harga masih berupa contoh.</p>
                           {/* Product Grid */}
                           <div className="grid grid-cols-2 gap-4">
                             {/* Product 1 */}
                             <div className="bg-white border border-slate-100 rounded-3xl p-3 shadow-sm flex flex-col justify-between space-y-3">
                               <div className="space-y-1.5">
                                 <div className="aspect-square bg-slate-50 rounded-2xl overflow-hidden flex items-center justify-center p-2">
-                                  <img src="https://images.unsplash.com/photo-1584017911766-d451b3d0e843?auto=format&fit=crop&w=150&q=80" alt="Enervon C" className="h-full object-contain" />
+                                  <img src="/images/product-vitamin.svg" alt="Enervon C" className="h-full object-contain" />
                                 </div>
                                 <h5 className="text-[10px] font-black text-slate-800 leading-snug line-clamp-2">Enervon C 133 mg (50 Tablet)</h5>
                                 <span className="text-[9px] text-slate-400 block font-bold">NutriStore Official</span>
@@ -3433,7 +3481,7 @@ function CekatAppContent() {
                             <div className="bg-white border border-slate-100 rounded-3xl p-3 shadow-sm flex flex-col justify-between space-y-3">
                               <div className="space-y-1.5">
                                 <div className="aspect-square bg-slate-50 rounded-2xl overflow-hidden flex items-center justify-center p-2">
-                                  <img src="https://images.unsplash.com/photo-1550572017-edd951b55104?auto=format&fit=crop&w=150&q=80" alt="Tablet Tambah Darah" className="h-full object-contain" />
+                                  <img src="/images/product-iron.svg" alt="Tablet Tambah Darah" className="h-full object-contain" />
                                 </div>
                                 <h5 className="text-[10px] font-black text-slate-800 leading-snug line-clamp-2">Tablet Tambah Darah (Pcs 100 Tablet)</h5>
                                 <span className="text-[9px] text-slate-400 block font-bold">Kimia Farma</span>
@@ -3448,14 +3496,14 @@ function CekatAppContent() {
                             <div className="bg-white border border-slate-100 rounded-3xl p-3 shadow-sm flex flex-col justify-between space-y-3">
                               <div className="space-y-1.5">
                                 <div className="aspect-square bg-slate-50 rounded-2xl overflow-hidden flex items-center justify-center p-2">
-                                  <img src="https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=150&q=80" alt="Ultra Milk" className="h-full object-contain" />
+                                  <img src="/images/product-vitamin-d.svg" alt="Ilustrasi suplemen Vitamin D" className="h-full object-contain" />
                                 </div>
-                                <h5 className="text-[10px] font-black text-slate-800 leading-snug line-clamp-2">Ultra Milk Susu UHT 200 ml (1 Pcs)</h5>
-                                <span className="text-[9px] text-slate-400 block font-bold">Ultra Jaya</span>
+                                <h5 className="text-[10px] font-black text-slate-800 leading-snug line-clamp-2">Suplemen Vitamin D (30 Tablet)</h5>
+                                <span className="text-[9px] text-slate-400 block font-bold">Apotek Sehat</span>
                               </div>
                               <div className="flex items-center justify-between pt-1">
-                                <span className="text-xs font-black text-emerald-600">Rp 5.700</span>
-                                <span className="text-[9px] text-slate-400 line-through">Rp 6.000</span>
+                                <span className="text-xs font-black text-emerald-600">Rp 35.000</span>
+                                <span className="text-[9px] text-slate-400 line-through">Rp 40.000</span>
                               </div>
                             </div>
 
@@ -3463,14 +3511,14 @@ function CekatAppContent() {
                             <div className="bg-white border border-slate-100 rounded-3xl p-3 shadow-sm flex flex-col justify-between space-y-3">
                               <div className="space-y-1.5">
                                 <div className="aspect-square bg-slate-50 rounded-2xl overflow-hidden flex items-center justify-center p-2">
-                                  <img src="https://images.unsplash.com/photo-1604503468506-a8da13d82791?auto=format&fit=crop&w=150&q=80" alt="Ayam Fillet" className="h-full object-contain" />
+                                  <img src="/images/product-zinc.svg" alt="Ilustrasi suplemen Zinc" className="h-full object-contain" />
                                 </div>
-                                <h5 className="text-[10px] font-black text-slate-800 leading-snug line-clamp-2">Ayam Fillet Dada 1 Kg Fresh</h5>
-                                <span className="text-[9px] text-slate-400 block font-bold">Pasar Tani</span>
+                                <h5 className="text-[10px] font-black text-slate-800 leading-snug line-clamp-2">Suplemen Zinc (30 Tablet)</h5>
+                                <span className="text-[9px] text-slate-400 block font-bold">Apotek Sehat</span>
                               </div>
                               <div className="flex items-center justify-between pt-1">
-                                <span className="text-xs font-black text-emerald-600">Rp 32.300</span>
-                                <span className="text-[9px] text-slate-400 line-through">Rp 54.000</span>
+                                <span className="text-xs font-black text-emerald-600">Rp 32.000</span>
+                                <span className="text-[9px] text-slate-400 line-through">Rp 38.000</span>
                               </div>
                             </div>
                           </div>
@@ -5513,11 +5561,20 @@ function CekatAppContent() {
                       </div>
                     </div>
 
+                    {showRegistrationBarcode && (
+                      <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-5" role="dialog" aria-modal="true" aria-label="Barcode Registrasi">
+                        <div className="w-full max-w-sm rounded-3xl bg-white p-6 space-y-5">
+                          <div className="flex items-center justify-between"><h3 className="font-black text-slate-900">Barcode Registrasi</h3><button type="button" onClick={() => setShowRegistrationBarcode(false)} aria-label="Tutup barcode" className="p-2 text-slate-700">✕</button></div>
+                          <RegistrationBarcode />
+                        </div>
+                      </div>
+                    )}
+
                     {/* Settings / Profile actions (Compact style list) */}
                     <div className="bg-white border border-teal-50/50 rounded-3xl p-4 shadow-[0_8px_30px_rgb(0,0,0,0.01)] space-y-1.5">
                       {[
                         { name: 'Ubah Data Fisik & Profil', icon: User, action: () => showToast('Membuka pengaturan profil fisik...', 'info') },
-                        { name: 'Riwayat Screening PTM', icon: ClipboardList, action: () => { setActiveTab('riwayat'); setRiwayatSubView('home'); } },
+                        { name: 'Barcode Registrasi', icon: ClipboardList, action: () => setShowRegistrationBarcode(true) },
                         { name: 'Hubungkan Faskes / Asuransi', icon: Award, action: () => showToast('Menghubungkan ke Faskes Terdekat...', 'info') },
                         { name: 'Pengaturan Notifikasi', icon: Activity, action: () => showToast('Membuka pengaturan notifikasi...', 'info') }
                       ].map((item, idx) => {

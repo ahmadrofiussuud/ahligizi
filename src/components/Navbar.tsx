@@ -43,17 +43,19 @@ export default function Navbar() {
 
   // Navigation links shown when logged in (Clean professional labels without raw emojis)
   const loggedInLinks = [
+    { name: 'Daftar Akses', href: '/access' },
     { name: 'CEKAT Station', href: '/station' },
     { name: 'Scan Gizi', href: '/scan' },
     { name: 'Dashboard', href: '/dashboard' },
-    { name: 'CEKAT App', href: '/app' },
+    { name: 'CEKAT App', href: '/patient' },
     { name: 'Artikel', href: '/articles' },
   ];
 
   // Professional marketing navigation links shown on landing page (logged out)
   const landingLinks = [
+    { name: 'Daftar Akses', href: '/access' },
     { name: 'CEKAT Station', href: '/station' },
-    { name: 'CEKAT App', href: '/app' },
+    { name: 'CEKAT App', href: '/patient' },
     { name: 'Fitur Utama', href: '#features-section' },
     { name: 'Cara Kerja', href: '#how-it-works-section' },
     { name: 'Tim Medis', href: '#doctors-section' },
@@ -171,12 +173,12 @@ export default function Navbar() {
       {!isLandingPage && (
         <div className="md:hidden flex overflow-x-auto py-2.5 px-4 space-x-2 border-t border-slate-100 bg-white/95 text-xs">
           <Link
-            href="/app"
+            href="/patient"
             className="shrink-0 px-3.5 py-1.5 rounded-full font-black text-xs bg-emerald-600 text-white shadow-sm"
           >
             <span>CEKAT App</span>
           </Link>
-          {loggedInLinks.filter(l => l.href !== '/app').map((link) => {
+          {loggedInLinks.filter(l => l.href !== '/patient').map((link) => {
             const isActive = pathname === link.href;
             return (
               <Link

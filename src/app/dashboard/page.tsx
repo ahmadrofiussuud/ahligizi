@@ -43,6 +43,7 @@ import {
   LogOut
 } from 'lucide-react';
 import { PtmFocus, PTM_DETAILS } from '@/lib/mifflinStJeor';
+import RegistrationBarcode from '@/components/RegistrationBarcode';
 
 interface HealthAction {
   id: string;
@@ -62,6 +63,7 @@ export default function DashboardPage({ onLogout }: { onLogout?: () => void }) {
   const [todaysLogs, setTodaysLogs] = useState<any[]>([]);
   const [activePtmFocus, setActivePtmFocus] = useState<PtmFocus>('blood_sugar_control');
   const [activeTab, setActiveTab] = useState<'dashboard' | 'nutrisi' | 'challenge' | 'riwayat' | 'profil'>('dashboard');
+  const [showRegistrationBarcode, setShowRegistrationBarcode] = useState(false);
 
   // Personal Health Actions State
   const [actions, setActions] = useState<HealthAction[]>([]);
@@ -339,6 +341,9 @@ export default function DashboardPage({ onLogout }: { onLogout?: () => void }) {
           <div className="h-10 flex items-center p-0.5">
             <img src="/images/logo full cekat station.png" alt="Cekat Logo" className="h-full object-contain" />
           </div>
+          <p className="hidden lg:block text-xs font-bold text-emerald-700">Cek, Kenali, Tindak Lanjuti</p>
+          <Link href="/patient" className="text-xs font-bold text-emerald-700">Akun & hasil tersimpan →</Link>
+          <span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-800">Mode demo</span>
         </div>
 
         {/* Tab Navigation Menu */}
@@ -479,7 +484,7 @@ export default function DashboardPage({ onLogout }: { onLogout?: () => void }) {
                   <img src="/images/cekat station.png" alt="Cekat Station Kiosk" className="w-full h-full object-contain drop-shadow-md hover:scale-105 transition transform duration-300" />
                 </div>
                 <div className="space-y-1">
-                  <h3 className="text-xl font-black text-white leading-snug tracking-tight">Sudah cek kesehatan di CEKAT Station?</h3>
+                  <h3 className="text-xl font-black text-white leading-snug tracking-tight">Sudah cek kesehatan bulan ini?</h3>
                   <p className="text-sm text-emerald-100 font-semibold leading-relaxed max-w-xl">
                     Ambil hasil screening kesehatan Anda (tensi, gula darah, kolesterol) di Kiosk Station terdekat dan sinkronkan datanya langsung ke aplikasi!
                   </p>
@@ -931,7 +936,7 @@ export default function DashboardPage({ onLogout }: { onLogout?: () => void }) {
               <div className="flex items-center justify-between border-b border-slate-100 pb-4">
                 <div className="space-y-1">
                   <span className="text-xs font-mono font-bold text-emerald-600 uppercase">Riwayat Pemeriksaan Klinis</span>
-                  <h2 className="text-xl sm:text-2xl font-black text-slate-800 uppercase tracking-tight font-mono">Data CEKAT Kiosk Station</h2>
+                  <h2 className="text-xl sm:text-2xl font-black text-slate-800 uppercase tracking-tight font-mono">Hasil Screening Kesehatan Anda</h2>
                 </div>
                 <span className="px-3.5 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-black uppercase tracking-wider border border-emerald-100">
                   Terintegrasi Satusehat RI
@@ -939,7 +944,7 @@ export default function DashboardPage({ onLogout }: { onLogout?: () => void }) {
               </div>
 
               {/* Screening Table */}
-              <div className="border border-slate-150 rounded-2xl overflow-hidden shadow-xs">
+              <div className="border border-slate-150 rounded-2xl overflow-x-auto shadow-xs">
                 <table className="w-full text-left text-xs font-semibold border-collapse">
                   <thead>
                     <tr className="bg-slate-50 border-b border-slate-200 text-slate-500 text-[10px] uppercase font-black">
@@ -949,6 +954,7 @@ export default function DashboardPage({ onLogout }: { onLogout?: () => void }) {
                       <th className="py-3 px-4">Gula Darah Puasa (GDP)</th>
                       <th className="py-3 px-4">Lingkar Perut (LP)</th>
                       <th className="py-3 px-4">Indeks Massa Tubuh (IMT)</th>
+                      <th className="py-3 px-4">SpO₂</th>
                       <th className="py-3 px-4 text-right">Status Risiko</th>
                     </tr>
                   </thead>
@@ -960,6 +966,7 @@ export default function DashboardPage({ onLogout }: { onLogout?: () => void }) {
                       <td className="py-4 px-4 font-mono text-rose-700 font-bold">126 mg/dL</td>
                       <td className="py-4 px-4 font-mono">92 cm</td>
                       <td className="py-4 px-4 font-mono">26.6 (Kelebihan BB)</td>
+                      <td className="py-4 px-4 text-slate-500">Belum diukur</td>
                       <td className="py-4 px-4 text-right">
                         <span className="px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 font-black text-[9px] uppercase tracking-wider border border-amber-100">
                           Perlu Perhatian
@@ -973,6 +980,7 @@ export default function DashboardPage({ onLogout }: { onLogout?: () => void }) {
                       <td className="py-4 px-4 font-mono text-emerald-700 font-bold">110 mg/dL</td>
                       <td className="py-4 px-4 font-mono">93 cm</td>
                       <td className="py-4 px-4 font-mono">27.1 (Kelebihan BB)</td>
+                      <td className="py-4 px-4 text-slate-500">Belum diukur</td>
                       <td className="py-4 px-4 text-right">
                         <span className="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 font-black text-[9px] uppercase tracking-wider border border-emerald-100">
                           Risiko Rendah
@@ -1041,7 +1049,7 @@ export default function DashboardPage({ onLogout }: { onLogout?: () => void }) {
               <div className="bg-white border border-teal-100/70 rounded-3xl p-6 shadow-sm space-y-3">
                 {[
                   { name: 'Ubah Data Fisik & Profil', icon: User, action: () => alert('Membuka pengaturan profil fisik...') },
-                  { name: 'Riwayat Screening PTM', icon: ClipboardList, action: () => setActiveTab('riwayat') },
+                  { name: 'Barcode Registrasi', icon: ClipboardList, action: () => setShowRegistrationBarcode(true) },
                   { name: 'Hubungkan Faskes / Asuransi', icon: Award, action: () => alert('Menghubungkan ke Faskes Terdekat...') },
                   { name: 'Pengaturan Notifikasi', icon: Activity, action: () => alert('Membuka pengaturan notifikasi...') }
                 ].map((item, idx) => {
@@ -1068,6 +1076,14 @@ export default function DashboardPage({ onLogout }: { onLogout?: () => void }) {
         )}
 
       </div>
+      {showRegistrationBarcode && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-5" role="dialog" aria-modal="true" aria-label="Barcode Registrasi">
+          <div className="w-full max-w-sm rounded-3xl bg-white p-6 space-y-5">
+            <div className="flex items-center justify-between"><h3 className="font-black text-slate-900">Barcode Registrasi</h3><button type="button" onClick={() => setShowRegistrationBarcode(false)} aria-label="Tutup barcode" className="p-2 text-slate-700">✕</button></div>
+            <RegistrationBarcode />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

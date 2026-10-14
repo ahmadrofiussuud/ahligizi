@@ -93,7 +93,7 @@ export default function LandingPage() {
           </p>
           <div className="pt-4 flex flex-wrap gap-3">
             <Link 
-              href="/app"
+              href="/patient"
               className="px-6 py-3.5 rounded-xl bg-[#cbd52d] hover:bg-[#b0ba24] text-slate-900 font-black text-xs shadow-lg hover:brightness-105 active:scale-95 transition flex items-center gap-1.5"
             >
               <span>📱 Buka CEKAT App</span>

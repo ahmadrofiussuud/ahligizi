@@ -1,0 +1,32 @@
+export const pageAccess = [
+  { path: '/', name: 'Beranda CEKAT', category: 'Publik', access: 'Tanpa login', note: 'Informasi produk dan pintu masuk aplikasi.' },
+  { path: '/patient', name: 'CEKAT Pasien', category: 'Terhubung', access: 'Akun Supabase terverifikasi', note: 'Barcode, hasil milik sendiri, riwayat, dan status antrean.' },
+  { path: '/station', name: 'CEKAT Station', category: 'Terhubung', access: 'Akun Supabase + hak petugas faskes', note: 'Pencarian pasien, pencatatan pemeriksaan, dan antrean faskes.' },
+  { path: '/station/live', name: 'Station — alamat alternatif', category: 'Terhubung', access: 'Sama dengan /station', note: 'Alamat kompatibilitas untuk portal petugas yang sama.' },
+  { path: '/app', name: 'CEKAT App — simulator', category: 'Demo', access: 'Tanpa akun Supabase', note: 'Prototype mobile/desktop dengan data contoh; bukan rekam medis nyata.' },
+  { path: '/station/demo', name: 'Station — simulator kiosk', category: 'Demo', access: 'Tanpa akun Supabase', note: 'Contoh alur enam langkah; hasil tidak disimpan ke Supabase.' },
+  { path: '/demo', name: 'Akun Demo CEKAT', category: 'Demo', access: 'Akun contoh yang ditampilkan di halaman', note: 'Pilihan tampilan pasien, petugas, dan admin tanpa izin data nyata.' },
+  { path: '/access', name: 'Daftar Halaman & Akses', category: 'Publik', access: 'Tanpa login', note: 'Inventaris halaman dan petunjuk akun.' },
+  { path: '/dashboard', name: 'Dashboard lama', category: 'Fitur lama', access: 'Dapat dibuka langsung; belum memakai izin portal baru', note: 'Data profil/log contoh dan informasi gizi.' },
+  { path: '/profile', name: 'Profil lama', category: 'Fitur lama', access: 'Profil lokal di browser', note: 'Terpisah dari profil pasien Supabase.' },
+  { path: '/onboarding', name: 'Pengisian profil gizi', category: 'Fitur lama', access: 'Profil lokal di browser', note: 'Pengaturan gizi awal; bukan pembuatan akun Supabase.' },
+  { path: '/scan', name: 'Scan gizi makanan', category: 'Fitur lama', access: 'Dapat dibuka langsung', note: 'Integrasi AI bergantung konfigurasi layanan; penyimpanan lama belum disatukan.' },
+  { path: '/pantry-ai', name: 'Rekomendasi isi kulkas', category: 'Fitur lama', access: 'Dapat dibuka langsung', note: 'Saran resep dari bahan makanan.' },
+  { path: '/gamification', name: 'Gamifikasi', category: 'Fitur lama', access: 'Dapat dibuka langsung', note: 'Poin, misi, dan badge; masih alur lama/demo.' },
+  { path: '/wrapped', name: 'Ringkasan nutrisi', category: 'Fitur lama', access: 'Dapat dibuka langsung', note: 'Ringkasan statistik nutrisi; belum memakai data pemeriksaan Station baru.' },
+  { path: '/articles', name: 'Artikel kesehatan', category: 'Publik', access: 'Tanpa login', note: 'Daftar artikel edukasi.' },
+  { path: '/articles/[slug]', name: 'Detail artikel', category: 'Publik', access: 'Tanpa login', note: 'Satu template route untuk banyak artikel; pilih artikel dari daftar.' },
+  { path: '/consultation', name: 'Konsultasi', category: 'Fitur lama', access: 'Halaman dapat dibuka; backend masih alur lama/demo', note: 'Daftar ahli dan contoh pemesanan.' },
+  { path: '/consultation/history', name: 'Riwayat konsultasi', category: 'Fitur lama', access: 'Belum memakai izin portal baru', note: 'Riwayat konsultasi demo.' },
+  { path: '/consultation/expert-portal', name: 'Portal ahli — prototype', category: 'Fitur lama', access: 'Belum dilindungi hak ahli nyata', note: 'Bukan akun petugas Station; backend chat belum diisolasi per ahli.' },
+  { path: '/marketplace', name: 'Marketplace', category: 'Fitur lama', access: 'Dapat dibuka langsung', note: 'Katalog alur lama, terpisah dari contoh suplemen di simulator /app.' },
+  { path: '/cart', name: 'Keranjang', category: 'Fitur lama', access: 'Belum memakai izin portal baru', note: 'Keranjang contoh; bukan pembayaran produksi.' },
+  { path: '/marketplace/orders', name: 'Pesanan', category: 'Fitur lama', access: 'Belum memakai izin portal baru', note: 'Data pesanan sementara/demo.' },
+  { path: '/admin/articles', name: 'Editor artikel — prototype', category: 'Fitur lama', access: 'Belum memiliki pembatasan admin produksi', note: 'Akun demo admin tidak memberikan izin administratif Supabase.' },
+] as const;
+
+export const demoAccounts = [
+  { role: 'patient', label: 'Pasien Demo', email: 'pasien@cekat.test', password: 'CekatPasien!2026', href: '/app?state=main&tab=dashboard&view=home', description: 'Mencoba beranda, profil, risiko, dan riwayat contoh.' },
+  { role: 'staff', label: 'Petugas Demo', email: 'petugas@cekat.test', password: 'CekatPetugas!2026', href: '/station/demo', description: 'Mencoba identifikasi, pemeriksaan, dan antrean kiosk contoh.' },
+  { role: 'admin', label: 'Admin Demo', email: 'admin@cekat.test', password: 'CekatAdmin!2026', href: '/access', description: 'Melihat peta halaman dan status akses; tidak dapat mengubah hak Supabase.' },
+] as const;

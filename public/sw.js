@@ -1,4 +1,4 @@
-const CACHE_NAME = 'cekgizi-cache-v2';
+const CACHE_NAME = 'cekgizi-cache-v4';
 const urlsToCache = [
   '/landing/cekat_logo.png',
   '/favicon.ico'
@@ -29,9 +29,13 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
+  const pathname = new URL(event.request.url).pathname;
   // Bypass cache for development HMR, internal Next.js assets, and API endpoints
   if (
-    event.request.url.includes('/api/') || 
+    pathname.startsWith('/api/') ||
+    pathname === '/patient' ||
+    pathname === '/station' ||
+    pathname.startsWith('/station/live') ||
     event.request.url.includes('/_next/') ||
     event.request.url.includes('webpack') ||
     event.request.method !== 'GET'
@@ -44,7 +48,7 @@ self.addEventListener('fetch', (event) => {
     fetch(event.request)
       .then((response) => {
         // Cache successful network responses
-        if (response && response.status === 200) {
+        if (response && response.status === 200 && !/private|no-store/i.test(response.headers.get('cache-control') || '')) {
           const responseToCache = response.clone();
           caches.open(CACHE_NAME).then((cache) => {
             cache.put(event.request, responseToCache);
