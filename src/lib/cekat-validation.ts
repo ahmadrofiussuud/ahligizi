@@ -10,7 +10,17 @@ export function validateScreening(data: Record<string, unknown>) {
     if (typeof value !== 'number' || !Number.isFinite(value) || value < min || value > max) throw new Error(`Nilai ${key} tidak valid.`);
     result[key] = value;
   }
-  if (Number(result.diastolic) >= Number(result.systolic)) throw new Error('Tekanan sistolik harus lebih besar daripada diastolik.');
+  const sys = Number(result.systolic);
+  const dia = Number(result.diastolic);
+  const glu = Number(result.blood_glucose);
+
+  if (dia >= sys) throw new Error('Tekanan sistolik harus lebih besar daripada diastolik.');
+  if (sys >= 220 && glu >= 80 && glu <= 140) {
+    throw new Error(`Nilai Sistolik (${sys} mmHg) dan Gula Darah (${glu} mg/dL) terindikasi tertukar. Periksa kembali sebelum menyimpan.`);
+  }
+  if (glu < 30 && sys >= 110) {
+    throw new Error(`Nilai Gula Darah (${glu} mg/dL) sangat rendah dan tidak sinkron dengan klinis. Periksa kembali kemungkinan tertukar.`);
+  }
   if (typeof data.glucose_type !== 'string' || !['fasting', 'random', 'postmeal'].includes(data.glucose_type)) throw new Error('Pilih jenis pemeriksaan gula darah.');
   if (typeof data.notes !== 'string' || data.notes.length > 2000) throw new Error('Catatan maksimal 2.000 karakter.');
   result.glucose_type = data.glucose_type; result.notes = data.notes.trim();

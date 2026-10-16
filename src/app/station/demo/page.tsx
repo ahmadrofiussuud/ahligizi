@@ -26,7 +26,8 @@ import {
   ShieldCheck,
   HelpCircle,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  AlertTriangle
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -622,8 +623,67 @@ export default function CekatStationDemo() {
                     />
                   </div>
 
+                  {/* Smart Swap Warning Banner (Pencegahan Tertukar Tensi & Gula Darah) */}
+                  {((systolic >= 180 && gulaDarah >= 70 && gulaDarah <= 150) || (gulaDarah > 0 && gulaDarah <= 45 && systolic >= 120)) && (
+                    <div className="col-span-2 p-3 bg-amber-50 border-2 border-amber-400 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-amber-950 shadow-xs animate-pulse">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-full bg-amber-200 flex items-center justify-center shrink-0">
+                          <AlertTriangle className="w-4 h-4 text-amber-800" />
+                        </div>
+                        <div>
+                          <span className="text-[10px] font-black uppercase text-amber-900 block">Pencegahan Kesalahan Medis (AI Swap Guard)</span>
+                          <p className="text-[11px] font-medium leading-tight text-amber-900">
+                            Sistolik ({systolic} mmHg) & Gula Darah ({gulaDarah} mg/dL) terindikasi tertukar!
+                          </p>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const temp = systolic;
+                          setSystolic(gulaDarah);
+                          setGulaDarah(temp);
+                        }}
+                        className="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white font-black text-[10.5px] rounded-xl whitespace-nowrap shadow-xs transition active:scale-95 shrink-0 cursor-pointer"
+                      >
+                        🔄 Tukar Nilai Kembali
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Diastolic higher than systolic warning */}
+                  {diastolic > 0 && systolic > 0 && diastolic >= systolic && (
+                    <div className="col-span-2 p-3 bg-rose-50 border-2 border-rose-400 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-rose-950 shadow-xs">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 rounded-full bg-rose-200 flex items-center justify-center shrink-0">
+                          <AlertTriangle className="w-4 h-4 text-rose-700" />
+                        </div>
+                        <div>
+                          <span className="text-[10px] font-black uppercase text-rose-900 block">Tekanan Darah Tidak Valid</span>
+                          <p className="text-[11px] font-medium leading-tight text-rose-900">
+                            Diastolik ({diastolic}) tidak boleh &ge; Sistolik ({systolic}). Nilai terbalik.
+                          </p>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const temp = systolic;
+                          setSystolic(diastolic);
+                          setDiastolic(temp);
+                        }}
+                        className="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-black text-[10.5px] rounded-xl whitespace-nowrap shadow-xs transition active:scale-95 shrink-0 cursor-pointer"
+                      >
+                        🔄 Tukar Sistolik/Diastolik
+                      </button>
+                    </div>
+                  )}
+
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold uppercase text-slate-600">Tensi Sistolik (mmHg)</label>
+                    <label className="text-[10px] font-bold uppercase text-slate-700 flex items-center justify-between">
+                      <span className="flex items-center gap-1">❤️ Sistolik (mmHg)</span>
+                      <span className="text-[8.5px] text-slate-400 font-semibold">Umum: 90–140</span>
+                    </label>
                     <input
                       type="number"
                       value={systolic}
@@ -633,7 +693,10 @@ export default function CekatStationDemo() {
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold uppercase text-slate-600">Tensi Diastolik (mmHg)</label>
+                    <label className="text-[10px] font-bold uppercase text-slate-700 flex items-center justify-between">
+                      <span className="flex items-center gap-1">❤️ Diastolik (mmHg)</span>
+                      <span className="text-[8.5px] text-slate-400 font-semibold">Umum: 60–90</span>
+                    </label>
                     <input
                       type="number"
                       value={diastolic}
@@ -643,7 +706,10 @@ export default function CekatStationDemo() {
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold uppercase text-slate-600">Gula Darah (mg/dL)</label>
+                    <label className="text-[10px] font-bold uppercase text-slate-700 flex items-center justify-between">
+                      <span className="flex items-center gap-1">🩸 Gula Darah (mg/dL)</span>
+                      <span className="text-[8.5px] text-slate-400 font-semibold">Umum: 70–200</span>
+                    </label>
                     <input
                       type="number"
                       value={gulaDarah}
@@ -653,7 +719,10 @@ export default function CekatStationDemo() {
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold uppercase text-slate-600">Denyut Nadi (bpm)</label>
+                    <label className="text-[10px] font-bold uppercase text-slate-700 flex items-center justify-between">
+                      <span className="flex items-center gap-1">🫀 Nadi (bpm)</span>
+                      <span className="text-[8.5px] text-slate-400 font-semibold">Umum: 60–100</span>
+                    </label>
                     <input
                       type="number"
                       value={nadi}

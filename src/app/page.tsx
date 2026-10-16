@@ -92,11 +92,26 @@ export default function LandingPage() {
             melacak log asupan nutrisi harian secara praktis, dan menyinkronkan data klinis Kiosk Station secara langsung.
           </p>
           <div className="pt-4 flex flex-wrap gap-3">
-            <Link 
-              href="/patient"
-              className="px-6 py-3.5 rounded-xl bg-[#cbd52d] hover:bg-[#b0ba24] text-slate-900 font-black text-xs shadow-lg hover:brightness-105 active:scale-95 transition flex items-center gap-1.5"
+            <a 
+              href="#login-section"
+              onClick={(e) => {
+                e.preventDefault();
+                const target = document.getElementById('login-section');
+                if (target) {
+                  target.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                  window.location.hash = '#login-section';
+                }
+              }}
+              className="px-6 py-3.5 rounded-xl bg-[#cbd52d] hover:bg-[#b0ba24] text-slate-900 font-black text-xs shadow-lg hover:brightness-105 active:scale-95 transition flex items-center gap-1.5 cursor-pointer"
             >
               <span>📱 Buka CEKAT App</span>
+            </a>
+            <Link 
+              href="/rekap-desa"
+              className="px-6 py-3.5 rounded-xl bg-white/20 hover:bg-white/30 backdrop-blur-md border border-white/40 text-white font-black text-xs shadow-lg active:scale-95 transition flex items-center gap-1.5 cursor-pointer"
+            >
+              <span>📊 Rekap Kesehatan Desa</span>
             </Link>
           </div>
         </div>

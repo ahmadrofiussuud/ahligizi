@@ -5214,7 +5214,7 @@ function CekatAppContent() {
 
                         {/* Scrollable category list */}
                         <div className="flex overflow-x-auto gap-2.5 pb-2 scrollbar-none px-4">
-                          {['Semua', 'CEKAT Station', 'Nutrisi', 'My health progress', 'Riwayat Konsultasi'].map(cat => {
+                          {['Semua', 'CEKAT Station', 'Nutrisi', 'Obat & Suplemen', 'My health progress', 'Riwayat Konsultasi'].map(cat => {
                             const isSelected = riwayatCategory === cat;
                             return (
                               <button
@@ -5308,6 +5308,104 @@ function CekatAppContent() {
                                 </div>
                               </div>
                               <span className="text-xs font-black text-slate-800 pr-2">307 kkal</span>
+                            </div>
+                          )}
+
+                          {/* 3. Section: Riwayat Obat & Suplemen Rutin */}
+                          {(riwayatCategory === 'Semua' || riwayatCategory === 'Obat & Suplemen') && (
+                            <div className="bg-white border border-slate-150 rounded-[32px] p-4 shadow-sm space-y-3.5">
+                              <div className="flex items-start justify-between">
+                                <div className="flex items-center gap-3">
+                                  <div className="w-10 h-10 rounded-2xl bg-teal-50 border border-teal-100 flex items-center justify-center text-teal-700 shrink-0">
+                                    <Pill className="w-5 h-5 text-teal-700" />
+                                  </div>
+                                  <div className="min-w-0">
+                                    <div className="flex items-center gap-1.5">
+                                      <h4 className="text-[13px] font-black text-slate-900 leading-tight">Riwayat Obat & Suplemen</h4>
+                                      <span className="px-1.5 py-0.5 bg-emerald-100 text-emerald-800 text-[8px] font-black rounded-md">Aktif</span>
+                                    </div>
+                                    <p className="text-[9.5px] font-semibold text-slate-450 mt-0.5 leading-none">Resep Terakhir: 28 Agustus 2026</p>
+                                    <p className="text-[9px] font-black text-slate-500 mt-1">Puskesmas Pembantu Ds. Ngabab • Dr. Hendra</p>
+                                  </div>
+                                </div>
+                                <button 
+                                  onClick={() => {
+                                    setActiveTab('dashboard');
+                                    setDashboardSubView('kebutuhanmu');
+                                  }} 
+                                  className="text-[9.5px] font-black text-slate-800 hover:underline block"
+                                >
+                                  Kelola Obat &gt;
+                                </button>
+                              </div>
+
+                              {/* Medication Items List */}
+                              <div className="space-y-2 pt-0.5">
+                                <div className="p-2.5 rounded-2xl bg-slate-50/80 border border-slate-150 flex items-center justify-between">
+                                  <div className="flex items-center gap-2.5">
+                                    <div className="w-7 h-7 rounded-xl bg-blue-100/70 text-blue-800 font-black text-[10px] flex items-center justify-center">
+                                      AM
+                                    </div>
+                                    <div>
+                                      <span className="text-[11px] font-extrabold text-slate-800 block leading-tight">Amlodipine 5 mg</span>
+                                      <span className="text-[9px] text-slate-500 font-semibold">1x1 pagi sesudah makan · Hipertensi</span>
+                                    </div>
+                                  </div>
+                                  <div className="text-right">
+                                    <span className="text-[10px] font-black text-amber-700 block">Sisa 7 tab</span>
+                                    <span className="text-[8px] font-bold text-emerald-600">Rutin diminum</span>
+                                  </div>
+                                </div>
+
+                                <div className="p-2.5 rounded-2xl bg-slate-50/80 border border-slate-150 flex items-center justify-between">
+                                  <div className="flex items-center gap-2.5">
+                                    <div className="w-7 h-7 rounded-xl bg-purple-100/70 text-purple-800 font-black text-[10px] flex items-center justify-center">
+                                      MF
+                                    </div>
+                                    <div>
+                                      <span className="text-[11px] font-extrabold text-slate-800 block leading-tight">Metformin 500 mg</span>
+                                      <span className="text-[9px] text-slate-500 font-semibold">2x1 sesudah makan · Diabetes Melitus</span>
+                                    </div>
+                                  </div>
+                                  <div className="text-right">
+                                    <span className="text-[10px] font-black text-amber-700 block">Sisa 10 tab</span>
+                                    <span className="text-[8px] font-bold text-emerald-600">Rutin diminum</span>
+                                  </div>
+                                </div>
+
+                                <div className="p-2.5 rounded-2xl bg-slate-50/80 border border-slate-150 flex items-center justify-between">
+                                  <div className="flex items-center gap-2.5">
+                                    <div className="w-7 h-7 rounded-xl bg-emerald-100/70 text-emerald-800 font-black text-[10px] flex items-center justify-center">
+                                      VD
+                                    </div>
+                                    <div>
+                                      <span className="text-[11px] font-extrabold text-slate-800 block leading-tight">Vitamin D3 1000 IU</span>
+                                      <span className="text-[9px] text-slate-500 font-semibold">1x1 hari sesudah sarapan · Daya Tahan</span>
+                                    </div>
+                                  </div>
+                                  <div className="text-right">
+                                    <span className="text-[10px] font-black text-slate-700 block">Sisa 14 kap</span>
+                                    <span className="text-[8px] font-bold text-emerald-600">Terjadwal</span>
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Compliance pill & alert note */}
+                              <div className="pt-1 flex items-center justify-between text-[9px] font-semibold text-slate-500 px-1 border-t border-slate-100">
+                                <span className="flex items-center gap-1 text-teal-800 font-bold">
+                                  <span>✨ Kepatuhan Minum Obat:</span>
+                                  <span className="text-emerald-700 font-black">92% (Sangat Baik)</span>
+                                </span>
+                                <button
+                                  onClick={() => {
+                                    setActiveTab('dashboard');
+                                    setDashboardSubView('reminders');
+                                  }}
+                                  className="text-blue-700 font-bold hover:underline"
+                                >
+                                  Cek Pengingat &gt;
+                                </button>
+                              </div>
                             </div>
                           )}
 
