@@ -48,7 +48,6 @@ export default function Navbar() {
     { name: 'CEKAT Station', href: '/station' },
     { name: 'Scan Gizi', href: '/scan' },
     { name: 'Dashboard', href: '/dashboard' },
-    { name: 'Rekap Desa', href: '/rekap-desa' },
     { name: 'CEKAT App', href: '/patient' },
     { name: 'Artikel', href: '/articles' },
   ];
@@ -58,7 +57,6 @@ export default function Navbar() {
     { name: 'Tanya Ceko AI', href: '/ai' },
     { name: 'Daftar Akses', href: '/access' },
     { name: 'CEKAT Station', href: '/station' },
-    { name: 'Rekap Desa', href: '/rekap-desa' },
     { name: 'CEKAT App', href: '#login-section' },
     { name: 'Fitur Utama', href: '#features-section' },
     { name: 'Cara Kerja', href: '#how-it-works-section' },
