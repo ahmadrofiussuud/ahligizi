@@ -2,6 +2,7 @@
 
 import ScanNotice from '@/components/ScanNotice';
 import React, { useState, useEffect, useRef } from 'react';
+import { evaluateScreeningResult, type ScreeningEvaluationResult } from '@/lib/cekat-clinical-engine';
 import { 
   Home,
   Camera, 
@@ -188,75 +189,58 @@ const renderArticleSvg = (svgId: string) => {
   return null;
 };
 
-// Data Modul Screening Kesehatan (Hipertensi, Diabetes Melitus, Stunting)
+// Data Modul Screening Kesehatan Terstandar Nasional (PNPK Hipertensi 2026, PERKENI 2024, Kemenkes 2020)
 const screeningModulesData = {
   hipertensi: {
     id: 'hipertensi' as const,
     title: 'Hipertensi',
-    subtitle: '9 pertanyaan',
+    subtitle: '10 pertanyaan standar PNPK',
     questions: [
-      { id: 1, text: 'Apakah Anda pernah didiagnosis hipertensi oleh tenaga kesehatan?', options: ['Ya', 'Tidak', 'Tidak yakin'] },
+      { id: 1, text: 'Apakah Anda pernah didiagnosis hipertensi (tensi ≥140/90 mmHg) oleh dokter atau tenaga kesehatan?', options: ['Ya', 'Tidak', 'Tidak yakin'] },
       { id: 2, text: 'Apakah saat ini Anda mengonsumsi obat untuk tekanan darah tinggi?', options: ['Ya, rutin', 'Ya, tetapi tidak rutin', 'Tidak'] },
-      { id: 3, text: 'Jika pernah mendapat obat, apakah Anda pernah melewatkan atau menghentikan dosis tanpa berkonsultasi dengan tenaga kesehatan?', options: ['Ya', 'Tidak', 'Tidak berlaku'] },
-      { id: 4, text: 'Apakah Anda memiliki riwayat penyakit berikut?', options: ['Diabetes melitus', 'Penyakit ginjal kronis', 'Penyakit jantung atau gagal jantung', 'Stroke atau penyakit pembuluh darah', 'Tidak ada', 'Tidak tahu'] },
-      { id: 5, text: 'Apakah orang tua atau saudara kandung Anda memiliki hipertensi?', options: ['Ya', 'Tidak', 'Tidak tahu'] },
-      { id: 6, text: 'Apakah anda merokok?', options: ['Saat ini', 'Pernah, tapi sudah berhenti', 'Tidak pernah'] },
-      { id: 7, text: 'Seberapa sering Anda mengonsumsi makanan tinggi garam, seperti makanan asin atau makanan olahan?', options: ['Jarang', 'Kadang-kadang', 'Sering'] },
-      { id: 8, text: 'Apakah anda rutin melakukan aktivitas fisik/olahraga?', options: ['Jarang', 'Kadang-kadang', 'Sering'] },
-      { id: 9, text: 'Apakah Anda pernah sakit kepala sangat berat yang muncul mendadak, kejang, atau penurunan kesadaran?', options: ['Pernah', 'Tidak pernah'] }
+      { id: 3, text: 'Jika pernah mendapat obat, apakah Anda pernah melewatkan atau menghentikan dosis tanpa konsultasi dokter?', options: ['Ya', 'Tidak', 'Tidak berlaku'] },
+      { id: 4, text: 'Apakah Anda memiliki riwayat komorbiditas berikut?', options: ['Diabetes melitus', 'Penyakit ginjal kronis', 'Penyakit jantung atau gagal jantung', 'Stroke atau penyakit pembuluh darah', 'Tidak ada', 'Tidak tahu'] },
+      { id: 5, text: 'Apakah orang tua atau saudara kandung Anda memiliki riwayat hipertensi atau penyakit jantung dini?', options: ['Ya', 'Tidak', 'Tidak tahu'] },
+      { id: 6, text: 'Bagaimana status kebiasaan merokok Anda saat ini?', options: ['Saat ini', 'Pernah, tapi sudah berhenti', 'Tidak pernah'] },
+      { id: 7, text: 'Seberapa sering Anda mengonsumsi makanan tinggi garam/olahan (>2 gram natrium atau >1 sdt garam/hari)?', options: ['Sering', 'Kadang-kadang', 'Jarang'] },
+      { id: 8, text: 'Apakah Anda sering mengalami dada berdebar-debar atau sesak napas saat melakukan aktivitas fisik ringan?', options: ['Sering', 'Kadang-kadang', 'Tidak pernah'] },
+      { id: 9, text: 'Apakah Anda rutin berolahraga aerobik minimal 150 menit per minggu (misal: jalan cepat 30 mnt, 5x/mgg)?', options: ['Sering (≥150 mnt/mgg)', 'Kadang-kadang', 'Jarang / Tidak pernah'] },
+      { id: 10, text: 'Apakah Anda pernah mengalami sakit kepala berdenyut sangat berat mendadak atau pandangan kabur tiba-tiba?', options: ['Pernah', 'Tidak pernah'] }
     ]
   },
   diabetes: {
     id: 'diabetes' as const,
     title: 'Diabetes Melitus',
-    subtitle: '10 pertanyaan',
+    subtitle: '10 pertanyaan standar PERKENI',
     questions: [
-      { id: 1, text: 'Apakah Anda lebih sering buang air kecil daripada biasanya?', options: ['Ya', 'Tidak', 'Tidak yakin'] },
-      { id: 2, text: 'Apakah Anda sering merasa sangat haus?', options: ['Ya', 'Tidak'] },
-      { id: 3, text: 'Apakah Anda mengalami penurunan berat badan tanpa sebab yang jelas?', options: ['Ya', 'Tidak'] },
-      { id: 4, text: 'Apakah Anda sering merasa lapar meskipun sudah makan?', options: ['Ya', 'Tidak'] },
-      { id: 5, text: 'Apakah Anda pernah didiagnosis diabetes melitus oleh tenaga kesehatan?', options: ['Ya', 'Tidak'] },
-      { id: 6, text: 'Apakah Anda memiliki riwayat penyakit berikut?', options: ['Diabetes melitus', 'Penyakit ginjal kronis', 'Penyakit jantung atau gagal jantung', 'Stroke atau penyakit pembuluh darah', 'Tidak ada', 'Tidak tahu'] },
-      { id: 7, text: 'Apakah orang tua atau saudara kandung Anda memiliki diabetes melitus?', options: ['Ya', 'Tidak', 'Tidak tahu'] },
-      { id: 8, text: 'Seberapa sering Anda mengonsumsi makanan/minuman manis atau makanan olahan?', options: ['Jarang', 'Kadang-kadang', 'Sering'] },
-      { id: 9, text: 'Apakah anda merokok?', options: ['Saat ini', 'Pernah, tapi sudah berhenti', 'Tidak pernah'] },
-      { id: 10, text: 'Apakah anda rutin melakukan aktivitas fisik/olahraga?', options: ['Jarang', 'Kadang-kadang', 'Sering'] }
+      { id: 1, text: 'Apakah Anda lebih sering buang air kecil daripada biasanya, terutama terbangun di malam hari (Poliuria)?', options: ['Ya', 'Tidak', 'Tidak yakin'] },
+      { id: 2, text: 'Apakah Anda sering merasa sangat haus dan tenggorokan kering terus-menerus (Polidipsia)?', options: ['Ya', 'Tidak'] },
+      { id: 3, text: 'Apakah Anda mengalami penurunan berat badan cepat tanpa diet atau sebab yang jelas?', options: ['Ya', 'Tidak'] },
+      { id: 4, text: 'Apakah Anda sering merasa lapar berlebih (Polifagia) meskipun sudah makan cukup?', options: ['Ya', 'Tidak'] },
+      { id: 5, text: 'Apakah Anda pernah melakukan tes laboratorium dengan hasil GDP ≥100 mg/dL atau GDS ≥140 mg/dL?', options: ['Tinggi (GDP ≥100 atau GDS ≥140)', 'Hasil selalu normal', 'Belum pernah tes'] },
+      { id: 6, text: 'Apakah orang tua atau saudara kandung memiliki riwayat kencing manis / diabetes melitus?', options: ['Ya', 'Tidak', 'Tidak tahu'] },
+      { id: 7, text: 'Seberapa sering Anda mengonsumsi makanan/minuman manis, boba, sirup, atau makanan olahan tinggi gula?', options: ['Sering (hampir setiap hari)', 'Kadang-kadang', 'Jarang'] },
+      { id: 8, text: 'Apakah Anda sering merasakan kesemutan, rasa kebas/tebal, atau sensasi panas pada telapak kaki (Neuropati)?', options: ['Ya, sering', 'Kadang-kadang', 'Tidak pernah'] },
+      { id: 9, text: 'Jika Anda mengalami luka atau goresan di kulit, apakah membutuhkan waktu sangat lama untuk kering/sembuh?', options: ['Ya', 'Tidak', 'Tidak tahu'] },
+      { id: 10, text: 'Apakah Anda rutin melakukan aktivitas fisik/olahraga teratur minimal 150 menit per minggu?', options: ['Sering (≥150 mnt/mgg)', 'Kadang-kadang', 'Jarang / Tidak pernah'] }
     ]
   },
   stunting: {
     id: 'stunting' as const,
-    title: 'Stunting',
-    subtitle: '7 pertanyaan',
-    baseQuestions: [
-      { id: 1, text: 'Berapa usia anak saat ini?', options: ['0–5 bulan', '6–23 bulan', '24–59 bulan', '5 tahun atau lebih'] },
-      { id: 2, text: 'Apakah berat badan anak ditimbang secara rutin di Posyandu atau fasilitas kesehatan?', options: ['Ya, rutin', 'Tidak rutin', 'Belum pernah'] },
-      { id: 3, text: 'Apakah hasil pengukuran tinggi/panjang badan anak pernah dinyatakan di bawah standar usianya oleh tenaga kesehatan?', options: ['Ya', 'Tidak', 'Tidak tahu'] },
-      { id: 4, text: 'Dalam beberapa bulan terakhir, bagaimana kenaikan berat badan anak?', options: ['Naik sesuai pemantauan', 'Tidak naik', 'Turun', 'Tidak tahu'] },
-      { id: 5, text: 'Apakah anak mengalami kesulitan makan atau sering menolak makanan?', options: ['Ya', 'Tidak', 'Kadang-kadang'] },
-      { id: 6, text: 'Apakah anak sering mengalami infeksi atau sakit berulang?', options: ['Ya', 'Tidak', 'Tidak tahu'] },
-      { id: 7, text: 'Apakah anak lahir prematur atau memiliki berat badan lahir rendah (kurang dari 2.500 gram)?', options: ['Ya', 'Tidak'] }
-    ],
-    ageFollowups: {
-      '0–5 bulan': [
-        { id: 8, text: 'Apakah bayi mendapat ASI?', options: ['ASI Eksklusif', 'ASI disertai susu formula', 'Tidak mendapatkan ASI'] },
-        { id: 9, text: 'Apakah ada kesulitan menyusu?', options: ['Tidak ada', 'Kadang-kadang', 'Sering', 'Bayi tidak dapat menyusu'] },
-        { id: 10, text: 'Apakah bayi memiliki masalah kesehatan yang mengganggu pemberian ASI?', options: ['Ya', 'Tidak', 'Tidak tahu'] }
-      ],
-      '6–23 bulan': [
-        { id: 8, text: 'Apakah MPASI sudah diberikan sejak usia 6 bulan?', options: ['Ya, sejak usia 6 bulan', 'Ya, tetapi dimulai sebelum usia 6 bulan', 'Ya, tetapi dimulai setelah usia 6 bulan', 'Belum diberikan', 'Tidak ingat'] },
-        { id: 9, text: 'Apakah makanan diberikan dengan tekstur, frekuensi, dan variasi yang sesuai usia?', options: ['Ya, ketiganya sesuai', 'Sebagian sesuai', 'Belum sesuai'] },
-        { id: 10, text: 'Apakah anak mendapat sumber protein hewani?', options: ['Setiap hari', 'Beberapa kali seminggu', 'Jarang', 'Belum pernah'] }
-      ],
-      '24–59 bulan': [
-        { id: 8, text: 'Apakah makanan anak cukup beragam dan mencakup sumber protein?', options: ['Ya, makanan beragam dan ada sumber protein', 'Makanan kurang beragam', 'Jarang mendapat sumber protein'] },
-        { id: 9, text: 'Apakah anak sering mengalami diare atau penyakit berulang?', options: ['Tidak pernah/jarang', 'Kadang-kadang', 'Sering', 'Sedang mengalami penyakit'] },
-        { id: 10, text: 'Apakah pertumbuhan dipantau secara berkala?', options: ['Setiap bulan', 'Setiap 2–3 bulan', 'Kurang dari setiap 3 bulan', 'Tidak pernah'] }
-      ],
-      '5 tahun atau lebih': [
-        { id: 8, text: 'Apakah tinggi badan anak dipantau sesuai usia?', options: ['Ya, rutin', 'Kadang-kadang', 'Belum pernah'] },
-        { id: 9, text: 'Apakah terdapat riwayat pertumbuhan yang melambat atau masalah kesehatan kronis?', options: ['Ya, pertumbuhan melambat', 'Ya, memiliki masalah kesehatan kronis', 'Ya, keduanya', 'Tidak ada', 'Tidak tahu'] }
-      ]
-    }
+    title: 'Stunting & Gizi Balita',
+    subtitle: '10 pertanyaan standar Kemenkes',
+    questions: [
+      { id: 1, text: 'Berapa usia anak/balita saat ini?', options: ['0–5 bulan', '6–11 bulan', '12–23 bulan', '24–59 bulan'] },
+      { id: 2, text: 'Apakah anak lahir prematur (<37 minggu) atau dengan berat badan lahir rendah (BBLR <2.500 gram)?', options: ['Ya', 'Tidak'] },
+      { id: 3, text: 'Bagaimana tren kenaikan berat badan balita pada grafik KMS buku KIA dalam 2-3 bulan terakhir?', options: ['Naik teratur (N)', 'Tidak naik (T)', 'Turun', 'Tidak tahu / belum ditimbang'] },
+      { id: 4, text: 'Berapa hasil pengukuran Lingkar Lengan Atas (LiLA) balita pada pita ukur berwarna?', options: ['Hijau (≥12,5 cm - Gizi Baik)', 'Kuning (11,5-12,4 cm - Gizi Kurang)', 'Merah (<11,5 cm - Gizi Buruk)', 'Belum pernah diukur'] },
+      { id: 5, text: 'Apakah ada lekukan yang tertinggal saat punggung kedua kaki anak ditekan lembut selama 3 detik (Pitting Edema)?', options: ['Tidak ada', 'Ya, ada lekukan tertinggal', 'Tidak tahu'] },
+      { id: 6, text: 'Apakah anak mendapatkan ASI Eksklusif 6 bulan dan MPASI tepat waktu, tekstur, dan frekuensi?', options: ['Ya, sesuai standar', 'Tidak sesuai / belum memadai', 'Tidak tahu'] },
+      { id: 7, text: 'Seberapa sering anak mengonsumsi sumber pangan hewani (telur, ikan, daging, ayam, susu)?', options: ['Setiap hari (≥1 porsi)', 'Beberapa kali seminggu', 'Jarang / Tidak pernah'] },
+      { id: 8, text: 'Bagaimana nafsu makan balita saat diberikan makanan padat gizi sehari-hari?', options: ['Nafsu makan baik & lahap', 'Kadang sulit makan', 'Sering menolak / buruk'] },
+      { id: 9, text: 'Apakah anak sering menderita penyakit infeksi berulang seperti diare atau batuk pilek lama (>2 minggu)?', options: ['Tidak pernah/jarang', 'Kadang-kadang', 'Ya, sering'] },
+      { id: 10, text: 'Apakah rumah tinggal memiliki akses air minum bersih terlindungi dan jamban keluarga sehat?', options: ['Ya, lengkap dan sehat', 'Terkendala / belum layak'] }
+    ]
   }
 };
 
@@ -294,7 +278,7 @@ function CekatAppContent() {
   
   // Sub-views for detailed pages
   // - For 'dashboard': 'home' (Kebutuhanmu), 'station_summary' (Hasil Station), 'cek_risiko' (Risiko Kesehatan), 'reminders' (Pengingat & Jadwal), 'marketplace' (Keranjangmu)
-  const [dashboardSubView, setDashboardSubView] = useState<'home' | 'station_summary' | 'cek_risiko' | 'reminders' | 'marketplace' | 'edukasi' | 'article_detail' | 'webinar_list' | 'kebutuhanmu' | 'tanya_ai' | 'mitos_fakta' | 'artikel_list' | 'obat_saya' | 'screening_list' | 'screening_form' | 'antrian'>('home');
+  const [dashboardSubView, setDashboardSubView] = useState<'home' | 'station_summary' | 'cek_risiko' | 'reminders' | 'marketplace' | 'edukasi' | 'article_detail' | 'webinar_list' | 'kebutuhanmu' | 'tanya_ai' | 'mitos_fakta' | 'artikel_list' | 'obat_saya' | 'screening_list' | 'screening_form' | 'screening_result' | 'antrian'>('home');
   const [selectedArticle, setSelectedArticle] = useState<any | null>(null);
 
   // Screening States
@@ -303,6 +287,8 @@ function CekatAppContent() {
   const [screeningAnswers, setScreeningAnswers] = useState<Record<string, string>>({});
   const [selectedOption, setSelectedOption] = useState<string>('');
   const [completedModules, setCompletedModules] = useState<string[]>([]);
+  const [screeningResult, setScreeningResult] = useState<ScreeningEvaluationResult | null>(null);
+  const [showTheoryModal, setShowTheoryModal] = useState<boolean>(false);
   const [showRegistrationBarcode, setShowRegistrationBarcode] = useState(false);
   const [showPharmacistModal, setShowPharmacistModal] = useState(false);
 
@@ -2807,16 +2793,7 @@ function CekatAppContent() {
 
                     {/* View: Form Screening (Interactive Questionnaire Step-by-Step) */}
                     {dashboardSubView === 'screening_form' && (() => {
-                      const getQuestionsList = () => {
-                        if (activeScreeningModule === 'hipertensi') return screeningModulesData.hipertensi.questions;
-                        if (activeScreeningModule === 'diabetes') return screeningModulesData.diabetes.questions;
-                        const base = screeningModulesData.stunting.baseQuestions;
-                        const selectedAge = screeningAnswers['stunting_q1'] || '0–5 bulan';
-                        const followups = screeningModulesData.stunting.ageFollowups[selectedAge as keyof typeof screeningModulesData.stunting.ageFollowups] || screeningModulesData.stunting.ageFollowups['0–5 bulan'];
-                        return [...base, ...followups];
-                      };
-
-                      const currentQuestions = getQuestionsList();
+                      const currentQuestions = screeningModulesData[activeScreeningModule].questions;
                       const currentQ = currentQuestions[currentQuestionIndex] || currentQuestions[0];
                       const totalQ = currentQuestions.length;
                       const moduleTitle = screeningModulesData[activeScreeningModule].title;
@@ -2924,13 +2901,19 @@ function CekatAppContent() {
                                       const completed = Array.from(new Set([...completedModules, activeScreeningModule]));
                                       setCompletedModules(completed);
                                       localStorage.setItem('cekat_screening_progress', JSON.stringify({ answers: updatedAnswers, completed }));
-                                      showToast(`Screening ${moduleTitle} berhasil diselesaikan!`, 'success');
-                                      setDashboardSubView('screening_list');
+
+                                      // Run Clinical Engine Evaluation based on National Guidelines
+                                      const evalResult = evaluateScreeningResult(activeScreeningModule, updatedAnswers);
+                                      setScreeningResult(evalResult);
+                                      localStorage.setItem('cekat_screening_last_result', JSON.stringify(evalResult));
+
+                                      showToast(`Screening ${moduleTitle} selesai! Menampilkan hasil evaluasi medis...`, 'success');
+                                      setDashboardSubView('screening_result');
                                     }
                                   }}
                                   className="w-full py-3.5 bg-[#0f5132] hover:bg-[#0b3d26] text-white font-black text-xs rounded-2xl uppercase tracking-wider shadow-md transition active:scale-98 cursor-pointer"
                                 >
-                                  {currentQuestionIndex === totalQ - 1 ? 'Selesai Screening' : 'Selanjutnya'}
+                                  {currentQuestionIndex === totalQ - 1 ? 'Selesai & Lihat Hasil' : 'Selanjutnya'}
                                 </button>
                               </div>
                             </div>
@@ -2956,6 +2939,253 @@ function CekatAppContent() {
                         </div>
                       );
                     })()}
+
+                    {/* View: Hasil Evaluasi Screening Kesehatan Terstandar Nasional */}
+                    {dashboardSubView === 'screening_result' && screeningResult && (
+                      <div className="space-y-5 flex-1 flex flex-col justify-between pb-24 animate-fadeIn bg-slate-50 min-h-screen relative text-left">
+                        {/* Header Bar */}
+                        <div className="bg-white border-b border-slate-100 px-4 pt-7 pb-3 flex items-center justify-between shadow-xs sticky top-0 z-20">
+                          <button onClick={() => setDashboardSubView('screening_list')} className="p-1.5 hover:bg-slate-100 rounded-full transition text-slate-700 cursor-pointer">
+                            <ArrowLeft className="w-5 h-5" />
+                          </button>
+                          <div className="flex items-center space-x-1.5">
+                            <img src="/images/logo C cekat.png" alt="Cekat Logo" className="w-6 h-6 object-contain shrink-0" />
+                            <div className="flex flex-col text-left">
+                              <span className="text-sm font-black text-slate-800 tracking-tight leading-none">Cekat</span>
+                              <span className="text-[5.5px] font-extrabold text-emerald-600 uppercase tracking-widest leading-none mt-0.5">Hasil Evaluasi Medis</span>
+                            </div>
+                          </div>
+                          <button 
+                            onClick={() => setShowTheoryModal(true)}
+                            className="px-2.5 py-1 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] font-bold flex items-center gap-1 hover:bg-emerald-100 transition cursor-pointer"
+                          >
+                            <BookOpen className="w-3.5 h-3.5 text-emerald-600" />
+                            <span>Dasar Teori</span>
+                          </button>
+                        </div>
+
+                        <div className="flex-1 px-5 space-y-4 overflow-y-auto">
+                          {/* Title */}
+                          <div className="text-center mt-2 space-y-1">
+                            <h3 className="text-xl font-black text-slate-850 tracking-tight">Hasil Screening: {screeningResult.moduleTitle}</h3>
+                            <p className="text-[11px] font-semibold text-slate-500">
+                              Dianalisis berdasarkan pedoman klinis resmi Kemenkes RI & Organisasi Profesi
+                            </p>
+                          </div>
+
+                          {/* Risk Card Banner */}
+                          <div className={`p-5 rounded-3xl border shadow-sm space-y-3 ${
+                            screeningResult.riskLevel === 'Kritis'
+                              ? 'bg-red-50 border-red-200 text-red-950'
+                              : screeningResult.riskLevel === 'Tinggi'
+                              ? 'bg-rose-50 border-rose-200 text-rose-950'
+                              : screeningResult.riskLevel === 'Sedang'
+                              ? 'bg-amber-50 border-amber-200 text-amber-950'
+                              : 'bg-emerald-50 border-emerald-200 text-emerald-950'
+                          }`}>
+                            <div className="flex items-center justify-between">
+                              <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full bg-white/80 border border-black/5 shadow-2xs">
+                                Tingkat Risiko: {screeningResult.riskLevel}
+                              </span>
+                              <span className="text-xs font-bold text-slate-600">
+                                Skor Klinis: <strong>{screeningResult.score}</strong> / {screeningResult.maxScore}
+                              </span>
+                            </div>
+                            <h4 className="text-sm sm:text-base font-black leading-snug">
+                              {screeningResult.summary}
+                            </h4>
+                          </div>
+
+                          {/* 1. Temuan Klinis Utama */}
+                          <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-xs space-y-3">
+                            <div className="flex items-center gap-2 text-slate-850 font-black text-xs uppercase tracking-wider border-b border-slate-100 pb-2">
+                              <Activity className="w-4 h-4 text-emerald-600" />
+                              <span>Temuan Klinis & Faktor Risiko Teridentifikasi</span>
+                            </div>
+                            <ul className="space-y-2 text-xs text-slate-700 font-medium">
+                              {screeningResult.clinicalFindings.map((finding, idx) => (
+                                <li key={idx} className="flex items-start gap-2">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-600 shrink-0 mt-1.5" />
+                                  <span>{finding}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+
+                          {/* 2. Preskripsi Nutrisi & Diet */}
+                          <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-xs space-y-3">
+                            <div className="flex items-center gap-2 text-slate-850 font-black text-xs uppercase tracking-wider border-b border-slate-100 pb-2">
+                              <Apple className="w-4 h-4 text-emerald-600" />
+                              <span>{screeningResult.nutritionPrescription.title}</span>
+                            </div>
+                            <p className="text-[11px] text-slate-500 font-medium leading-relaxed">
+                              {screeningResult.nutritionPrescription.description}
+                            </p>
+                            <div className="space-y-2 text-xs text-slate-700 font-medium pt-1">
+                              {screeningResult.nutritionPrescription.points.map((pt, idx) => (
+                                <div key={idx} className="bg-emerald-50/50 p-2.5 rounded-xl border border-emerald-100 flex items-start gap-2">
+                                  <span className="w-4 h-4 rounded-full bg-emerald-200 text-emerald-900 font-bold text-[10px] flex items-center justify-center shrink-0 mt-0.5">{idx + 1}</span>
+                                  <span>{pt}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* 3. Preskripsi Latihan Fisik FITT */}
+                          <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-xs space-y-3">
+                            <div className="flex items-center gap-2 text-slate-850 font-black text-xs uppercase tracking-wider border-b border-slate-100 pb-2">
+                              <Flame className="w-4 h-4 text-orange-500" />
+                              <span>Preskripsi Latihan Fisik Terstruktur (FITT)</span>
+                            </div>
+                            <div className="grid grid-cols-2 gap-2 text-xs">
+                              <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                                <span className="text-[10px] font-bold text-slate-400 block uppercase">Frekuensi:</span>
+                                <span className="font-extrabold text-slate-800">{screeningResult.exercisePrescription.frequency}</span>
+                              </div>
+                              <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                                <span className="text-[10px] font-bold text-slate-400 block uppercase">Intensitas:</span>
+                                <span className="font-extrabold text-slate-800">{screeningResult.exercisePrescription.intensity}</span>
+                              </div>
+                              <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                                <span className="text-[10px] font-bold text-slate-400 block uppercase">Durasi (Time):</span>
+                                <span className="font-extrabold text-slate-800">{screeningResult.exercisePrescription.time}</span>
+                              </div>
+                              <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                                <span className="text-[10px] font-bold text-slate-400 block uppercase">Tipe Latihan:</span>
+                                <span className="font-extrabold text-slate-800">{screeningResult.exercisePrescription.type}</span>
+                              </div>
+                            </div>
+                            <div className="text-[11px] text-amber-800 bg-amber-50 p-2.5 rounded-xl border border-amber-200 font-medium">
+                              <strong>Peringatan Keamanan:</strong> {screeningResult.exercisePrescription.caution}
+                            </div>
+                          </div>
+
+                          {/* 4. Rekomendasi Rujukan & Faskes */}
+                          <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-xs space-y-3">
+                            <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                              <div className="flex items-center gap-2 text-slate-850 font-black text-xs uppercase tracking-wider">
+                                <Stethoscope className="w-4 h-4 text-teal-600" />
+                                <span>Rekomendasi Tindak Lanjut Layanan</span>
+                              </div>
+                              <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-teal-100 text-teal-800">
+                                {screeningResult.referralGuidance.level}
+                              </span>
+                            </div>
+                            <p className="text-xs text-slate-700 font-bold leading-relaxed">
+                              {screeningResult.referralGuidance.actionText}
+                            </p>
+                            <div className="text-[10px] font-black text-slate-500 flex items-center gap-1.5">
+                              <Clock className="w-3.5 h-3.5 text-slate-400" />
+                              <span>Tingkat Urgensi: <strong className="text-slate-800">{screeningResult.referralGuidance.urgencyText}</strong></span>
+                            </div>
+                          </div>
+
+                          {/* 5. Banner Fitur Dasar Teori */}
+                          <div 
+                            onClick={() => setShowTheoryModal(true)}
+                            className="bg-gradient-to-r from-emerald-800 to-teal-900 p-4 rounded-3xl text-white shadow-xs flex items-center justify-between cursor-pointer hover:opacity-95 transition"
+                          >
+                            <div className="space-y-1">
+                              <span className="text-[9px] font-black tracking-widest text-[#cbd52d] uppercase block">
+                                FITUR DASAR TEORI KLINIS
+                              </span>
+                              <h5 className="text-xs font-black">
+                                {screeningResult.theoryBasis.standardDocument}
+                              </h5>
+                              <p className="text-[10px] text-teal-100/80 font-medium">
+                                {screeningResult.theoryBasis.scientificEvidenceLevel}
+                              </p>
+                            </div>
+                            <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+                              <ChevronRight className="w-4 h-4 text-white" />
+                            </div>
+                          </div>
+
+                          {/* Tombol Aksi Bawah */}
+                          <div className="pt-2 space-y-2.5">
+                            <button
+                              onClick={() => {
+                                setCurrentQuestionIndex(0);
+                                setSelectedOption(screeningAnswers[`${activeScreeningModule}_q1`] || '');
+                                setDashboardSubView('screening_form');
+                              }}
+                              className="w-full py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-black text-xs rounded-2xl uppercase tracking-wider transition active:scale-98 cursor-pointer flex items-center justify-center gap-2"
+                            >
+                              <RotateCcw className="w-4 h-4" />
+                              <span>Ulangi Pengisian Modul Ini</span>
+                            </button>
+                            <button
+                              onClick={() => setDashboardSubView('screening_list')}
+                              className="w-full py-3.5 bg-[#0f5132] hover:bg-[#0b3d26] text-white font-black text-xs rounded-2xl uppercase tracking-wider shadow-md transition active:scale-98 cursor-pointer"
+                            >
+                              Pilih Modul Skrining Lain
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Modal Teori & Bukti Ilmiah */}
+                        {showTheoryModal && (
+                          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
+                            <div className="bg-white rounded-3xl max-w-lg w-full p-6 space-y-4 shadow-2xl border border-slate-100 text-left max-h-[90vh] overflow-y-auto">
+                              <div className="flex items-start justify-between border-b border-slate-100 pb-3">
+                                <div>
+                                  <span className="text-[9px] font-black text-emerald-600 uppercase tracking-widest block">
+                                    LANDASAN TEORI & STANDAR MEDIS
+                                  </span>
+                                  <h4 className="text-base font-black text-slate-900 mt-0.5">
+                                    {screeningResult.theoryBasis.guidelineNumber}
+                                  </h4>
+                                </div>
+                                <button
+                                  onClick={() => setShowTheoryModal(false)}
+                                  className="w-8 h-8 rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center text-xs font-bold"
+                                >
+                                  ✕
+                                </button>
+                              </div>
+
+                              <div className="space-y-3 text-xs text-slate-700 font-medium leading-relaxed">
+                                <div className="bg-slate-50 p-3 rounded-2xl border border-slate-100 space-y-1">
+                                  <span className="text-[10px] font-bold text-slate-400 uppercase block">Dokumen Resmi:</span>
+                                  <p className="font-extrabold text-slate-900">{screeningResult.theoryBasis.standardDocument}</p>
+                                </div>
+
+                                <div className="bg-slate-50 p-3 rounded-2xl border border-slate-100 space-y-1">
+                                  <span className="text-[10px] font-bold text-slate-400 uppercase block">Peringkat Bukti (Level of Evidence):</span>
+                                  <p className="font-extrabold text-emerald-700">{screeningResult.theoryBasis.scientificEvidenceLevel}</p>
+                                </div>
+
+                                <div className="bg-slate-50 p-3 rounded-2xl border border-slate-100 space-y-1">
+                                  <span className="text-[10px] font-bold text-slate-400 uppercase block">Metodologi & Kajian Pustaka:</span>
+                                  <p>{screeningResult.theoryBasis.methodology}</p>
+                                </div>
+
+                                <div className="bg-emerald-50/60 p-3.5 rounded-2xl border border-emerald-100 space-y-2">
+                                  <span className="text-[10px] font-bold text-emerald-900 uppercase block">Poin Kunci Standar Pelayanan:</span>
+                                  <ul className="space-y-1.5 text-xs text-slate-800">
+                                    {screeningResult.theoryBasis.keyPoints.map((kp, idx) => (
+                                      <li key={idx} className="flex items-start gap-2">
+                                        <CheckCircle className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                                        <span>{kp}</span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              </div>
+
+                              <div className="pt-2 flex justify-end">
+                                <button
+                                  onClick={() => setShowTheoryModal(false)}
+                                  className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition"
+                                >
+                                  Tutup Penjelasan Teori
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
 
                     {/* View: Cek Risiko Kesehatan Detail */}
                     {dashboardSubView === 'cek_risiko' && (
