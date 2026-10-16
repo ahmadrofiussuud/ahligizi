@@ -1,4 +1,5 @@
 export const pageAccess = [
+  { path: '/ai', name: 'Tanya Ceko AI', category: 'Publik', access: 'Semua peran dan pengguna demo', note: 'Edukasi gizi, PTM dan stunting melalui Gemini; tanpa akses rekam medis otomatis.' },
   { path: '/', name: 'Beranda CEKAT', category: 'Publik', access: 'Tanpa login', note: 'Informasi produk dan pintu masuk aplikasi.' },
   { path: '/patient', name: 'CEKAT Pasien', category: 'Terhubung', access: 'Akun Supabase terverifikasi', note: 'Barcode, hasil milik sendiri, riwayat, dan status antrean.' },
   { path: '/station', name: 'CEKAT Station', category: 'Terhubung', access: 'Akun Supabase + hak petugas faskes', note: 'Pencarian pasien, pencatatan pemeriksaan, dan antrean faskes.' },

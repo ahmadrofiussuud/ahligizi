@@ -1,5 +1,7 @@
 'use client';
 
+import Link from 'next/link';
+import ScanNotice from '@/components/ScanNotice';
 import React, { useState, useRef, useEffect } from 'react';
 import {
   Camera,
@@ -167,20 +169,7 @@ export default function ScanPage() {
         return;
       }
 
-      if (data.data && data.data.is_food_detected === false) {
-        setScanError(
-          'Tidak terdeteksi objek makanan/minuman yang jelas. Silakan foto ulang dengan pencahayaan dan sudut yang lebih baik.'
-        );
-        return;
-      }
-
-      if (data.data && data.data.confidence === 'rendah') {
-        setScanError(
-          'Tingkat kejelasan foto terlalu rendah. Mohon pastikan makanan terlihat utuh dan fokus.'
-        );
-        return;
-      }
-
+      if (!data.success || !data.data) throw new Error(data.error || 'Analisis belum tersedia.');
       setResult(data.data);
     } catch (err) {
       console.error(err);
@@ -192,7 +181,7 @@ export default function ScanPage() {
 
   // Save Scanned Meal to FoodLog DB & Trigger pop-up if new achievements
   const handleSaveToLog = async () => {
-    if (!result) return;
+    if (!result?.is_food_detected || result.calories == null) return;
     setSaving(true);
 
     const foodName =
@@ -258,6 +247,7 @@ export default function ScanPage() {
         </p>
       </div>
 
+      <p className="mb-4 text-center text-sm"><Link href="/ai" className="font-bold text-emerald-700">Tanya Ceko: gizi, PTM & stunting →</Link></p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Left Column: Camera / Capture Box */}
         <div className="bg-white border border-emerald-100 rounded-3xl p-6 flex flex-col justify-between space-y-4 shadow-sm">
@@ -424,6 +414,20 @@ export default function ScanPage() {
                 Hasil analisis nutrisi & kalori makanan akan muncul di sini secara rinci.
               </p>
             </div>
+          ) : result.is_food_detected !== true ? (
+            <div className="space-y-4">
+              <ScanNotice result={result} />
+              <button
+                onClick={() => {
+                  setResult(null);
+                  setImagePreview(null);
+                }}
+                className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-2"
+              >
+                <Camera className="w-4 h-4" />
+                <span>Foto Ulang / Coba Lagi</span>
+              </button>
+            </div>
           ) : (
             /* Scanned Food Result View */
             <div className="space-y-5 font-semibold text-slate-700">
@@ -439,13 +443,13 @@ export default function ScanPage() {
                       : 'Makanan Terdeteksi'}
                   </h3>
                   <span className="text-xs text-slate-500 font-medium">
-                    Porsi: {result.items?.[0]?.portion_estimate || '1 Porsi'}
+                    Perkiraan porsi: {result.items?.[0]?.portion_estimate || 'Belum diketahui'}
                   </span>
                 </div>
 
                 <div className="text-right">
                   <span className="text-2xl font-black text-emerald-600">
-                    {result.calories}
+                    {result.calories ?? 'Belum diketahui'}
                   </span>
                   <span className="text-xs text-slate-500 block font-bold">
                     kcal
@@ -456,11 +460,11 @@ export default function ScanPage() {
               {/* Health Verdict Badge */}
               <div className="flex items-center space-x-2">
                 <span className="text-xs font-semibold text-slate-500">
-                  Penilaian Kesehatan:
+                  Penilaian pola makan umum:
                 </span>
                 {result.health_verdict === 'baik' && (
                   <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1">
-                    Sangat Baik
+                    Baik
                   </span>
                 )}
                 {result.health_verdict === 'cukup' && (
@@ -479,19 +483,19 @@ export default function ScanPage() {
               <div className="grid grid-cols-4 gap-2 text-center bg-emerald-55/40 p-3 rounded-xl border border-emerald-100">
                 <div>
                   <span className="text-[10px] text-slate-500 block font-bold">Protein</span>
-                  <span className="text-sm font-black text-teal-600">{result.protein_g}g</span>
+                  <span className="text-sm font-black text-teal-600">{result.protein_g == null ? 'Belum diketahui' : `${result.protein_g}g`}</span>
                 </div>
                 <div>
                   <span className="text-[10px] text-slate-500 block font-bold">Karbo</span>
-                  <span className="text-sm font-black text-amber-600">{result.carbs_g}g</span>
+                  <span className="text-sm font-black text-amber-600">{result.carbs_g == null ? 'Belum diketahui' : `${result.carbs_g}g`}</span>
                 </div>
                 <div>
                   <span className="text-[10px] text-slate-500 block font-bold">Lemak</span>
-                  <span className="text-sm font-black text-rose-600">{result.fat_g}g</span>
+                  <span className="text-sm font-black text-rose-600">{result.fat_g == null ? 'Belum diketahui' : `${result.fat_g}g`}</span>
                 </div>
                 <div>
                   <span className="text-[10px] text-slate-500 block font-bold">Serat</span>
-                  <span className="text-sm font-black text-emerald-600">{result.fiber_g}g</span>
+                  <span className="text-sm font-black text-emerald-600">{result.fiber_g == null ? 'Belum diketahui' : `${result.fiber_g}g`}</span>
                 </div>
               </div>
 
@@ -535,7 +539,7 @@ export default function ScanPage() {
                 </div>
               ) : (
                 <button
-                  disabled={saving}
+                  disabled={saving || result.calories == null}
                   onClick={handleSaveToLog}
                   className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs shadow-sm transition flex items-center justify-center gap-2"
                 >

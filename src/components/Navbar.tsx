@@ -43,6 +43,7 @@ export default function Navbar() {
 
   // Navigation links shown when logged in (Clean professional labels without raw emojis)
   const loggedInLinks = [
+    { name: 'Tanya Ceko AI', href: '/ai' },
     { name: 'Daftar Akses', href: '/access' },
     { name: 'CEKAT Station', href: '/station' },
     { name: 'Scan Gizi', href: '/scan' },
@@ -53,6 +54,7 @@ export default function Navbar() {
 
   // Professional marketing navigation links shown on landing page (logged out)
   const landingLinks = [
+    { name: 'Tanya Ceko AI', href: '/ai' },
     { name: 'Daftar Akses', href: '/access' },
     { name: 'CEKAT Station', href: '/station' },
     { name: 'CEKAT App', href: '/patient' },

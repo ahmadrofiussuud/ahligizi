@@ -41,7 +41,7 @@ export default function RootLayout({
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const isCekatRoute = pathname === '/app' || pathname === '/patient' || pathname === '/access' || pathname === '/demo' || pathname.startsWith('/station');
+  const isCekatRoute = pathname === '/ai' || pathname === '/app' || pathname === '/patient' || pathname === '/access' || pathname === '/demo' || pathname.startsWith('/station');
 
   return (
     <html lang="id" className="scroll-smooth">

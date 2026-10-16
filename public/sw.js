@@ -1,4 +1,4 @@
-const CACHE_NAME = 'cekgizi-cache-v4';
+const CACHE_NAME = 'cekgizi-cache-v5';
 const urlsToCache = [
   '/landing/cekat_logo.png',
   '/favicon.ico'
@@ -33,6 +33,8 @@ self.addEventListener('fetch', (event) => {
   // Bypass cache for development HMR, internal Next.js assets, and API endpoints
   if (
     pathname.startsWith('/api/') ||
+    pathname === '/ai' ||
+    pathname === '/scan' ||
     pathname === '/patient' ||
     pathname === '/station' ||
     pathname.startsWith('/station/live') ||

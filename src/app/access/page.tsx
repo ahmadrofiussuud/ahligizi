@@ -3,6 +3,7 @@ import { pageAccess, demoAccounts } from '@/lib/page-access';
 
 export default function AccessPage() {
   return <div className="mx-auto max-w-6xl px-5 py-10 space-y-8 text-slate-800">
+    <nav className="flex gap-4 text-sm font-bold text-emerald-700"><Link href="/ai">Tanya Ceko AI</Link><Link href="/scan">Scan makanan</Link></nav>
     <div><p className="text-sm font-bold text-emerald-700">CEKAT · Daftar Akses</p><h1 className="mt-2 text-3xl font-black">Ada {pageAccess.length} halaman di project ini</h1><p className="mt-3 max-w-3xl text-sm text-slate-600">CEKAT pasien dan Station memakai database Supabase yang sama. Simulator dan fitur lama tetap terpisah. Detail artikel dihitung sebagai satu template halaman.</p></div>
     <div className="grid gap-4 md:grid-cols-3">{[
       { title: 'Akun pasien nyata', href: '/patient', text: 'Daftar dan verifikasi email. Pasien hanya melihat hasil pemeriksaannya sendiri.' },

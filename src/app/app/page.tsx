@@ -1,5 +1,6 @@
 'use client';
 
+import ScanNotice from '@/components/ScanNotice';
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Home,
@@ -277,7 +278,7 @@ function CekatAppContent() {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const savedImage = localStorage.getItem('cekat_captured_image_url');
-      const savedResult = localStorage.getItem('cekat_ai_scan_result');
+      const savedResult = localStorage.getItem('cekat_ai_scan_result_v2');
       if (savedImage) setCapturedImageUrl(savedImage);
       if (savedResult) {
         try {
@@ -412,17 +413,21 @@ function CekatAppContent() {
     toastTimerRef.current = setTimeout(() => setToastVisible(false), 3000);
   };
 
-  // Chatbot states with localStorage persistence
+  // Chatbot states with localStorage persistence (v3 ensures latest comprehensive PTM & stunting prompt)
   const [chatMessages, setChatMessages] = useState<Array<{ sender: string; text: string }>>(() => {
+    const defaultGreeting = [
+      { sender: 'bot', text: 'Halo! Saya Ceko, asisten edukasi kesehatan & gizi CEKAT. Saya siap berdiskusi seputar gizi seimbang, pencegahan & diet Hipertensi, Diabetes, Obesitas, Kolesterol, batas konsumsi Garam/Gula/Lemak harian, serta pencegahan Stunting pada anak. Ada yang ingin Anda tanyakan?' }
+    ];
     if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('cekat_chat_messages');
+      const saved = localStorage.getItem('cekat_chat_messages_v3');
       if (saved) {
-        try { return JSON.parse(saved); } catch (e) {}
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        } catch (e) {}
       }
     }
-    return [
-      { sender: 'bot', text: 'Halo Sofia! Saya Ceko, asisten AI kesehatan & gizi Anda. Ada yang ingin Anda tanyakan seputar gizi, hipertensi, diabetes, obesitas, pencegahan stunting, atau batas garam/gula/lemak hari ini?' }
-    ];
+    return defaultGreeting;
   });
   const [chatInput, setChatInput] = useState('');
   const [isBotTyping, setIsBotTyping] = useState(false);
@@ -430,7 +435,7 @@ function CekatAppContent() {
   // Sync chatMessages to localStorage
   useEffect(() => {
     if (typeof window !== 'undefined' && chatMessages.length > 0) {
-      localStorage.setItem('cekat_chat_messages', JSON.stringify(chatMessages));
+      localStorage.setItem('cekat_chat_messages_v3', JSON.stringify(chatMessages));
     }
   }, [chatMessages]);
 
@@ -599,51 +604,33 @@ function CekatAppContent() {
   
   // AI Scan Result State
   const [aiScanResult, setAiScanResult] = useState<any>(null);
+  const [aiScanError, setAiScanError] = useState<string | null>(null);
 
   const setAiScanResultPersisted = (result: any) => {
     setAiScanResult(result);
     if (typeof window !== 'undefined') {
       if (result) {
-        localStorage.setItem('cekat_ai_scan_result', JSON.stringify(result));
+        localStorage.setItem('cekat_ai_scan_result_v2', JSON.stringify(result));
       } else {
-        localStorage.removeItem('cekat_ai_scan_result');
+        localStorage.removeItem('cekat_ai_scan_result_v2');
       }
     }
   };
 
   const analyzeCapturedImage = async (base64Data: string) => {
     setIsScanning(true);
+    setAiScanError(null);
+    setAiScanResultPersisted(null);
     try {
       const res = await fetch('/api/scan', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ image_base64: base64Data })
       });
       const data = await res.json();
-      if (data.success && data.data) {
-        setAiScanResultPersisted(data.data);
-      } else {
-        setAiScanResultPersisted({
-          food_name: 'Menu Sehat Terdeteksi',
-          calories: 520,
-          protein_g: 24,
-          carbs_g: 58,
-          fat_g: 18,
-          health_verdict: 'Healthy',
-          ai_notes: 'Porsi gizi seimbang terdeteksi. Pertimbangkan kecukupan air putih.'
-        });
-      }
-    } catch (err) {
-      console.error('Scan API call error:', err);
-      setAiScanResultPersisted({
-        food_name: 'Menu Makanan Terdeteksi',
-        calories: 490,
-        protein_g: 22,
-        carbs_g: 55,
-        fat_g: 16,
-        health_verdict: 'Healthy',
-        ai_notes: 'Menu makanan bergizi baik.'
-      });
+      if (!res.ok || !data.success || !data.data) throw new Error(data.error || 'Analisis belum berhasil. Silakan coba lagi.');
+      setAiScanResultPersisted(data.data);
+    } catch (error) {
+      setAiScanError(error instanceof Error ? error.message : 'AI belum dapat dihubungi. Silakan coba lagi.');
     } finally {
       setIsScanning(false);
       setNutrisiSubView('scan_result');
@@ -730,13 +717,14 @@ function CekatAppContent() {
 
   // Handle adding custom scanned food
   const handleSaveScanResult = () => {
+    if (!aiScanResult?.is_food || aiScanResult.calories == null) return;
     const newLog = {
       id: `log-${Date.now()}`,
       title: 'Nutrisi & Scan Makanan',
-      subtitle: 'Salad Sayur Segar',
-      calories: '307 kkal',
-      score: 'GOOD',
-      time: 'Hari ini 12.30'
+      subtitle: aiScanResult.food_name,
+      calories: `${aiScanResult.calories} kkal (perkiraan)`,
+      score: aiScanResult.health_verdict,
+      time: new Date().toLocaleString('id-ID')
     };
     setFoodLogs([newLog, ...foodLogs]);
     setNutrisiSubView('main');
@@ -744,14 +732,14 @@ function CekatAppContent() {
     setRiwayatSubView('home');
   };
 
-  const handleSendChatMessage = async () => {
-    if (!chatInput.trim() || isBotTyping) return;
-    const userText = chatInput.trim();
+  const handleSendChatMessage = async (presetText?: string) => {
+    const userText = (presetText || chatInput).trim();
+    if (!userText || isBotTyping) return;
     const userMsg = { sender: 'user', text: userText };
     const newMessages = [...chatMessages, userMsg];
     
     setChatMessages(newMessages);
-    setChatInput('');
+    if (!presetText) setChatInput('');
     setIsBotTyping(true);
 
     try {
@@ -768,13 +756,14 @@ function CekatAppContent() {
       });
 
       const data = await res.json();
-      const botReply = data.reply || 'Maaf, Ceko AI sedang memperbarui data. Coba tanyakan kembali ya!';
+      if (!res.ok || !data.success || !data.reply) throw new Error(data.error || 'AI belum menghasilkan jawaban. Coba lagi.');
+      const botReply = data.reply;
       setChatMessages(prev => [...prev, { sender: 'bot', text: botReply }]);
     } catch (err) {
       console.error('Ceko AI fetch error:', err);
       setChatMessages(prev => [...prev, {
         sender: 'bot',
-        text: 'Ceko AI siap membantu Anda dengan informasi kandungan gizi, kalori, dan pola makan sehat!'
+        text: err instanceof Error ? err.message : 'AI belum dapat dihubungi. Silakan kirim pertanyaan lagi.'
       }]);
     } finally {
       setIsBotTyping(false);
@@ -2321,7 +2310,7 @@ function CekatAppContent() {
                             <img src="/images/maskot cekat tanda tanya.png" alt="Ceko Mascot" className="w-10 h-14 object-contain shrink-0" />
                             <div className="space-y-0.5">
                               <h5 className="text-[12px] font-black text-slate-800 leading-tight">Konsultasi AI Ceko</h5>
-                              <p className="text-[9.5px] text-slate-500 font-semibold leading-relaxed">Ceko siap membantu konsultasi gizi, pencegahan PTM (Hipertensi, Diabetes, Obesitas) & Stunting secara praktis & cepat!</p>
+                              <p className="text-[9.5px] text-slate-500 font-semibold leading-relaxed">Ceko membantu edukasi gizi, hipertensi, diabetes, obesitas, kolesterol & pencegahan stunting. Diagnosis dan pengobatan perlu tenaga kesehatan.</p>
                             </div>
                           </div>
 
@@ -2347,6 +2336,27 @@ function CekatAppContent() {
                           )}
                         </div>
 
+                        {/* Quick Topic Chips for PTM & Stunting */}
+                        <div className="px-3 pt-2 pb-1 bg-white border-t border-slate-100 flex items-center gap-1.5 overflow-x-auto no-scrollbar shrink-0">
+                          {[
+                            { label: '❤️ Hipertensi & Tensi', query: 'Bagaimana cara mencegah hipertensi dan menjaga tensi darah tetap stabil?' },
+                            { label: '🩸 Tanda Diabetes', query: 'Apa tanda-tanda awal diabetes tipe 2 dan pola makan yang dianjurkan?' },
+                            { label: '⚖️ Obesitas & Berat Badan', query: 'Bagaimana tips pola makan sehat untuk menurunkan berat badan dan mencegah obesitas?' },
+                            { label: '👶 Cegah Stunting', query: 'Bagaimana langkah pencegahan stunting pada anak dan pemenuhan gizi balita?' },
+                            { label: '🧂 Batas Garam & Gula', query: 'Berapa batas konsumsi garam, gula, dan lemak harian menurut anjuran Kemenkes?' },
+                            { label: '🥗 Porsi Isi Piringku', query: 'Bagaimana panduan porsi gizi seimbang Isi Piringku untuk makanan harian?' },
+                          ].map((chip, idx) => (
+                            <button
+                              key={idx}
+                              type="button"
+                              onClick={() => handleSendChatMessage(chip.query)}
+                              className="px-2.5 py-1 bg-slate-50 hover:bg-emerald-50 border border-slate-200 hover:border-emerald-300 text-slate-700 hover:text-emerald-800 text-[10px] font-bold rounded-full shadow-2xs whitespace-nowrap transition shrink-0 active:scale-95"
+                            >
+                              {chip.label}
+                            </button>
+                          ))}
+                        </div>
+
                         {/* Input Area (16px font prevents iOS Safari auto-zoom) */}
                         <div className="p-2.5 bg-white border-t border-slate-100 shrink-0">
                           <div className="flex items-center bg-slate-50 border border-slate-200 rounded-full px-3 py-1">
@@ -2357,12 +2367,12 @@ function CekatAppContent() {
                               onKeyDown={(e) => {
                                 if (e.key === 'Enter') handleSendChatMessage();
                               }}
-                              placeholder="Tanya kalori, tensi darah, dll..."
+                              placeholder="Tanya gizi, hipertensi, diabetes, stunting..."
                               className="flex-1 bg-transparent border-none text-[16px] md:text-xs text-slate-800 focus:outline-none placeholder-slate-400 px-1"
                               style={{ fontSize: '16px' }}
                             />
                             <button 
-                              onClick={handleSendChatMessage}
+                              onClick={() => handleSendChatMessage()}
                               className="w-8 h-8 rounded-full bg-[#00875A] hover:bg-[#00704a] text-white flex items-center justify-center transition active:scale-95 shrink-0"
                             >
                               <ArrowRight className="w-4 h-4" />
@@ -3185,7 +3195,7 @@ function CekatAppContent() {
                                     <div className="flex items-center gap-2.5">
                                       <span className="text-lg">🤖</span>
                                       <div>
-                                        <h4 className="text-xs font-black text-emerald-900">Ceko AI Consult 24/7 (Kemenkes)</h4>
+                                        <h4 className="text-xs font-black text-emerald-900">Ceko AI · Gizi, PTM & Stunting</h4>
                                         <p className="text-[9.5px] text-emerald-700 font-semibold">Asisten AI Konsultasi Kesehatan Gizi Instan</p>
                                       </div>
                                     </div>
@@ -4154,45 +4164,11 @@ function CekatAppContent() {
                         </div>
 
                         {/* Top Card Image & Score or Non-Food Error State */}
-                        {aiScanResult && (aiScanResult.is_food === false || aiScanResult.is_food_detected === false || aiScanResult.food_name === 'Bukan Makanan') ? (
-                          <div className="flex-1 overflow-y-auto px-5 py-6 space-y-6 text-center">
-                            <div className="relative aspect-video rounded-3xl overflow-hidden shadow border border-rose-200 bg-slate-900">
-                              <img 
-                                src={capturedImageUrl || 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80'} 
-                                alt="Scanned Image" 
-                                className="w-full h-full object-cover opacity-75"
-                              />
-                              <div className="absolute inset-0 bg-rose-950/40 backdrop-blur-[2px] flex flex-col items-center justify-center p-4 text-white">
-                                <div className="w-12 h-12 rounded-full bg-rose-500/90 flex items-center justify-center mb-2 shadow-lg">
-                                  <span className="text-xl">⚠️</span>
-                                </div>
-                                <span className="text-xs font-black uppercase tracking-wider text-rose-200">Objek Non-Makanan</span>
-                              </div>
-                            </div>
-
-                            <div className="bg-rose-50/80 border border-rose-200 rounded-2xl p-4 text-left space-y-2 shadow-xs">
-                              <h4 className="text-xs font-black text-rose-900 uppercase tracking-wide flex items-center gap-1.5">
-                                <span>🚫</span> Foto Tidak Teridentifikasi Sebagai Makanan
-                              </h4>
-                              <p className="text-xs text-rose-700 leading-relaxed font-semibold">
-                                {aiScanResult?.error_message || aiScanResult?.ai_notes || 'Objek pada foto tampak seperti lantai, dinding, atau benda non-makanan. AI CEKAT hanya menganalisis porsi makanan atau minuman.'}
-                              </p>
-                            </div>
-
-                            <div className="space-y-3 pt-2">
-                              <button
-                                onClick={() => setNutrisiSubView('scan_camera')}
-                                className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black rounded-xl uppercase tracking-wider shadow-md transition active:scale-98 flex items-center justify-center gap-2"
-                              >
-                                <span>📷</span> Ambil Foto Ulang Makanan
-                              </button>
-                              <button
-                                onClick={() => setNutrisiSubView('main')}
-                                className="w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-black rounded-xl uppercase tracking-wider transition flex items-center justify-center gap-2"
-                              >
-                                <span>✏️</span> Kembalikan ke Log & Pilih Makanan
-                              </button>
-                            </div>
+                        {!aiScanResult || aiScanError || aiScanResult.is_food !== true ? (
+                          <div className="flex-1 px-5 py-6 space-y-5">
+                            {capturedImageUrl && <img src={capturedImageUrl} alt="Foto yang dianalisis" className="w-full aspect-video object-contain rounded-2xl border border-rose-200" />}
+                            <ScanNotice result={aiScanResult} error={aiScanError} />
+                            <button onClick={() => setNutrisiSubView('scan_camera')} className="w-full rounded-xl bg-emerald-700 p-4 text-white font-bold">Ambil foto atau coba lagi</button>
                           </div>
                         ) : (
                           <>
@@ -4205,12 +4181,12 @@ function CekatAppContent() {
                                 />
                                 {/* Score circular badge */}
                                 <div className={`absolute bottom-3 right-3 px-3 py-2 rounded-2xl border-2 border-white flex flex-col items-center justify-center shadow-lg text-white ${
-                                  (aiScanResult?.health_verdict || 'Healthy').toLowerCase() === 'healthy' ? 'bg-emerald-500' :
-                                  (aiScanResult?.health_verdict || '').toLowerCase() === 'moderate' ? 'bg-amber-500' : 'bg-rose-500'
+                                  aiScanResult?.health_verdict === 'baik' ? 'bg-emerald-500' :
+                                  aiScanResult?.health_verdict === 'cukup' ? 'bg-amber-500' : 'bg-rose-500'
                                 }`}>
                                   <span className="text-[7.5px] font-bold block uppercase leading-none">VERDICT:</span>
                                   <span className="text-[11px] font-black block uppercase leading-none mt-0.5">
-                                    {aiScanResult?.health_verdict || 'SEHAT'}
+                                    {aiScanResult?.health_verdict || 'Belum dinilai'}
                                   </span>
                                 </div>
                               </div>
@@ -4218,17 +4194,11 @@ function CekatAppContent() {
                               {/* Food Name & Star feedback text */}
                               <div className="text-center space-y-1.5 px-2">
                                 <h3 className="text-base font-black text-slate-900 leading-snug">
-                                  {aiScanResult?.food_name || 'Nasi Goreng Spesial'}
+                                  {aiScanResult?.food_name || 'Nama belum tersedia'}
                                 </h3>
-                                <div className="flex justify-center space-x-1 text-yellow-400">
-                                  <Star className="w-4 h-4 fill-yellow-400" />
-                                  <Star className="w-4 h-4 fill-yellow-400" />
-                                  <Star className="w-4 h-4 fill-yellow-400" />
-                                  <Star className="w-4 h-4 fill-yellow-400" />
-                                  <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                                </div>
+                                <p className="text-xs text-slate-500">Porsi: {aiScanResult?.portion_estimate}. Angka gizi adalah perkiraan dari foto.</p>
                                 <p className="text-[11px] leading-relaxed text-slate-600 font-semibold px-2 pt-1">
-                                  {aiScanResult?.ai_notes || 'Porsi makanan seimbang dengan karbohidrat dan protein yang baik.'}
+                                  {aiScanResult?.ai_notes}
                                 </p>
                               </div>
 
@@ -4240,7 +4210,7 @@ function CekatAppContent() {
                                   {/* Protein */}
                                   <div className="bg-emerald-50/60 border border-emerald-100 rounded-2xl p-2.5 flex flex-col items-center justify-center space-y-1 shadow-xs">
                                     <div className="w-11 h-11 rounded-full border-2 border-emerald-500 flex flex-col items-center justify-center font-black text-[11px] text-emerald-900 bg-white">
-                                      <span>{aiScanResult?.protein_g ? `${aiScanResult.protein_g}g` : '24g'}</span>
+                                      <span>{aiScanResult?.protein_g != null ? `${aiScanResult.protein_g}g` : 'Belum dapat diperkirakan'}</span>
                                     </div>
                                     <span className="text-[9.5px] font-extrabold text-emerald-800 uppercase tracking-wide">Protein</span>
                                   </div>
@@ -4248,7 +4218,7 @@ function CekatAppContent() {
                                   {/* Carbs */}
                                   <div className="bg-amber-50/60 border border-amber-100 rounded-2xl p-2.5 flex flex-col items-center justify-center space-y-1 shadow-xs">
                                     <div className="w-11 h-11 rounded-full border-2 border-amber-500 flex flex-col items-center justify-center font-black text-[11px] text-amber-900 bg-white">
-                                      <span>{aiScanResult?.carbs_g ? `${aiScanResult.carbs_g}g` : '58g'}</span>
+                                      <span>{aiScanResult?.carbs_g != null ? `${aiScanResult.carbs_g}g` : 'Belum dapat diperkirakan'}</span>
                                     </div>
                                     <span className="text-[9.5px] font-extrabold text-amber-800 uppercase tracking-wide">Carbo</span>
                                   </div>
@@ -4256,7 +4226,7 @@ function CekatAppContent() {
                                   {/* Fat */}
                                   <div className="bg-rose-50/60 border border-rose-100 rounded-2xl p-2.5 flex flex-col items-center justify-center space-y-1 shadow-xs">
                                     <div className="w-11 h-11 rounded-full border-2 border-rose-500 flex flex-col items-center justify-center font-black text-[11px] text-rose-900 bg-white">
-                                      <span>{aiScanResult?.fat_g ? `${aiScanResult.fat_g}g` : '18g'}</span>
+                                      <span>{aiScanResult?.fat_g != null ? `${aiScanResult.fat_g}g` : 'Belum dapat diperkirakan'}</span>
                                     </div>
                                     <span className="text-[9.5px] font-extrabold text-rose-800 uppercase tracking-wide">Fat</span>
                                   </div>
@@ -4268,10 +4238,11 @@ function CekatAppContent() {
                             <div className="px-5 py-5 bg-slate-50 border-t border-slate-100 space-y-3">
                               <div className="w-full py-3 bg-[#fdf2e9] border border-[#f5c299] text-[#e67e22] text-xs font-black rounded-xl uppercase tracking-wider flex items-center justify-center gap-2">
                                 <span>🔥</span>
-                                <span>{aiScanResult?.calories || 520} CALORIES</span>
+                                <span>{aiScanResult?.calories ?? 'Belum dapat diperkirakan'} kkal · Perkiraan</span>
                               </div>
                               
                               <button 
+                                disabled={!aiScanResult?.is_food || aiScanResult.calories == null}
                                 onClick={handleSaveScanResult}
                                 className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black rounded-xl uppercase tracking-wider shadow-sm transition active:scale-98"
                               >

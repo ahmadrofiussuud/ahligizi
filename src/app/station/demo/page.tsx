@@ -175,7 +175,7 @@ export default function CekatStationDemo() {
 
       {/* CORE CONTENT */}
       <main className="w-full max-w-7xl mx-auto flex-1 flex flex-col justify-center my-1 sm:my-2">
-        <div className="mb-5 rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-950"><p className="font-bold">Mode demo · Data pasien, pemeriksaan, dan antrean di halaman ini adalah contoh.</p><Link href="/station" className="mt-2 block font-bold text-emerald-800">Buka Station yang terhubung dengan akun petugas →</Link></div>
+        <div className="mb-5 rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-950"><p className="font-bold">Mode demo · Data pasien, pemeriksaan, dan antrean di halaman ini adalah contoh.</p><Link href="/station" className="mt-2 block font-bold text-emerald-800">Buka Station yang terhubung dengan akun petugas →</Link><div className="mt-3 flex gap-4 font-bold text-emerald-800"><Link href="/ai">Tanya Ceko AI</Link><Link href="/scan">Scan makanan</Link></div></div>
 
         {/* STEP 1: WELCOME & ACCESS METHODS LANDING PAGE */}
         {step === 1 && (
