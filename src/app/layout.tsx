@@ -41,17 +41,17 @@ export default function RootLayout({
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const isCekatRoute = pathname === '/ai' || pathname === '/app' || pathname === '/patient' || pathname === '/access' || pathname === '/demo' || pathname.startsWith('/station');
+  const isDedicatedRoute = pathname === '/ai' || pathname === '/app' || pathname === '/patient' || pathname === '/access' || pathname === '/demo' || pathname.startsWith('/station') || pathname === '/rekap-desa';
 
   return (
     <html lang="id" className="scroll-smooth">
       <body className={`${inter.className} bg-emerald-50/40 text-slate-800 min-h-screen flex flex-col`}>
-        {(!isCekatRoute || !isClient) && <Navbar />}
+        {(!isDedicatedRoute || !isClient) && <Navbar />}
         {/* Dynamic Layout Wrapper: Landing page takes true 100% full-width */}
         <main className={`flex-1 w-full ${
           isLandingPage
             ? 'px-0 py-0' 
-            : isCekatRoute
+            : isDedicatedRoute
             ? 'p-0 max-w-full'
             : 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'
         }`}>
@@ -59,7 +59,7 @@ export default function RootLayout({
         </main>
         
         {/* Professional Premium Multi-column Footer */}
-        {!isCekatRoute && (
+        {!isDedicatedRoute && (
           <footer className="bg-slate-900 text-slate-400 border-t border-slate-800 py-16">
             <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 grid grid-cols-1 md:grid-cols-4 gap-10">
             {/* Column 1: Logo & Tagline */}

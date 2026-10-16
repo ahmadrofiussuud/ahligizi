@@ -93,7 +93,57 @@ export default function RekapKesehatanDesaPage() {
   };
 
   return (
-    <div className="space-y-8 pb-16">
+    <div className="min-h-screen bg-emerald-50/30 flex flex-col">
+      
+      {/* Header Khusus Rekap Desa - Bersih tanpa menu fitur lain */}
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-xs">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <Link href="/" className="flex items-center space-x-2.5 group">
+              <div className="w-9 h-9 rounded-xl bg-white border border-slate-100 flex items-center justify-center p-0.5 shadow-sm group-hover:scale-105 transition-transform">
+                <img src="/images/logo C cekat.png" alt="Cekat Logo" className="w-full h-full object-contain" />
+              </div>
+              <div>
+                <div className="flex items-center space-x-2">
+                  <span className="text-base font-black tracking-tight text-slate-900">CEKAT</span>
+                  <span className="text-[10px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">
+                    Rekap Desa
+                  </span>
+                </div>
+                <span className="text-[10px] text-slate-500 font-semibold block -mt-0.5">
+                  Profil Kesehatan Komunitas Desa Ngabab
+                </span>
+              </div>
+            </Link>
+          </div>
+
+          <div className="flex items-center space-x-2 sm:space-x-3">
+            <button
+              onClick={() => setShowLegalModal(true)}
+              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold hover:bg-emerald-100 transition"
+            >
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Privasi UU PDP & Permenkes</span>
+            </button>
+            <button
+              onClick={handlePrint}
+              className="px-3.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1.5 transition"
+            >
+              <Printer className="w-3.5 h-3.5" />
+              <span>Cetak</span>
+            </button>
+            <Link
+              href="/"
+              className="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition"
+            >
+              <span>← Beranda</span>
+            </Link>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content Area */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 space-y-8 w-full">
       
       {/* 1. Header & Location Breadcrumb */}
       <div className="bg-gradient-to-r from-emerald-800 via-teal-800 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
@@ -664,6 +714,21 @@ export default function RekapKesehatanDesaPage() {
           </div>
         </div>
       )}
+
+      </main>
+
+      {/* Dedicated Clean Footer for Rekap Desa */}
+      <footer className="mt-auto border-t border-slate-200 bg-white py-6 text-xs text-slate-500 font-medium">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <ShieldCheck className="w-4 h-4 text-emerald-600" />
+            <span>Portal Rekapitulasi Kesehatan Komunitas Desa Ngabab • Sesuai Standar UU PDP No. 27/2022</span>
+          </div>
+          <div className="text-[11px] text-slate-400">
+            Terakhir disinkronkan: 16 Oktober 2026, 22:55 WIB
+          </div>
+        </div>
+      </footer>
 
     </div>
   );
