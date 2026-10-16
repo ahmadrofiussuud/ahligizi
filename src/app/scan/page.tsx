@@ -224,8 +224,9 @@ export default function ScanPage() {
     }
   };
 
-  // Cleanup Camera stream on unmount
+  // Auto-start Camera stream on mount, cleanup on unmount
   useEffect(() => {
+    startCamera();
     return () => {
       stopCamera();
     };

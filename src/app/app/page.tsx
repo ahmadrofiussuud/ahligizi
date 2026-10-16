@@ -337,7 +337,7 @@ function CekatAppContent() {
   };
   
   // - For 'nutrisi': 'main' (Nutrisi Harianmu), 'scan_camera' (Camera scanner), 'scan_result' (Score & details), 'charts' (IMT & Charts), 'pantry' (Kulkas resep)
-  const [nutrisiSubView, setNutrisiSubView] = useState<'main' | 'scan_camera' | 'scan_result' | 'charts' | 'pantry'>('main');
+  const [nutrisiSubView, setNutrisiSubView] = useState<'main' | 'scan_camera' | 'scan_result' | 'charts' | 'pantry'>('scan_camera');
   
   // - For 'challenge': 'home' (Langkah Sehatmu), 'misi' (7-Day challenge), 'games' (Mini Games grid)
   const [challengeSubView, setChallengeSubView] = useState<'home' | 'misi' | 'games'>('home');
@@ -3982,16 +3982,19 @@ function CekatAppContent() {
 
                         {/* Bottom Feature Banners */}
                         <div className="px-5 space-y-4 text-left">
-                          {/* Banner 1: AI Food Scanner Score */}
+                          {/* Banner 1: AI Food Scanner */}
                           <div className="bg-gradient-to-r from-emerald-50 to-emerald-100/50 border border-emerald-200/40 p-5 rounded-3xl flex items-center justify-between shadow-sm relative overflow-hidden">
                             <div className="space-y-2.5 max-w-[65%] text-left">
-                              <h4 className="text-[13px] font-black text-slate-800 leading-snug">Hasil Scan Gizi & Skor AI</h4>
-                              <p className="text-[10px] text-slate-500 font-semibold leading-relaxed">Lihat analisa skor GOOD, protein, karbo, & 307 Cal</p>
+                              <h4 className="text-[13px] font-black text-slate-800 leading-snug">Scan Makanan & Nutrisi AI</h4>
+                              <p className="text-[10px] text-slate-500 font-semibold leading-relaxed">Arahkan kamera ke makanan untuk analisis kalori & nutrisi instan</p>
                               <button 
-                                onClick={() => setNutrisiSubView('scan_result')}
+                                onClick={() => {
+                                  setAiScanResultPersisted(null);
+                                  setNutrisiSubView('scan_camera');
+                                }}
                                 className="px-3.5 py-1.5 bg-emerald-700 hover:bg-emerald-600 text-white text-[9.5px] font-black rounded-lg uppercase tracking-wider transition flex items-center gap-1 relative overflow-visible group cursor-pointer"
                               >
-                                <span>Lihat Skor Scan</span>
+                                <span>Buka Kamera Scan</span>
                                 <Camera className="w-3.5 h-3.5" />
                               </button>
                             </div>
@@ -4156,7 +4159,13 @@ function CekatAppContent() {
                       <div className="flex-1 bg-white flex flex-col justify-between animate-fadeIn min-h-[600px] text-slate-800">
                         {/* Header */}
                         <div className="bg-white border-b border-slate-100 px-6 pt-8 pb-4 flex items-center justify-between">
-                          <button onClick={() => setNutrisiSubView('scan_camera')} className="p-1 hover:bg-slate-100 rounded-full transition">
+                          <button 
+                            onClick={() => {
+                              setAiScanResultPersisted(null);
+                              setNutrisiSubView('scan_camera');
+                            }} 
+                            className="p-1 hover:bg-slate-100 rounded-full transition"
+                          >
                             <ArrowLeft className="w-5 h-5 text-slate-800" />
                           </button>
                           <span className="text-xs font-black text-emerald-800 uppercase tracking-wider block">Cekat Scan</span>
@@ -4166,9 +4175,19 @@ function CekatAppContent() {
                         {/* Top Card Image & Score or Non-Food Error State */}
                         {!aiScanResult || aiScanError || aiScanResult.is_food !== true ? (
                           <div className="flex-1 px-5 py-6 space-y-5">
-                            {capturedImageUrl && <img src={capturedImageUrl} alt="Foto yang dianalisis" className="w-full aspect-video object-contain rounded-2xl border border-rose-200" />}
+                            {capturedImageUrl && <img src={capturedImageUrl} alt="Foto yang dianalisis" className="w-full aspect-video object-contain rounded-2xl border-2 border-rose-300" />}
                             <ScanNotice result={aiScanResult} error={aiScanError} />
-                            <button onClick={() => setNutrisiSubView('scan_camera')} className="w-full rounded-xl bg-emerald-700 p-4 text-white font-bold">Ambil foto atau coba lagi</button>
+                            <button 
+                              onClick={() => {
+                                setAiScanResultPersisted(null);
+                                setCapturedImageUrlPersisted(null);
+                                setNutrisiSubView('scan_camera');
+                              }} 
+                              className="w-full rounded-2xl bg-emerald-700 hover:bg-emerald-600 p-4 text-white font-extrabold text-xs uppercase tracking-wider shadow-sm transition active:scale-98 cursor-pointer flex items-center justify-center gap-2"
+                            >
+                              <Camera className="w-4 h-4" />
+                              <span>Buka Kamera & Foto Ulang</span>
+                            </button>
                           </div>
                         ) : (
                           <>
@@ -5616,7 +5635,9 @@ function CekatAppContent() {
                   <button 
                     onClick={() => {
                       setActiveTab('nutrisi');
-                      setNutrisiSubView('main');
+                      setAiScanResultPersisted(null);
+                      setCapturedImageUrlPersisted(null);
+                      setNutrisiSubView('scan_camera');
                     }}
                     className="flex-1 flex flex-col items-center justify-center py-0.5 transition-all"
                   >
