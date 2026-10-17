@@ -5,13 +5,15 @@ const vm = require('node:vm');
 const ts = require('typescript');
 const source = fs.readFileSync('src/lib/cekat-ai.ts','utf8');
 const compiled = ts.transpileModule(source,{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText;
+const guidelineExports={};
+vm.runInNewContext(ts.transpileModule(fs.readFileSync('src/lib/scan-guidelines.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText,{exports:guidelineExports});
 function load(fetchImpl, key='test-key') {
   const exports={};
-  vm.runInNewContext(compiled,{exports,require:()=>({NextResponse:{json:(body,init)=>({body,...init})}}),process:{env:{GEMINI_API_KEY:key}},fetch:fetchImpl,Buffer,AbortSignal,Date,Map});
+  vm.runInNewContext(compiled,{exports,require:(id)=>id==='./scan-guidelines'?guidelineExports:({NextResponse:{json:(body,init)=>({body,...init})}}),process:{env:{GEMINI_API_KEY:key}},fetch:fetchImpl,Buffer,AbortSignal,Date,Map});
   return exports;
 }
 const photo='data:image/png;base64,'+fs.readFileSync('public/images/logo C cekat.png').toString('base64');
-const observation={classification:'non_food',detected_object:'Logo hijau',confidence:'tinggi',items:[],calories:42,protein_g:2,carbs_g:4,fat_g:1,fiber_g:0,health_verdict:'baik',notes:'Terlihat logo.',suggestion:'Foto makanan.'};
+const observation={classification:'non_food',detected_object:'Logo hijau',confidence:'tinggi',items:[],calories:42,protein_g:2,carbs_g:4,fat_g:1,fiber_g:0,health_verdict:'baik',recommendations:[{guideline_id:'diabetes',action:'Pilih sumber serat.',reason:'Lengkapi variasi pangan.'},{guideline_id:'hypertension',action:'Batasi tambahan garam.',reason:'Natrium tidak terlihat dari foto.'}],notes:'Terlihat logo.',suggestion:'Foto makanan.'};
 const provider=body=>async()=>({ok:true,status:200,json:async()=>({candidates:[{finishReason:'STOP',content:{parts:[{text:JSON.stringify(body)}]}}]})});
 
 test('All four food verdicts survive validation and are advertised in the provider schema',async()=>{
@@ -32,7 +34,7 @@ test('A non-food or uncertain photo cannot receive even the highest food verdict
     assert.equal(data.health_verdict,'belum_dinilai');
     assert.equal(data.calories,null);
     assert.equal(data.detected_object,'Logo hijau');
-    assert.equal(data.is_food,false);
+    assert.equal(data.is_food,false);assert.equal(data.recommendations.length,0);
   }
 });
 test('Missing key fails rather than fabricating a successful analysis',async()=>{
@@ -81,4 +83,13 @@ test('Truncated answer is rejected and errors cannot be cached',async()=>{
   await assert.rejects(ai.generateAI('instruction',[]),e=>e.status===502);
   const result=ai.aiFailure(new ai.AIError(503,'Coba lagi'));
   assert.equal(result.status,503);assert.equal(result.body.success,false);assert.match(result.headers['Cache-Control'],/no-store/);
+});
+
+test('Food advice is required and citations are controlled by the server',async()=>{
+  const food={...observation,classification:'food',items:[{name:'Nasi',portion_estimate:'100 g'}]};
+  const data=await load(provider({...food,recommendations:food.recommendations.map(x=>({...x,source:{title:'FAKE',pages:'999'}}))})).analyzeFood(photo);
+  assert.match(data.recommendations[0].source.title,/PERKENI/);
+  assert.equal(data.recommendations[0].source.pages,'75, 79');
+  await assert.rejects(load(provider({...food,recommendations:[]})).analyzeFood(photo),e=>e.status===502);
+  await assert.rejects(load(provider({...food,recommendations:[{guideline_id:'fake_source',action:'A',reason:'B'},food.recommendations[1]]})).analyzeFood(photo),e=>e.status===502);
 });

@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import ScanNotice from '@/components/ScanNotice';
 import FoodVerdictBadge from '@/components/FoodVerdictBadge';
+import ScanDietAdvice from '@/components/ScanDietAdvice';
 import React, { useState, useRef, useEffect } from 'react';
 import {
   Camera,
@@ -492,12 +493,14 @@ export default function ScanPage() {
                 <p>
                   <strong>Catatan:</strong> {result.notes}
                 </p>
-                {result.suggestion && (
+                {result.suggestion && !result.recommendations?.length && (
                   <p>
                     <strong className="text-amber-600">Saran:</strong> {result.suggestion}
                   </p>
                 )}
               </div>
+
+              <ScanDietAdvice recommendations={result.recommendations} />
 
               {/* Meal Type Selection */}
               <div className="space-y-1.5">

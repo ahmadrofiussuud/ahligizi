@@ -2,6 +2,7 @@
 
 import ScanNotice from '@/components/ScanNotice';
 import FoodVerdictBadge from '@/components/FoodVerdictBadge';
+import ScanDietAdvice from '@/components/ScanDietAdvice';
 import React, { useState, useEffect, useRef } from 'react';
 import { evaluateScreeningResult, type ScreeningEvaluationResult } from '@/lib/cekat-clinical-engine';
 import { 
@@ -263,7 +264,7 @@ function CekatAppContent() {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const savedImage = localStorage.getItem('cekat_captured_image_url');
-      const savedResult = localStorage.getItem('cekat_ai_scan_result_v2');
+      const savedResult = localStorage.getItem('cekat_ai_scan_result_v3');
       if (savedImage) setCapturedImageUrl(savedImage);
       if (savedResult) {
         try {
@@ -597,9 +598,9 @@ function CekatAppContent() {
     setAiScanResult(result);
     if (typeof window !== 'undefined') {
       if (result) {
-        localStorage.setItem('cekat_ai_scan_result_v2', JSON.stringify(result));
+        localStorage.setItem('cekat_ai_scan_result_v3', JSON.stringify(result));
       } else {
-        localStorage.removeItem('cekat_ai_scan_result_v2');
+        localStorage.removeItem('cekat_ai_scan_result_v3');
       }
     }
   };
@@ -4444,6 +4445,8 @@ function CekatAppContent() {
                                   {aiScanResult?.ai_notes}
                                 </p>
                               </div>
+
+                              <ScanDietAdvice recommendations={aiScanResult?.recommendations} />
 
                               {/* Macro circles list */}
                               <div className="space-y-3 text-left">
