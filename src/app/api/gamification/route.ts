@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 
 // 10 Badges data & criteria definitions without raw Emojis
-export const BADGES = [
+const BADGES = [
   { id: 'b1', name: 'First Scan', description: 'Mencatat makanan pertama kali di NutriSnap', icon: '📸', criteria: 'Log 1 makanan' },
   { id: 'b2', name: '7-Day Warrior', description: 'Streak mencatat makanan selama 7 hari berturut-turut', icon: '🔥', criteria: 'Streak 7 hari' },
   { id: 'b3', name: '30-Day Legend', description: 'Streak mencatat makanan selama 30 hari berturut-turut', icon: '👑', criteria: 'Streak 30 hari' },
@@ -15,7 +15,7 @@ export const BADGES = [
 ];
 
 // Helper to determine Level name based on points
-export function getLevelName(points: number): string {
+function getLevelName(points: number): string {
   if (points >= 1000) return 'Diamond Star';
   if (points >= 600) return 'Platinum Champion';
   if (points >= 300) return 'Gold Elite';
@@ -24,7 +24,7 @@ export function getLevelName(points: number): string {
 }
 
 // Helper to check user progress to next level
-export function getLevelProgress(points: number) {
+function getLevelProgress(points: number) {
   let min = 0;
   let max = 100;
   if (points >= 1000) { min = 1000; max = 5000; }
@@ -110,4 +110,3 @@ export async function PATCH(req: Request) {
     return NextResponse.json({ error: 'Gagal mengubah pengaturan' }, { status: 500 });
   }
 }
-export { earnedBadgeIds, points as userPoints, currentStreak as userStreak };

@@ -1,6 +1,7 @@
 'use client';
 
 import ScanNotice from '@/components/ScanNotice';
+import FoodVerdictBadge from '@/components/FoodVerdictBadge';
 import React, { useState, useEffect, useRef } from 'react';
 import { evaluateScreeningResult, type ScreeningEvaluationResult } from '@/lib/cekat-clinical-engine';
 import { 
@@ -57,7 +58,7 @@ import {
   Sparkles as SparklesIcon
 } from 'lucide-react';
 import Link from 'next/link';
-import DashboardPage from '../dashboard/page';
+import DashboardPage from '@/components/PatientDashboard';
 import RegistrationBarcode from '@/components/RegistrationBarcode';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 
@@ -4428,15 +4429,8 @@ function CekatAppContent() {
                                   alt="Scanned Food" 
                                   className="w-full h-full object-cover"
                                 />
-                                {/* Score circular badge */}
-                                <div className={`absolute bottom-3 right-3 px-3 py-2 rounded-2xl border-2 border-white flex flex-col items-center justify-center shadow-lg text-white ${
-                                  aiScanResult?.health_verdict === 'baik' ? 'bg-emerald-500' :
-                                  aiScanResult?.health_verdict === 'cukup' ? 'bg-amber-500' : 'bg-rose-500'
-                                }`}>
-                                  <span className="text-[7.5px] font-bold block uppercase leading-none">VERDICT:</span>
-                                  <span className="text-[11px] font-black block uppercase leading-none mt-0.5">
-                                    {aiScanResult?.health_verdict || 'Belum dinilai'}
-                                  </span>
+                                <div className="absolute bottom-3 right-3 rounded-full bg-white p-1 shadow-lg">
+                                  <FoodVerdictBadge verdict={aiScanResult?.health_verdict} />
                                 </div>
                               </div>
 

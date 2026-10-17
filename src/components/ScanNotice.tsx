@@ -157,7 +157,7 @@ export default function ScanNotice({
       {/* Red Reassurance Box */}
       <div className="bg-rose-500/10 border border-rose-300 rounded-xl px-3 py-2 text-center">
         <p className="text-[10.5px] font-bold text-rose-800">
-          ⚠️ Kalori & nutrisi tidak dihitung (0 kkal) karena bukan bahan pangan konsumsi.
+          ⚠️ Kalori & nutrisi tidak dihitung karena bukan bahan pangan konsumsi.
         </p>
       </div>
     </section>

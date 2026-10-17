@@ -13,9 +13,39 @@ function load(fetchImpl, key='test-key') {
 const photo='data:image/png;base64,'+fs.readFileSync('public/images/logo C cekat.png').toString('base64');
 const observation={classification:'non_food',detected_object:'Logo hijau',confidence:'tinggi',items:[],calories:42,protein_g:2,carbs_g:4,fat_g:1,fiber_g:0,health_verdict:'baik',notes:'Terlihat logo.',suggestion:'Foto makanan.'};
 const provider=body=>async()=>({ok:true,status:200,json:async()=>({candidates:[{finishReason:'STOP',content:{parts:[{text:JSON.stringify(body)}]}}]})});
+
+test('All four food verdicts survive validation and are advertised in the provider schema',async()=>{
+  for (const verdict of ['sangat_baik','baik','cukup','kurang']) {
+    const response = provider({...observation,classification:'food',health_verdict:verdict,items:[{name:'Hidangan',portion_estimate:'200 gram'}]});
+    const ai=load(async(url,options)=>{
+      const request=JSON.parse(options.body);
+      assert.ok(request.generationConfig.responseSchema.properties.health_verdict.enum.includes(verdict));
+      return response();
+    });
+    assert.equal((await ai.analyzeFood(photo)).health_verdict,verdict);
+  }
+});
+
+test('A non-food or uncertain photo cannot receive even the highest food verdict',async()=>{
+  for (const classification of ['non_food','uncertain']) {
+    const data=await load(provider({...observation,classification,health_verdict:'sangat_baik'})).analyzeFood(photo);
+    assert.equal(data.health_verdict,'belum_dinilai');
+    assert.equal(data.calories,null);
+    assert.equal(data.detected_object,'Logo hijau');
+    assert.equal(data.is_food,false);
+  }
+});
 test('Missing key fails rather than fabricating a successful analysis',async()=>{
   const ai=load(()=>{throw new Error('must not call');},'');
   await assert.rejects(ai.analyzeFood(photo),error=>error.status===503);
+});
+
+test('Drink volume keeps ml and bare numeric portions are rejected',async()=>{
+  const drink={...observation,classification:'food',items:[{name:'Air mineral',portion_estimate:'1 botol (330 ml)'}],calories:0,protein_g:0,carbs_g:0,fat_g:0,fiber_g:0};
+  const data=await load(provider(drink)).analyzeFood(photo);
+  assert.equal(data.portion_estimate,'1 botol (330 ml)');
+  assert.equal(data.calories,0);
+  await assert.rejects(load(provider({...drink,items:[{name:'Air mineral',portion_estimate:'330'}]})).analyzeFood(photo),e=>e.status===502);
 });
 test('Provider failure is not classified as a non-food photograph',async()=>{
   const ai=load(async()=>({ok:false,status:500}));

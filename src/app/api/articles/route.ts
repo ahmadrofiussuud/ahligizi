@@ -129,4 +129,3 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ error: 'Gagal menghapus artikel' }, { status: 500 });
   }
 }
-export { articlesList };

@@ -62,4 +62,3 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Gagal membuat pesanan' }, { status: 500 });
   }
 }
-export { userOrders };

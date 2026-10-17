@@ -55,4 +55,3 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ error: 'Gagal memodifikasi keranjang' }, { status: 500 });
   }
 }
-export { userCart };

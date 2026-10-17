@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import ScanNotice from '@/components/ScanNotice';
+import FoodVerdictBadge from '@/components/FoodVerdictBadge';
 import React, { useState, useRef, useEffect } from 'react';
 import {
   Camera,
@@ -200,7 +201,7 @@ export default function ScanPage() {
           carbs_g: result.carbs_g,
           fat_g: result.fat_g,
           fiber_g: result.fiber_g,
-          portion_estimate: result.items?.[0]?.portion_estimate || '1 Porsi',
+          portion_estimate: result.portion_estimate || 'Belum diketahui',
           health_verdict: result.health_verdict,
           ai_notes: `${result.notes || ''} ${result.suggestion || ''}`,
           meal_type: mealType,
@@ -444,7 +445,7 @@ export default function ScanPage() {
                       : 'Makanan Terdeteksi'}
                   </h3>
                   <span className="text-xs text-slate-500 font-medium">
-                    Perkiraan porsi: {result.items?.[0]?.portion_estimate || 'Belum diketahui'}
+                    Perkiraan porsi: {result.portion_estimate || 'Belum diketahui'}
                   </span>
                 </div>
 
@@ -463,21 +464,7 @@ export default function ScanPage() {
                 <span className="text-xs font-semibold text-slate-500">
                   Penilaian pola makan umum:
                 </span>
-                {result.health_verdict === 'baik' && (
-                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1">
-                    Baik
-                  </span>
-                )}
-                {result.health_verdict === 'cukup' && (
-                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200 flex items-center gap-1">
-                    Cukup Baik
-                  </span>
-                )}
-                {result.health_verdict === 'kurang' && (
-                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200 flex items-center gap-1">
-                    Kurang Sehat
-                  </span>
-                )}
+                <FoodVerdictBadge verdict={result.health_verdict} />
               </div>
 
               {/* Macro Nutrients Progress Visuals */}
